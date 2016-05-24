@@ -1,0 +1,178 @@
+<head>
+<script src="http://code.jquery.com/jquery-2.2.0.min.js" type="text/javascript"></script>
+<style>
+body{
+	margin:0;
+}
+.sections{
+	display:inline-block;
+    vertical-align: bottom;
+}
+#log{
+	width:25%;
+	height:100%;
+	background-color:grey;
+}
+#stat{
+	width:25%;
+	height:100%;
+	background-color:grey;
+}
+#main{
+	width:50%;
+	height:100%;
+}
+</style>
+</head>
+<body>
+<div id='log' class='sections'></div><div id='main' class='sections'></div><div id='stat' class='sections'></div>
+
+<script>
+function Abilities(str,dex,con,intt,wis,cha){
+	this.STR = str;
+	this.DEX = dex;
+	this.CON = con;
+	this.INT = intt;
+	this.WIS = wis;
+	this.CHA = cha;
+}
+
+function Skills(){
+this.ranks = [];
+this.trained = [];
+	this.ranks["Acrobatics"] = 0;
+	this.trained["Acrobatics"] = false;
+	this.ranks["Appraise"] = 0;
+	this.trained["Appraise"] = false;
+	this.ranks["Bluff"] = 0;
+	this.trained["Bluff"] = false;
+	this.ranks["Climb"] = 0;
+	this.trained["Climb"] = false;
+	this.ranks["Craft"] = 0;
+	this.trained["Craft"] = false;
+	this.ranks["Diplomacy"] = 0;
+	this.trained["Diplomacy"] = false;
+	this.ranks["Disable Device"] = 0;
+	this.trained["Disable Device"] = false;
+	this.ranks["Disguise"] = 0;
+	this.trained["Disguise"] = false;
+	
+	this.ranks["Escape Artist"] = 0;
+	this.trained["Escape Artist"] = false;
+	this.ranks["Fly"] = 0;
+	this.trained["Fly"] = false;
+	this.ranks["Handle Animal"] = 0;
+	this.trained["Handle Animal"] = false;
+	this.ranks["Heal"] = 0;
+	this.trained["Heal"] = false;
+	this.ranks["Intimidate"] = 0;
+	this.trained["Intimidate"] = false;
+	
+	this.ranks["Knowledge Arcana"] = 0;
+	this.trained["Knowledge Arcana"] = false;
+	this.ranks["Knowledge Dungeoneering"] = 0;
+	this.trained["Knowledge Dungeoneering"] = false;
+	this.ranks["Knowledge Engineering"] = 0;
+	this.trained["Knowledge Engineering"] = false;
+	this.ranks["Knowledge Geography"] = 0;
+	this.trained["Knowledge Geography"] = false;
+	this.ranks["Knowledge History"] = 0;
+	this.trained["Knowledge History"] = false;
+	this.ranks["Knowledge Local"] = 0;
+	this.trained["Knowledge Local"] = false;
+	this.ranks["Knowledge Nature"] = 0;
+	this.trained["Knowledge Nature"] = false;
+	this.ranks["Knowledge Nobility"] = 0;
+	this.trained["Knowledge Nobility"] = false;
+	this.ranks["Knowledge Planes"] = 0;
+	this.trained["Knowledge Planes"] = false;
+	this.ranks["Knowledge Religion"] = 0;
+	this.trained["Knowledge Religion"] = false;
+	
+	this.ranks["Linguistics"] = 0;
+	this.trained["Linguistics"] = false;
+	this.ranks["Perception"] = 0;
+	this.trained["Perception"] = false;
+	this.ranks["Perform"] = 0;
+	this.trained["Perform"] = false;
+	this.ranks["Perform1"] = 0;
+	this.trained["Perform1"] = false;
+	this.ranks["Profession"] = 0;
+	this.trained["Profession"] = false;
+	this.ranks["Profession1"] = 0;
+	this.trained["Profession1"] = false;
+	this.ranks["Ride"] = 0;
+	this.trained["Ride"] = false;
+	this.ranks["Sense Motive"] = 0;
+	this.trained["Sense Motive"] = false;
+	
+	this.ranks["Sleight of Hand"] = 0;
+	this.trained["Sleight of Hand"] = false;
+	this.ranks["Spellcraft"] = 0;
+	this.trained["Spellcraft"] = false;
+	this.ranks["Stealth"] = 0;
+	this.trained["Stealth"] = false;
+	this.ranks["Survival"] = 0;
+	this.trained["Survival"] = false;
+	this.ranks["Swim"] = 0;
+	this.trained["Swim"] = false;
+	this.ranks["Use Magic Device"] = 0;
+	this.trained["Use Magic Device"] = false;
+}
+
+function Character (name,player,level,race,clas,al,str,dex,con,intt,wis,cha,deity,HL,g,h,w,hair,eye){
+	this.Name = name;
+	this.Player = player;
+	this.Level = level;
+	this.Race = race;
+	this.Class = clas
+	this.Alignment = al;
+	this.Deity = deity;
+	this.Homeland = HL;
+	this.Gender = g;
+	//need age
+	this.Height = h;
+	this.Weight = w;
+	this.Hair = hair;
+	this.Eye = eye;
+	this.abilities = new Abilities(str,dex,con,intt,wis,cha);
+	this.skills = new Skills();//need a way to set
+	this.STR = function(){return Math.floor((this.abilities.STR-10)/2);}
+	this.DEX = function(){return Math.floor((this.abilities.DEX-10)/2);}
+	this.CON = function(){return Math.floor((this.abilities.CON-10)/2);}
+	this.INT = function(){return Math.floor((this.abilities.INT-10)/2);}
+	this.WIS = function(){return Math.floor((this.abilities.WIS-10)/2);}
+	this.CHA = function(){return Math.floor((this.abilities.CHA-10)/2);}
+}
+</script>
+<script>
+statblock = $("#stat");
+logblock = $("#log");
+mainblock = $("#main");
+
+characters = [];
+current = "deamon";
+characters[current] = new Character(current,'Damon',3,'elf','sorceror','N',14,15,10,9,17,11,"None","Aus",'Male',5.7,90,'blond','green');
+
+
+function displayStats(){
+	statblock.empty();
+	statblock.append("<div class='name'>Name: "+ characters[current].Name +"</div>");
+	statblock.append("<div class='alignment'>Alignment: "+ characters[current].Alignment +"</div>");
+	statblock.append("<div class='player'>Player: "+ characters[current].Player +"</div>");
+	statblock.append("<div class='race'>Race: "+ characters[current].Race +"</div>");
+	statblock.append("<div class='class'>Class: "+ characters[current].Class +"</div>");
+	statblock.append("<div class='level'>Level: "+ characters[current].Level +"</div>");
+	statblock.append("<div class='deity'>Deity: "+ characters[current].Deity +"</div>");
+	statblock.append("<div class='homeland'>Homeland: "+ characters[current].Homeland +"</div>");
+	statblock.append("<div class='gender'>Gender: "+ characters[current].Gender +"</div>");
+	statblock.append("<div class='height'>Height: "+ characters[current].Height +"</div>");
+	statblock.append("<div class='weight'>Weight: "+ characters[current].Weight +"</div>");
+	statblock.append("<div class='hair'>Hair: "+ characters[current].Hair +"</div>");
+	statblock.append("<div class='eye'>Eye: "+ characters[current].Eye +"</div>");
+	statblock.append("<div class='abilities'>Abilities: "+ characters[current].abilities +"</div>");
+}
+
+setInterval(function(){displayStats();}, 1000);
+</script>
+</body>
