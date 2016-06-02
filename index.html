@@ -1,26 +1,49 @@
 <head>
 <script src="http://code.jquery.com/jquery-2.2.0.min.js" type="text/javascript"></script>
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js" type="text/javascript"></script>
 <style>
 body{
 	margin:0;
+	overflow:hidden;
 }
 .sections{
 	display:inline-block;
     vertical-align: bottom;
+	overflow:hidden;
 }
 #log{
 	width:25%;
 	height:100%;
-	background-color:grey;
+	overflow-y:auto;
 }
 #stat{
 	width:25%;
 	height:100%;
-	background-color:grey;
 }
 #main{
-	width:50%;
+	width:calc(50% - 2px);
 	height:100%;
+	border-right:1px black solid;
+	border-left:1px black solid;
+}
+.msg{
+	margin:10px;
+	padding:5px;
+	border-top: 1px black solid;
+    overflow-wrap: break-word;
+}
+#stat div{
+	margin:3px;
+}
+.abilities{
+	width:100%;
+	background-color:lightgrey;
+	text-align:center;
+}
+.skills{
+	width:100%;
+	font-size:0.7em;
+	background-color: beige;
 }
 </style>
 </head>
@@ -28,96 +51,67 @@ body{
 <div id='log' class='sections'></div><div id='main' class='sections'></div><div id='stat' class='sections'></div>
 
 <script>
-function Abilities(str,dex,con,intt,wis,cha){
-	this.STR = str;
-	this.DEX = dex;
-	this.CON = con;
-	this.INT = intt;
-	this.WIS = wis;
-	this.CHA = cha;
+function Ability(score,bonus,circumstance){
+	if(circumstance == undefined){
+		circumstance = "";
+	}
+	return [score,bonus,circumstance];
 }
 
-function Skills(){
-this.ranks = [];
-this.trained = [];
-	this.ranks["Acrobatics"] = 0;
-	this.trained["Acrobatics"] = false;
-	this.ranks["Appraise"] = 0;
-	this.trained["Appraise"] = false;
-	this.ranks["Bluff"] = 0;
-	this.trained["Bluff"] = false;
-	this.ranks["Climb"] = 0;
-	this.trained["Climb"] = false;
-	this.ranks["Craft"] = 0;
-	this.trained["Craft"] = false;
-	this.ranks["Diplomacy"] = 0;
-	this.trained["Diplomacy"] = false;
-	this.ranks["Disable Device"] = 0;
-	this.trained["Disable Device"] = false;
-	this.ranks["Disguise"] = 0;
-	this.trained["Disguise"] = false;
-	
-	this.ranks["Escape Artist"] = 0;
-	this.trained["Escape Artist"] = false;
-	this.ranks["Fly"] = 0;
-	this.trained["Fly"] = false;
-	this.ranks["Handle Animal"] = 0;
-	this.trained["Handle Animal"] = false;
-	this.ranks["Heal"] = 0;
-	this.trained["Heal"] = false;
-	this.ranks["Intimidate"] = 0;
-	this.trained["Intimidate"] = false;
-	
-	this.ranks["Knowledge Arcana"] = 0;
-	this.trained["Knowledge Arcana"] = false;
-	this.ranks["Knowledge Dungeoneering"] = 0;
-	this.trained["Knowledge Dungeoneering"] = false;
-	this.ranks["Knowledge Engineering"] = 0;
-	this.trained["Knowledge Engineering"] = false;
-	this.ranks["Knowledge Geography"] = 0;
-	this.trained["Knowledge Geography"] = false;
-	this.ranks["Knowledge History"] = 0;
-	this.trained["Knowledge History"] = false;
-	this.ranks["Knowledge Local"] = 0;
-	this.trained["Knowledge Local"] = false;
-	this.ranks["Knowledge Nature"] = 0;
-	this.trained["Knowledge Nature"] = false;
-	this.ranks["Knowledge Nobility"] = 0;
-	this.trained["Knowledge Nobility"] = false;
-	this.ranks["Knowledge Planes"] = 0;
-	this.trained["Knowledge Planes"] = false;
-	this.ranks["Knowledge Religion"] = 0;
-	this.trained["Knowledge Religion"] = false;
-	
-	this.ranks["Linguistics"] = 0;
-	this.trained["Linguistics"] = false;
-	this.ranks["Perception"] = 0;
-	this.trained["Perception"] = false;
-	this.ranks["Perform"] = 0;
-	this.trained["Perform"] = false;
-	this.ranks["Perform1"] = 0;
-	this.trained["Perform1"] = false;
-	this.ranks["Profession"] = 0;
-	this.trained["Profession"] = false;
-	this.ranks["Profession1"] = 0;
-	this.trained["Profession1"] = false;
-	this.ranks["Ride"] = 0;
-	this.trained["Ride"] = false;
-	this.ranks["Sense Motive"] = 0;
-	this.trained["Sense Motive"] = false;
-	
-	this.ranks["Sleight of Hand"] = 0;
-	this.trained["Sleight of Hand"] = false;
-	this.ranks["Spellcraft"] = 0;
-	this.trained["Spellcraft"] = false;
-	this.ranks["Stealth"] = 0;
-	this.trained["Stealth"] = false;
-	this.ranks["Survival"] = 0;
-	this.trained["Survival"] = false;
-	this.ranks["Swim"] = 0;
-	this.trained["Swim"] = false;
-	this.ranks["Use Magic Device"] = 0;
-	this.trained["Use Magic Device"] = false;
+function Skill(trained,clas,ability,rank,bonus,circumstance){
+	if(circumstance == undefined){
+		circumstance = "";
+	}
+	return [trained,clas,ability,rank,bonus,circumstance];
+}
+
+
+Abilities = ["STR","DEX","CON","INT","WIS","CHA"];
+Skills = ["Acrobatics", "Appraise", "Bluff", "Climb", "Craft", "Diplomacy", "Disable Device", "Disguise", "Escape Artist", "Fly", "Handle Animal", "Heal", "Intimidate", "Knowledge Arcana", "Knowledge Dungeoneering", "Knowledge Engineering", "Knowledge Geography", "Knowledge History", "Knowledge Local", "Knowledge Nature", "Knowledge Nobility", "Knowledge Planes", "Knowledge Religion", "Linguistics", "Perception", "Perform", "Profession", "Ride", "Sense Motive", "Sleight of Hand", "Spellcraft", "Stealth", "Survival", "Swim", "Use Magic Device"];
+function Stats(str,dex,con,intt,wis,cha){
+this.ability = [];
+	this.ability["STR"] = new Ability(str,0);
+	this.ability["DEX"] = new Ability(dex,0);
+	this.ability["CON"] = new Ability(con,0);
+	this.ability["INT"] = new Ability(intt,0);
+	this.ability["WIS"] = new Ability(wis,0);
+	this.ability["CHA"] = new Ability(cha,0);
+this.skill = [];
+	this.skill["Acrobatics"] =				new Skill(false,false,"DEX",0,0);
+	this.skill["Appraise"] = 				new Skill(false,false,"INT",0,0);
+	this.skill["Bluff"] = 					new Skill(false,false,"CHA",0,0);
+	this.skill["Climb"] = 					new Skill(false,false,"STR",0,0);
+	this.skill["Craft"] =					new Skill(false,false,"INT",0,0);
+	this.skill["Diplomacy"] = 				new Skill(false,false,"CHA",0,0);
+	this.skill["Disable Device"] = 			new Skill( true,false,"DEX",0,0);
+	this.skill["Disguise"] = 				new Skill(false,false,"CHA",0,0);
+	this.skill["Escape Artist"] = 			new Skill(false,false,"DEX",0,0);
+	this.skill["Fly"] = 					new Skill(false,false,"DEX",0,0);
+	this.skill["Handle Animal"] = 			new Skill( true,false,"CHA",0,0);
+	this.skill["Heal"] = 					new Skill(false,false,"WIS",0,0);
+	this.skill["Intimidate"] = 				new Skill(false,false,"CHA",0,0);
+	this.skill["Knowledge Arcana"] = 		new Skill( true,false,"INT",0,0);
+	this.skill["Knowledge Dungeoneering"] = new Skill( true,false,"INT",0,0);
+	this.skill["Knowledge Engineering"] = 	new Skill( true,false,"INT",0,0);
+	this.skill["Knowledge Geography"] = 	new Skill( true,false,"INT",0,0);
+	this.skill["Knowledge History"] = 		new Skill( true,false,"INT",0,0);
+	this.skill["Knowledge Local"] = 		new Skill( true,false,"INT",0,0);
+	this.skill["Knowledge Nature"] = 		new Skill( true,false,"INT",0,0);
+	this.skill["Knowledge Nobility"] = 		new Skill( true,false,"INT",0,0);
+	this.skill["Knowledge Planes"] = 		new Skill( true,false,"INT",0,0);
+	this.skill["Knowledge Religion"] = 		new Skill( true,false,"INT",0,0);
+	this.skill["Linguistics"] = 			new Skill( true,false,"INT",0,0);
+	this.skill["Perception"] = 				new Skill(false,false,"WIS",0,0);
+	this.skill["Perform"] = 				new Skill(false,false,"CHA",0,0);
+	this.skill["Profession"] = 				new Skill( true,false,"WIS",0,0);
+	this.skill["Ride"] = 					new Skill(false,false,"DEX",0,0);
+	this.skill["Sense Motive"] = 			new Skill(false,false,"WIS",0,0);
+	this.skill["Sleight of Hand"] = 		new Skill( true,false,"DEX",0,0);
+	this.skill["Spellcraft"] = 				new Skill( true,false,"INT",0,0);
+	this.skill["Stealth"] = 				new Skill(false,false,"DEX",0,0);
+	this.skill["Survival"] = 				new Skill(false,false,"WIS",0,0);
+	this.skill["Swim"] = 					new Skill(false,false,"STR",0,0);
+	this.skill["Use Magic Device"] = 		new Skill( true,false,"CHA",0,0);
 }
 
 function Character (name,player,level,race,clas,al,str,dex,con,intt,wis,cha,deity,HL,g,h,w,hair,eye){
@@ -135,14 +129,53 @@ function Character (name,player,level,race,clas,al,str,dex,con,intt,wis,cha,deit
 	this.Weight = w;
 	this.Hair = hair;
 	this.Eye = eye;
-	this.abilities = new Abilities(str,dex,con,intt,wis,cha);
-	this.skills = new Skills();//need a way to set
-	this.STR = function(){return Math.floor((this.abilities.STR-10)/2);}
-	this.DEX = function(){return Math.floor((this.abilities.DEX-10)/2);}
-	this.CON = function(){return Math.floor((this.abilities.CON-10)/2);}
-	this.INT = function(){return Math.floor((this.abilities.INT-10)/2);}
-	this.WIS = function(){return Math.floor((this.abilities.WIS-10)/2);}
-	this.CHA = function(){return Math.floor((this.abilities.CHA-10)/2);}
+	this.stats = [];
+	this.stats.push( ['Base',new Stats(str,dex,con,intt,wis,cha),'perm'] );
+	
+	this.ability_score = function (what){
+		var result = 0;
+		for(ia = 0; ia < this.stats.length; ia++){
+			result += this.stats[ia][1].ability[what][0];
+		}
+		//need circumstance bonus
+		return result;
+	}
+	this.ability_mod = function (what){
+		var result = 0;
+		var resultb = 0;
+		for(ia = 0; ia < this.stats.length; ia++){
+			result += this.stats[ia][1].ability[what][0];
+			resultb += this.stats[ia][1].ability[what][1];
+		}
+		//need circumstance bonus
+		return Math.floor((result-10)/2)+resultb;
+	}
+	this.skill_score = function (what){
+		var result = 0;
+		var resultb = 0;
+		var trained = this.stats[0][1].skill[what][0];
+		var clas = this.stats[0][1].skill[what][1];
+		for(ia = 0; ia < this.stats.length; ia++){
+			trained = trained || this.stats[ia][1].skill[what][0];
+			clas = clas || this.stats[ia][1].skill[what][1];
+			resultb += this.stats[ia][1].skill[what][3];
+			result += this.stats[ia][1].skill[what][4];
+		}
+		result += this.ability_mod(this.stats[0][1].skill[what][2]);
+		if(clas || !trained){
+			result += resultb;
+		}
+		if(!clas && trained){
+			result = NaN;
+		}
+		//need circumstance bonus
+		return result;
+	}
+}
+
+
+function roll(num){
+	return Math.floor(Math.random()*num+1);
 }
 </script>
 <script>
@@ -153,7 +186,31 @@ mainblock = $("#main");
 characters = [];
 current = "deamon";
 characters[current] = new Character(current,'Damon',3,'elf','sorceror','N',14,15,10,9,17,11,"None","Aus",'Male',5.7,90,'blond','green');
+characters[current].stats.push(['Elf',new Stats(0,2,0,0,0,-1),'perm']);
+buff = new Stats(0,0,0,0,0,0);
+buff.skill['Climb'][0] = true;
+buff.skill['Climb'][3] = 3;
+buff.skill['Ride'][0] = false;
+buff.skill['Ride'][3] = 3;
+buff.skill['Swim'][0] = true;
+buff.skill['Swim'][1] = true;
+buff.skill['Swim'][3] = 3;
+characters[current].stats.push(['bulls strength',buff,'5r']);
 
+
+$(function() {
+    $( "#controls" ).tabs();
+  });
+var tabs = $("<div id='controls'>");
+tabs.append("<ul><li><a href='#controls-1'>Main</a></li><li><a href='#controls-2'>Rolls</a></li></ul>");
+var tabs_rolls = $("<div id='controls-2'>");
+	for(ib = 0; ib < Abilities.length;ib++){
+		tabs_rolls.append("<button onclick='var result = 0; result = characters[current].ability_mod(\""+Abilities[ib]+"\"); result += roll(20); chat_msg(result);'>"+Abilities[ib]+"</button>");
+	}
+var tabs_normal = $("<div id='controls-1'>stuff</div>");
+tabs.append(tabs_normal);
+tabs.append(tabs_rolls);
+mainblock.append(tabs);
 
 function displayStats(){
 	statblock.empty();
@@ -170,9 +227,52 @@ function displayStats(){
 	statblock.append("<div class='weight'>Weight: "+ characters[current].Weight +"</div>");
 	statblock.append("<div class='hair'>Hair: "+ characters[current].Hair +"</div>");
 	statblock.append("<div class='eye'>Eye: "+ characters[current].Eye +"</div>");
-	statblock.append("<div class='abilities'>Abilities: "+ characters[current].abilities +"</div>");
+	
+	var disAbility = $("<table class='abilities'><tr><th>Ability</th><th>Score</th><th>Mod</th></tr></table>");
+	for(ib = 0; ib < Abilities.length;ib++){
+		disAbilityRow = $("<tr>");
+		disAbilityRow.append("<td>"+Abilities[ib]+"</td>");
+		disAbilityRow.append("<td>"+characters[current].ability_score(Abilities[ib])+"</td>");
+		disAbilityRow.append("<td>"+characters[current].ability_mod(Abilities[ib])+"</td>");
+		disAbility.append(disAbilityRow);
+	}
+	statblock.append(disAbility);
+	
+	var disSkill = $("<table class='skills'><tr><th>*</th><th>Skills</th><th>Total</th><th>Mod</th><th>Ranks</th><th>Misc</th></tr></table>");
+	for(ib = 0; ib < Skills.length;ib++){
+		disSkillRow = $("<tr>");
+		var trained = false;
+		var clas = false;
+		var ranks = 0;
+		var bonus = 0;
+		for(ic = 0; ic < characters[current].stats.length; ic++){
+			trained = trained || characters[current].stats[ic][1].skill[Skills[ib]][0];
+			clas = clas || characters[current].stats[ic][1].skill[Skills[ib]][1];
+			ranks = characters[current].stats[ic][1].skill[Skills[ib]][3];
+			bonus = characters[current].stats[ic][1].skill[Skills[ib]][4];
+		}
+		if(clas){
+			disSkillRow.append("<td>X</td>");
+		}else{
+			disSkillRow.append("<td></td>");
+		}
+		disSkillRow.append("<td>"+Skills[ib]+"</td>");
+		disSkillRow.append("<td>"+characters[current].skill_score(Skills[ib])+"</td>");
+		disSkillRow.append("<td>"+characters[current].stats[0][1].skill[Skills[ib]][2]+": "+characters[current].ability_mod(characters[current].stats[0][1].skill[Skills[ib]][2])+"</td>");
+		disSkillRow.append("<td>"+ranks+"</td>");
+		disSkillRow.append("<td>"+bonus+"</td>");
+		if(!trained || clas){
+			disSkill.append(disSkillRow);
+		}
+	}
+	statblock.append(disSkill);
 }
 
-setInterval(function(){displayStats();}, 1000);
+function chat_msg(msg){
+	logblock.append("<div class='msg'>"+msg+"</div>");
+	logblock.scrollTop(logblock[0].scrollHeight);
+}
+
+tick = setInterval(function(){displayStats();}, 1000);
 </script>
 </body>
