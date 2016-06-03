@@ -14,17 +14,21 @@ body{
 #log{
 	width:25%;
 	height:100%;
+}
+#rolls{
 	overflow-y:auto;
+	height: 80%;
 }
 #stat{
 	width:25%;
 	height:100%;
 }
 #main{
-	width:calc(50% - 2px);
+	width:calc(50% - 12px);
 	height:100%;
 	border:1px black solid;
     background-color: beige;
+	padding:5px;
 }
 .msg{
 	margin:10px;
@@ -49,7 +53,7 @@ body{
     padding: 0;
     padding-bottom: 10px;
     margin: 0;
-    margin-top: 8px;
+    margin-top: 4px;
 }
 .ui-corner-top {
     display: inline-block;
@@ -70,6 +74,11 @@ body{
 .ui-corner-top *{
 	text-decoration: none;
 	color:black;
+}
+
+#controls-2 button {
+    margin: 5px;
+    margin-top: 0;
 }
 </style>
 </head>
@@ -248,6 +257,7 @@ function roll_skl(stat){
 <script>
 statblock = $("#stat");
 logblock = $("#log");
+textblock = $("<div id='rolls'>");
 mainblock = $("#main");
 
 characters = [];
@@ -283,6 +293,8 @@ var tabs_normal = $("<div id='controls-1'>stuff</div>");
 tabs.append(tabs_normal);
 tabs.append(tabs_rolls);
 mainblock.append(tabs);
+logblock.append("<h1>Log</h1>");
+logblock.append(textblock);
 
 function displayStats(){
 	statblock.empty();
@@ -341,8 +353,8 @@ function displayStats(){
 }
 
 function chat_msg(msg){
-	logblock.append("<div class='msg'>"+msg+"</div>");
-	logblock.scrollTop(logblock[0].scrollHeight);
+	textblock.append("<div class='msg'>"+msg+"</div>");
+	textblock.scrollTop(textblock[0].scrollHeight);
 }
 
 tick = setInterval(function(){displayStats();}, 1000);
