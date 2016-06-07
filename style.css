@@ -27,12 +27,6 @@ body{
     background-color: beige;
 	padding:5px;
 }
-.msg{
-	margin:10px;
-	padding:5px;
-	border-top: 1px black solid;
-    overflow-wrap: break-word;
-}
 #stat div{
 	margin:3px;
     display: inline-block;
@@ -88,4 +82,20 @@ body{
     margin: 5px;
     margin-top: 0;
 	padding: 3px 6px;
+}
+.msg{
+	margin:10px;
+	padding:5px;
+	border-bottom: 1px black solid;
+    overflow-wrap: break-word;
+}
+.msg.crit_fail {
+    background-color: rgb(255,100,25);
+    margin-bottom: -10px;
+	border-bottom:none;
+}
+.msg.crit_suc {
+    margin-bottom: -10px;
+    background-color: rgb(101, 161, 18);
+	border-bottom:none;
 }

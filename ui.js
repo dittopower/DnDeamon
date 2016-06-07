@@ -2,6 +2,7 @@ statblock = $("#stat");
 logblock = $("#log");
 textblock = $("<div id='rolls'>");
 mainblock = $("#main");
+var audio;
 
 characters = new Array();
 current = "Default";
@@ -138,9 +139,17 @@ function displayStats(){
 	statblock.append("<div class='cmd'>CMD: "+ characters[current].CMD() +"</div>");
 }
 
-function chat_msg(msg){
-	textblock.append("<div class='msg'>"+msg+"</div>");
+function chat_msg(msg,clas){
+	if(clas == undefined){
+		clas = "";
+	}
+	textblock.append("<div class='msg "+clas+"'>"+msg+"</div>");
 	textblock.scrollTop(textblock[0].scrollHeight);
+}
+
+function sound_play(sound){
+	audio.src = sound;
+	audio.play();
 }
 
 onload = function(){
@@ -149,5 +158,6 @@ onload = function(){
 	textblock = $("<div id='rolls'>");
 	mainblock = $("#main");
 	mytabs();
+	audio = new Audio();
 	tick = setInterval(function(){displayStats();}, 1000);
 }

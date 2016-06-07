@@ -275,6 +275,17 @@ function Character (name,player,level,race,clas,al,str,dex,con,intt,wis,cha,deit
 function roll(num){
 	return Math.floor(Math.random()*num+1);
 }
+function roll_d20(){
+	var result = roll(20);
+	if(result == 20){
+		chat_msg("Natural 20!!","crit_suc");
+		sound_play(audio_crit_sucess);
+	}else if(result == 1){
+		chat_msg("Natural 1...","crit_fail");
+		sound_play(audio_crit_failure);
+	}
+	return result;
+}
 
 function roll_abl(stat){
 	var result = 0;
@@ -307,14 +318,14 @@ function roll_abl(stat){
 		default:
 			text = 'None';
 	}
-	result += roll(20);
+	result += roll_d20();
 	chat_msg(text+": " +result);
 }
 function roll_skl(stat){
 	var result = 0;
 	result += characters[current].skill_score(stat);
 	if(!isNaN(result)){
-		result += roll(20);
+		result += roll_d20();
 	}else{
 		result = "Skill Requires Training";
 	}
@@ -339,18 +350,52 @@ function roll_save(stat){
 		default:
 			text = 'None';
 	}
-	result += roll(20);
+	result += roll_d20();
 	chat_msg("Save: "+text+": " +result);
 }
 function roll_CMB(){
 	var result = 0;
 	result += characters[current].CMB();
-	result += roll(20);
+	result += roll_d20();
 	chat_msg("Combat Maneuver: " +result);
 }
 function roll_CMD(){
 	var result = 0;
 	result += characters[current].CMD();
-	result += roll(20);
+	result += roll_d20();
 	chat_msg("Defence Maneuver: " +result);
+}
+
+function rollatk(stat,misc){
+	if(misc == undefined){
+		misc = 0;
+	}
+	var result = 0;
+	result += misc;
+	switch(stat){
+		case "STR":
+		case "melee":
+			result += characters[current].ability_mod("STR");
+			break;
+		case "DEX":
+		case "ranged":
+			result += characters[current].ability_mod("DEX");
+			break;
+	}
+	result += characters[current].BAB();
+	result += roll_d20();
+	return result;
+}
+
+function roll_atk_melee(){
+	chat_msg("Melee Attack: " +rollatk("melee"));
+}
+function roll_atk_range(penalty){
+	chat_msg("Ranged Attack: " +rollatk("ranged",penalty));
+}
+function roll_atk_touch(){
+	chat_msg("Melee Touch Attack: " +rollatk("melee"));
+}
+function roll_atk_Rtouch(){
+	chat_msg("Ranged Touch Attack: " +rollatk("ranged"));
 }
