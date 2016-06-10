@@ -1,51 +1,77 @@
 body{
 	margin:0;
 	overflow:hidden;
+	background-color: #ffeb3b;
 }
 .sections{
 	display:inline-block;
-    vertical-align: bottom;
+    vertical-align: top;
 	overflow:hidden;
+    height: 100%;
+    padding-left: 1em;
+    padding-right: 1em;
+    border-top: 1px black solid;
 }
 #log{
-	width:25%;
-	height:100%;
+    width: calc(25% - 2em);
 }
 #rolls{
 	overflow-y:auto;
 	height: 80%;
 }
+#menu{
+    width: calc(15% - 1em);
+	padding-right:0;
+}
 #stat{
-	width:25%;
-	height:100%;
 	overflow-y:auto;
 }
 #main{
-	width:calc(50% - 12px);
+	width:calc(60% - 2em - 2px);
 	height:100%;
-	border:1px black solid;
-    background-color: beige;
-	padding:5px;
+	border-left:1px black dashed;
+	border-right:1px black dashed;
+	padding-left:1em;
+	padding-right:1em;
+	margin:0;
 }
-#stat div{
+.stat div{
 	margin:3px;
     display: inline-block;
     background-color: rgb(240,240,240);
     border: 1px grey solid;
-    padding: 1px 3px;
+    padding: 0.3em;
+    font-size: x-large;
+}
+#menu h4{
+    margin: 0;
+    border-bottom-color: black;
+    border-bottom-width: 1px;
+    border-bottom-style: dashed;
+    padding: 0.2em;
+    cursor: pointer;
+}
+#menu h4:hover{
+	color: white;
+    padding: 0.3em;
+    text-shadow: rgba(0,0,0,0.5) 2px 3px;
 }
 .abilities{
-	width:100%;
-	background-color:lightgrey;
     border-collapse: collapse;
+	background-color:#CDDC39;
 }
 .abilities td{
-    border: 1px solid grey;
+	padding:5px;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}
+.abilities th{
+	padding:5px;
+    border-bottom: 1px solid black;
 }
 .skills{
-	width:100%;
-	font-size:0.7em;
-	background-color: beige;
+    display: inline-block;
+	background-color: #CDDC39;
     border-collapse: collapse;
 }
 .skills td{
@@ -84,13 +110,12 @@ body{
 	padding: 3px 6px;
 }
 .msg{
-	margin:10px;
-	padding:5px;
+	padding:10px;
 	border-bottom: 1px black solid;
     overflow-wrap: break-word;
 }
 .msg.crit_fail {
-    background-color: rgb(255,100,25);
+    background-color: #E91E63;
     margin-bottom: -10px;
 	border-bottom:none;
 }
@@ -98,4 +123,49 @@ body{
     margin-bottom: -10px;
     background-color: rgb(101, 161, 18);
 	border-bottom:none;
+}
+#charsel{
+    display: block;
+    width: calc(100% - 24px);
+    padding: 0.5em;
+    margin: 12px;
+    font-size: large;
+}
+.sections h1{
+	margin-top:0;
+}
+.mmain{
+	background-color: #2196F3;
+}
+.mstats{
+	background-color: #8bc34a;
+}
+.mrolls{
+	background-color: #00BCD4;
+}
+.mchars{
+	background-color: #ff5722;
+}
+.rollable{
+    color: rgba(0,0,0,0);
+    background-image: url('d6.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+	cursor:pointer;
+    background-position: 50%;
+	height: 2em;
+    width: 2em
+}
+.sections div h1 {
+    margin-top: 24px;
+    text-decoration: underline;
+}
+.mstats table{
+    display: inline-block;
+    padding: 1em;
+    margin: 1em;
+    vertical-align: top;
+}
+.skills td,th{
+	padding: 5px;
 }
