@@ -198,10 +198,13 @@ function upkeep(){
 
 onload = function(){
 	mytabs();
+	resise();
 	audio = new Audio();
 	tick = setInterval(function(){upkeep();}, 10000);
 }
 
+window.onresize = function(){resise();}
 
-
-
+function resise(){
+	mainblock.height(window.innerHeight-disChars[0].clientHeight);
+}
