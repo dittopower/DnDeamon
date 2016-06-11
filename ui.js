@@ -25,7 +25,7 @@ function mytabs(){
 	menublock.append("<h1>Menu</h1>");
 	menublock.append("<h4 class='mmain' onclick=\"reveal('main')\">Character Info</h4>");
 	menublock.append("<h4 class='mstats' onclick=\"reveal('stats')\">Abilities & Skills</h4>");
-	menublock.append("<h4 class='mrolls' onclick=\"reveal('rolls')\">Rolls</h4>");
+	menublock.append("<h4 class='mrolls' onclick=\"reveal('rolls')\">Combat & Defence</h4>");
 	menublock.append("<h4 class='mchars' onclick=\"reveal('chars')\">Characters</h4>");
 	
 	disChars[0].onchange = function(eve){current=eve.target.value; displayStats();}
@@ -34,23 +34,8 @@ function mytabs(){
 	tabs_main.hide();
 	mainblock.append(tabs_main);
 	
-//Rolls Tab
+//Rolls Tab - Combat & Defence Tab
 	tabs_rolls.hide();
-	tabs_rolls.append("<h2>Abilities</h2>");
-	for(ib = 0; ib < Abilities.length;ib++){
-		tabs_rolls.append("<button onclick='roll_abl(\""+Abilities[ib]+"\")'>"+Abilities[ib]+"</button>");
-	}
-	tabs_rolls.append("<hr><h2>Skills</h2>");
-	for(ib = 0; ib < Skills.length;ib++){
-		tabs_rolls.append("<button onclick='roll_skl(\""+Skills[ib]+"\")'>"+Skills[ib]+"</button>");
-	}
-	tabs_rolls.append("<hr><h2>Offence</h2>");
-	tabs_rolls.append("<button onclick='roll_CMB()'>CMB - Combat Maneuver</button>");
-	tabs_rolls.append("<button onclick='roll_CMD()'>CMD - Combat Defence Maneuver</button>");
-	tabs_rolls.append("<hr><h2>Defence</h2>");
-	tabs_rolls.append("<button onclick='roll_save(\"fort\")'>Fortitude</button>");
-	tabs_rolls.append("<button onclick='roll_save(\"refl\")'>Reflex</button>");
-	tabs_rolls.append("<button onclick='roll_save(\"will\")'>Will</button>");
 	mainblock.append(tabs_rolls);
 	
 //Characters Tab
@@ -105,6 +90,7 @@ function reveal(data){
 function displayStats(){
 	statblock.empty();
 	tabs_main.empty();
+	tabs_rolls.empty();
 	var disTemp;
 
 //basic
@@ -125,7 +111,7 @@ function displayStats(){
 
 	statblock.append("<h1>Abilities & Skills</h1>");
 //abilitys
-	disTemp = $("<table class='abilities'><tr><th></th><th>Ability</th><th>Score</th><th>Mod</th></tr></table>");
+	disTemp = $("<table class='abilities'><tr><th><div class='rollableIcon'>x</div></th><th>Ability</th><th>Score</th><th>Mod</th></tr></table>");
 	for(ib = 0; ib < Abilities.length;ib++){
 		disTempRow = $("<tr>");
 		disTempRow.append("<td><div class='rollable' onclick='roll_abl(\""+Abilities[ib]+"\")'>x</div></td>");
@@ -136,7 +122,7 @@ function displayStats(){
 	}
 	statblock.append(disTemp);
 //skills
-	disTemp = $("<table class='skills'><tr><th>*</th><th>Skills</th><th>Total</th><th>Mod</th><th>Ranks</th><th>Misc</th></tr></table>");
+	disTemp = $("<table class='skills'><tr><th><div class='rollableIcon'>x</div></th><th>*</th><th>Skills</th><th>Total</th><th>Mod</th><th>Ranks</th><th>Misc</th></tr></table>");
 	for(ib = 0; ib < Skills.length;ib++){
 		disTempRow = $("<tr>");
 		var trained = false;
@@ -149,6 +135,7 @@ function displayStats(){
 			ranks = characters[current].stats[ic][1].skill[Skills[ib]][3];
 			bonus = characters[current].stats[ic][1].skill[Skills[ib]][4];
 		}
+		disTempRow.append("<td><div class='rollable' onclick='roll_skl(\""+Skills[ib]+"\")'>x</div></td>");
 		if(clas){
 			disTempRow.append("<td>X</td>");
 		}else{
@@ -166,6 +153,25 @@ function displayStats(){
 	statblock.append(disTemp);
 	
 //combat
+	tabs_rolls.append("<h1>Combat & Defence</h1>");
+	tabs_rolls.append("<div class='ac'>AC: "+ characters[current].ac() +" Flat: "+ characters[current].ac(true) +"</div>");
+	tabs_rolls.append("<div class='actouch'>AC Touch: "+ characters[current].ac_touch() +" Flat: "+ characters[current].ac_touch(true) +"</div>");
+	
+	tabs_rolls.append("<div class='fort'>Fortitude: "+ characters[current].save_fort() +"</div>");
+	tabs_rolls.append("<div class='refl'>Reflex: "+ characters[current].save_refl() +"</div>");
+	tabs_rolls.append("<div class='will'>Will: "+ characters[current].save_will() +"</div>");
+	
+	tabs_rolls.append("<div class='bab'>Attack Bonus: "+ characters[current].BAB() +"</div>");
+	tabs_rolls.append("<div class='cmb'>CMB: "+ characters[current].CMB() +"</div>");
+	tabs_rolls.append("<div class='cmd'>CMD: "+ characters[current].CMD() +"</div>");
+	
+	tabs_rolls.append("<hr><h2>Offence</h2>");
+	tabs_rolls.append("<button onclick='roll_CMB()'>CMB - Combat Maneuver</button>");
+	tabs_rolls.append("<button onclick='roll_CMD()'>CMD - Combat Defence Maneuver</button>");
+	tabs_rolls.append("<hr><h2>Defence</h2>");
+	tabs_rolls.append("<button onclick='roll_save(\"fort\")'>Fortitude</button>");
+	tabs_rolls.append("<button onclick='roll_save(\"refl\")'>Reflex</button>");
+	tabs_rolls.append("<button onclick='roll_save(\"will\")'>Will</button>");
 }
 
 function chat_msg(msg,clas){
