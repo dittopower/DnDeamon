@@ -10,20 +10,26 @@
 </head>
 <body>
 <script>
-current = "deamon";
-characters[current] = new Character(current,'Damon',3,'elf','sorceror','N',14,15,10,9,17,11,"None","Aus",'Male',5.7,90,Sizes[4],'blond','green');
-characters[current].stats.push(['Elf',new Stats(0,2,0,0,0,-1),'perm']);
+current = "Lucifer";
+characters[current] = new Character(current,'Damon',4,'Elf','Sorceror','CN',12,10,12,12,14,14,"The Moth","Unknown",'Male',5.9,90,Sizes[4],'blond','green');
+
+myrace = new Stats(0,2,-2,2,0,0);
+myrace.bab[0] = 2;
+characters[current].stats.push(['Elf',myrace,'perm']);
+
 buff = new Stats(0,0,0,0,0,0);
-buff.skill['Climb'][0] = true;
-buff.skill['Climb'][3] = 3;
-buff.skill['Ride'][0] = false;
-buff.skill['Ride'][3] = 3;
-buff.skill['Swim'][0] = true;
-buff.skill['Swim'][1] = true;
-buff.skill['Swim'][3] = 3;
-buff.armour["armour"] = 4;
-buff.armour["max"] = 2;
-buff.skill['Knowledge Engineering'][1] = true;
-characters[current].stats.push(['bulls strength',buff,'5r']);
+buff.skill['Appraise'][1] = true;
+buff.skill['Bluff'][1] = true;
+buff.skill['Craft'][1] = true;
+buff.skill['Fly'][1] = true;
+buff.skill['Intimidate'][1] = true;
+buff.skill['Knowledge Arcana'][1] = true;
+buff.skill['Profession'][1] = true;
+buff.skill['Spellcraft'][1] = true;
+buff.skill['Use Magic Device'][1] = true;
+characters[current].stats.push(['Sorceror',buff,'perm']);
+
+weap = new Weapon("Longsword", "2", "Martial", "Melee", [1,8], "P", [19,2], "-", "-", 10, Money(0,0,15,0));
+characters[current].weapons.push(weap);
 </script>
 </body>

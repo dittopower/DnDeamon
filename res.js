@@ -21,3 +21,5 @@ Sizes.push(new Size("Large",		-1,	1,	-2,	-4,		10,		10,	[16,">"],	[4000,">"]));
 Sizes.push(new Size("Huge",			-2,	2,	-4,	-8,		15,		15,	[32,">"],	[32000,">"]));
 Sizes.push(new Size("Gargantuan",	-4,	4,	-6,	-12,	20,		20,	[64,">"],	[250000,">"]));
 Sizes.push(new Size("Colossal",		-8,	8,	-8,	-16,	30,		30,	[64,"<"],	[250000,"<"]));
+
+EnergyTypes = ["damage", "positive", "negative", "acid", "cold", "electricity", "fire", "sonic"];

@@ -1,7 +1,7 @@
 /*
 Character Implementations
 */
-
+ItemId = 0;
 function Ability(score,bonus,circumstance){
 	if(circumstance == undefined){
 		circumstance = "";
@@ -41,7 +41,7 @@ function Stats(str,dex,con,intt,wis,cha){
 		this.skill["Appraise"] = 				new Skill(false,false,"INT",0,0);
 		this.skill["Bluff"] = 					new Skill(false,false,"CHA",0,0);
 		this.skill["Climb"] = 					new Skill(false,false,"STR",0,0);
-		this.skill["Craft"] =					new Skill(false,false,"INT",0,0);
+		this.skill["Craft"] =					new Skill( true,false,"INT",0,0);
 		this.skill["Diplomacy"] = 				new Skill(false,false,"CHA",0,0);
 		this.skill["Disable Device"] = 			new Skill( true,false,"DEX",0,0);
 		this.skill["Disguise"] = 				new Skill(false,false,"CHA",0,0);
@@ -72,7 +72,8 @@ function Stats(str,dex,con,intt,wis,cha){
 		this.skill["Survival"] = 				new Skill(false,false,"WIS",0,0);
 		this.skill["Swim"] = 					new Skill(false,false,"STR",0,0);
 		this.skill["Use Magic Device"] = 		new Skill( true,false,"CHA",0,0);
-	this.bab = 0;
+	this.bab = [];
+		this.bab.push(0);
 	this.armour = [];
 		this.armour["armour"] = 0;
 		this.armour["shield"] = 0;
@@ -82,10 +83,43 @@ function Stats(str,dex,con,intt,wis,cha){
 		this.armour["misc"] = 0;
 		this.armour["stat"] = 'DEX';
 		this.armour["max"] = 1000;
+	this.SpellResistance = 0;
+	this.concentration = 0;
+	this.resistance = [];
+	for(var i = 0;i< EnergyTypes.length; i++){
+		this.resistance[EnergyTypes[i]] = 0;
+	}
 	this.saves = []
 		this.saves['fortitude'] = new Save(0,"CON");
 		this.saves['reflex'] = new Save(0,"DEX");
 		this.saves['will'] = new Save(0,"WIS");
+	this.HP = 0;
+}
+
+function Money(cp,sp,gp,pp){
+	return cp + sp*100 + gp*100 + pp*100;
+}
+function Item(name, w, cost){
+	this.Name = name;
+	this.Id = ItemId;
+	ItemId++;
+	this.Weight = w;
+	this.Cost = cost;
+}
+function Weapon(name, hands, proficency, use, dmg, typ, crit, range, ammo, w, cost){
+	this.Item = new Item(name, w, cost);
+	this.Name = this.Item.Name;
+	this.Id = this.Item.ItemId;
+	this.Hands = hands;
+	this.DMG = dmg;
+	this.Proficency = proficency;
+	this.Use = use;
+	this.Type = typ;
+	this.Crit = crit;
+	this.Range = range;
+	this.Ammo = ammo;
+	this.Weight = this.Item.Weight;
+	this.Cost = this.Item.Cost;
 }
 
 function Character (name,player,level,race,clas,al,str,dex,con,intt,wis,cha,deity,HL,g,h,w,s,hair,eye){
@@ -147,6 +181,27 @@ function Character (name,player,level,race,clas,al,str,dex,con,intt,wis,cha,deit
 		return result;
 	}
 	
+	this.sr = function (){
+		var result = 0;
+		for(ia = 0; ia < this.stats.length; ia++){
+			result += this.stats[ia][1].SpellResistance;
+		}
+		return result;
+	}
+	this.concentration = function (){
+		var result = 0;
+		for(ia = 0; ia < this.stats.length; ia++){
+			result += this.stats[ia][1].concentration;
+		}
+		return result;
+	}
+	this.resistance = function (data){
+		var result = 0;
+		for(ia = 0; ia < this.stats.length; ia++){
+			result += this.stats[ia][1].resistance[data];
+		}
+		return result;
+	}
 	this.ac = function (flat){
 		if(flat == undefined){
 			flat = false;
@@ -238,25 +293,44 @@ function Character (name,player,level,race,clas,al,str,dex,con,intt,wis,cha,deit
 		return result;
 	}
 	this.BAB = function (){
-		var result = 0;
+		var result = [];
 		for(ia = 0; ia < this.stats.length; ia++){
-			result += this.stats[ia][1].bab;
+			for(var i = 0; i < this.stats[ia][1].bab.length; i++){
+				if(result[i] == undefined){
+					result[i] = 0;
+				}
+				result[i] += this.stats[ia][1].bab[i];
+			}
 		}
 		return result;
 	}
-	this.CMB = function (){
+	this.BABmax = function(){
 		var result = this.BAB();
+		var resultb = 0;
+		for(var i = 0; i < result.length; i++){
+			resultb = Math.max(result[i],resultb);
+		}
+		return resultb;
+	}
+	this.CMB = function (){
+		var result = this.BABmax();
 		result += this.ability_mod("STR");
 		result += this.Size.SPMod;
 		return result;
 	}
 	this.CMD = function (){
-		var result = this.BAB();
+		var result = this.BABmax();
 		result += this.ability_mod("STR");
 		result += this.ability_mod("DEX");
 		result += this.Size.SPMod;
 		result += 10;
 		return result;
+	}
+	
+	this.weapons = [];
+	this.Equip = function(data){
+		//add checks for hands and stuff here
+		weapons.push(data);
 	}
 }
 
@@ -357,6 +431,7 @@ function roll_CMD(){
 }
 
 function rollatk(stat,misc){
+	stat = stat.toLowerCase();
 	if(misc == undefined){
 		misc = 0;
 	}
@@ -372,8 +447,24 @@ function rollatk(stat,misc){
 			result += characters[current].ability_mod("DEX");
 			break;
 	}
-	result += characters[current].BAB();
+	result += characters[current].BABmax();
 	result += roll_d20();
+	return result;
+}
+function atk_abl(stat){
+	stat = stat.toLowerCase();
+	var result = 0;
+	switch(stat){
+		case "STR":
+		case "melee":
+			result += characters[current].ability_mod("STR");
+			break;
+		case "DEX":
+		case "ranged":
+			result += characters[current].ability_mod("DEX");
+			break;
+	}
+	result += characters[current].BABmax();
 	return result;
 }
 
@@ -388,4 +479,29 @@ function roll_atk_touch(){
 }
 function roll_atk_Rtouch(){
 	chat_msg("Ranged Touch Attack: " +rollatk("ranged"));
+}
+
+function roll_Watk(data){
+	if(characters[current].weapons[data].Use == "Melee"){
+		chat_msg(characters[current].weapons[data].Name + " Attack: " +rollatk("melee"));
+	}else{
+		chat_msg(characters[current].weapons[data].Name + " Attack: " +rollatk("ranged"));
+	}
+}
+function roll_Wdmg(data){
+	var result = 0;
+	for(var i = 0;i < characters[current].weapons[data].DMG[0];i++){
+		result += roll(characters[current].weapons[data].DMG[1]);
+	}
+	if(characters[current].weapons[data].Use == "Melee"){
+		switch(characters[current].weapons[data].Hands){
+			case "2":
+				result += (characters[current].ability_mod("STR") *1.5);
+				break;
+			case "1":
+				result += characters[current].ability_mod("STR");
+				break;
+		}
+	}
+	chat_msg(characters[current].weapons[data].Name + " DMG: " +result);
 }

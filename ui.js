@@ -95,19 +95,19 @@ function displayStats(){
 
 //basic
 	tabs_main.append("<h1>Character Info</h1>");
-	tabs_main.append("<div class='name'>Name: "+ characters[current].Name +"</div>");
-	tabs_main.append("<div class='alignment'>Alignment: "+ characters[current].Alignment +"</div>");
-	tabs_main.append("<div class='player'>Player: "+ characters[current].Player +"</div>");
-	tabs_main.append("<div class='race'>Race: "+ characters[current].Race +"</div>");
-	tabs_main.append("<div class='class'>Class: "+ characters[current].Class +"</div>");
-	tabs_main.append("<div class='level'>Level: "+ characters[current].Level +"</div>");
-	tabs_main.append("<div class='deity'>Deity: "+ characters[current].Deity +"</div>");
-	tabs_main.append("<div class='homeland'>Homeland: "+ characters[current].Homeland +"</div>");
-	tabs_main.append("<div class='gender'>Gender: "+ characters[current].Gender +"</div>");
-	tabs_main.append("<div class='height'>Height: "+ characters[current].Height +"</div>");
-	tabs_main.append("<div class='weight'>Weight: "+ characters[current].Weight +"</div>");
-	tabs_main.append("<div class='hair'>Hair: "+ characters[current].Hair +"</div>");
-	tabs_main.append("<div class='eye'>Eye: "+ characters[current].Eye +"</div>");
+	tabs_main.append("<div class='name statdiv'>Name: "+ characters[current].Name +"</div>");
+	tabs_main.append("<div class='alignment statdiv'>Alignment: "+ characters[current].Alignment +"</div>");
+	tabs_main.append("<div class='player statdiv'>Player: "+ characters[current].Player +"</div>");
+	tabs_main.append("<div class='race statdiv'>Race: "+ characters[current].Race +"</div>");
+	tabs_main.append("<div class='class statdiv'>Class: "+ characters[current].Class +"</div>");
+	tabs_main.append("<div class='level statdiv'>Level: "+ characters[current].Level +"</div>");
+	tabs_main.append("<div class='deity statdiv'>Deity: "+ characters[current].Deity +"</div>");
+	tabs_main.append("<div class='homeland statdiv'>Homeland: "+ characters[current].Homeland +"</div>");
+	tabs_main.append("<div class='gender statdiv'>Gender: "+ characters[current].Gender +"</div>");
+	tabs_main.append("<div class='height statdiv'>Height: "+ characters[current].Height +"</div>");
+	tabs_main.append("<div class='weight statdiv'>Weight: "+ characters[current].Weight +"</div>");
+	tabs_main.append("<div class='hair statdiv'>Hair: "+ characters[current].Hair +"</div>");
+	tabs_main.append("<div class='eye statdiv'>Eye: "+ characters[current].Eye +"</div>");
 
 	statblock.append("<h1>Abilities & Skills</h1>");
 //abilitys
@@ -153,25 +153,52 @@ function displayStats(){
 	statblock.append(disTemp);
 	
 //combat
-	tabs_rolls.append("<h1>Combat & Defence</h1>");
-	tabs_rolls.append("<div class='ac'>AC: "+ characters[current].ac() +" Flat: "+ characters[current].ac(true) +"</div>");
-	tabs_rolls.append("<div class='actouch'>AC Touch: "+ characters[current].ac_touch() +" Flat: "+ characters[current].ac_touch(true) +"</div>");
+	tabs_rolls.append("<h1>Defence</h1>");
+	tabs_rolls.append("<div class='ac statdiv'>AC: "+ characters[current].ac() +" Flat: "+ characters[current].ac(true) +"</div>");
+	tabs_rolls.append("<div class='actouch statdiv'>AC Touch: "+ characters[current].ac_touch() +" Flat: "+ characters[current].ac_touch(true) +"</div>");
+	tabs_rolls.append("<div class='sr statdiv'>Spell Resistance: "+ characters[current].sr() +"</div>");
+	tabs_rolls.append("<div class='concentration statdiv'>Concentration: "+ characters[current].concentration() +"</div>");
 	
-	tabs_rolls.append("<div class='fort'>Fortitude: "+ characters[current].save_fort() +"</div>");
-	tabs_rolls.append("<div class='refl'>Reflex: "+ characters[current].save_refl() +"</div>");
-	tabs_rolls.append("<div class='will'>Will: "+ characters[current].save_will() +"</div>");
+	var disTempRow = $("<table class='resistances'><tr><th>Resistance</th><th>Total</th></tr></table>");
+	for(var i = 0;i< EnergyTypes.length; i++){
+		disTempRow.append("<tr><td>"+ EnergyTypes[i] + "</td><td>" + characters[current].resistance(EnergyTypes[i]) +"</td></tr>");
+	}
+	tabs_rolls.append(disTempRow);
 	
-	tabs_rolls.append("<div class='bab'>Attack Bonus: "+ characters[current].BAB() +"</div>");
-	tabs_rolls.append("<div class='cmb'>CMB: "+ characters[current].CMB() +"</div>");
-	tabs_rolls.append("<div class='cmd'>CMD: "+ characters[current].CMD() +"</div>");
+	var disTempRow = $("<table class='saves'><tr><th><div class='rollableIcon'>x</div></th><th>Save</th><th>Total</th></tr></table>");
+	disTempRow.append("<tr><td><div class='rollable' onclick='roll_save(\"fort\")'>x</div></td><td>Fortitude</td><td>" + characters[current].save_fort() +"</td></tr>");
+	disTempRow.append("<tr><td><div class='rollable' onclick='roll_save(\"refl\")'>x</div></td><td>Reflex</td><td>" + characters[current].save_refl() +"</td></tr>");
+	disTempRow.append("<tr><td><div class='rollable' onclick='roll_save(\"will\")'>x</div></td><td>Will</td><td>" + characters[current].save_will() +"</td></tr>");
+	tabs_rolls.append(disTempRow);
+
 	
-	tabs_rolls.append("<hr><h2>Offence</h2>");
-	tabs_rolls.append("<button onclick='roll_CMB()'>CMB - Combat Maneuver</button>");
-	tabs_rolls.append("<button onclick='roll_CMD()'>CMD - Combat Defence Maneuver</button>");
-	tabs_rolls.append("<hr><h2>Defence</h2>");
-	tabs_rolls.append("<button onclick='roll_save(\"fort\")'>Fortitude</button>");
-	tabs_rolls.append("<button onclick='roll_save(\"refl\")'>Reflex</button>");
-	tabs_rolls.append("<button onclick='roll_save(\"will\")'>Will</button>");
+	tabs_rolls.append("<hr><h1>Combat</h1>");
+	tabs_rolls.append("<div class='bab statdiv'>Attack Bonus: "+ characters[current].BAB().toString() +"</div>");
+	tabs_rolls.append("<div class='cmb statdiv'>CMB: "+ characters[current].CMB() +" <div class='rollable' onclick='roll_CMB()'>x</div></div>");
+	tabs_rolls.append("<div class='cmd statdiv'>CMD: "+ characters[current].CMD() +" <div class='rollable' onclick='roll_CMD()'>x</div></div>");
+	
+	var disTempRow = $("<table class='Attacks'><tr><th>Attack</th><th>ATK Bonus</th><th>Critical</th><th>Type</th><th>Damage</th><th>Range</th><th>Ammunition</th></tr></table>");
+	disTempRow.append("<tr><td>Melee</td><td><div class='rollable' onclick='roll_atk_melee()'>x</div>+"+atk_abl("Melee")+"</td><td>20</td><td> - </td><td> - </td><td> - </td><td> - </td></tr>");
+	disTempRow.append("<tr><td>Ranged</td><td><div class='rollable' onclick='roll_atk_range()'>x</div>+"+atk_abl("Ranged")+"</td><td>20</td><td> - </td><td> - </td><td> - </td><td> - </td></tr>");
+	disTempRow.append("<tr><td>Melee Touch</td><td><div class='rollable' onclick='roll_atk_touch()'>x</div>+"+atk_abl("melee")+"</td><td>20</td><td> - </td><td> - </td><td> - </td><td> - </td></tr>");
+	disTempRow.append("<tr><td>Ranged Touch</td><td><div class='rollable' onclick='roll_atk_Rtouch()'>x</div>+"+atk_abl("ranged")+"</td><td>20</td><td> - </td><td> - </td><td> - </td><td> - </td></tr>");
+	for(var i = 0; i < characters[current].weapons.length;i++){
+		disTempRow.append("<tr><td>"+characters[current].weapons[i].Name+"</td><td><div class='rollable' onclick='roll_Watk("+i+")'>x</div>+"+atk_abl(characters[current].weapons[i].Use)+"</td><td>"+characters[current].weapons[i].Crit[0]+"-20, x"+characters[current].weapons[i].Crit[1]+"</td><td>"+characters[current].weapons[i].Type+"</td><td><div class='rollable' onclick='roll_Wdmg("+i+")'>x</div>"+characters[current].weapons[i].DMG.toString().replace(",","d")+"</td><td>"+characters[current].weapons[i].Range+"</td><td>"+characters[current].weapons[i].Ammo+"</td></tr>");
+	}
+	tabs_rolls.append(disTempRow);
+	
+	if(statblock.height() > (window.innerHeight-disChars[0].clientHeight *2.5)){
+		statblock.append("<span class='spacer'>");
+	}
+	if(tabs_rolls.height() > (window.innerHeight-disChars[0].clientHeight *2.5)){
+		tabs_rolls.append("<span class='spacer'>");
+	}
+	if(tabs_main.height() > (window.innerHeight-disChars[0].clientHeight *2.5)){
+		tabs_main.append("<span class='spacer'>");
+	}
+	if(tabs_chars.height() > (window.innerHeight-disChars[0].clientHeight *2.5)){
+		tabs_chars.append("<span class='spacer'>");
+	}
 }
 
 function chat_msg(msg,clas){
@@ -206,5 +233,5 @@ onload = function(){
 window.onresize = function(){resise();}
 
 function resise(){
-	mainblock.height(window.innerHeight-disChars[0].clientHeight);
+	mainblock.height((window.innerHeight-disChars[0].clientHeight *1.5));
 }
