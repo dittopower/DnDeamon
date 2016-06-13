@@ -126,6 +126,9 @@ body{
 .mchars{
 	background-color: #ff5722;
 }
+.mspell {
+    background-color: #FF9800;
+}
 .rollable{
     color: rgba(0,0,0,0);
     background-image: url('d6.png');

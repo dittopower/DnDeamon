@@ -7,6 +7,7 @@ var statblock = $("<div id='stat' class='mstats'>");
 var tabs_rolls = $("<div id='controls-rolls' class='stat mrolls'>");
 var tabs_main = $("<div id='controls-main' class='stat mmain'>");
 var tabs_chars = $("<div id='controls-char' class='stat mchars'>");
+var tabs_spell = $("<div id='spell' class='stat mspell'>");
 
 var disChars = $("<select id=charsel>");
 var audio;
@@ -26,6 +27,7 @@ function mytabs(){
 	menublock.append("<h4 class='mmain' onclick=\"reveal('main')\">Character Info</h4>");
 	menublock.append("<h4 class='mstats' onclick=\"reveal('stats')\">Abilities & Skills</h4>");
 	menublock.append("<h4 class='mrolls' onclick=\"reveal('rolls')\">Combat & Defence</h4>");
+	menublock.append("<h4 class='mspell' onclick=\"reveal('spell')\">Spells & Abilities</h4>");
 	menublock.append("<h4 class='mchars' onclick=\"reveal('chars')\">Characters</h4>");
 	
 	disChars[0].onchange = function(eve){current=eve.target.value; displayStats();}
@@ -37,6 +39,10 @@ function mytabs(){
 //Rolls Tab - Combat & Defence Tab
 	tabs_rolls.hide();
 	mainblock.append(tabs_rolls);
+	
+//Spells and Abilities Tab
+	tabs_spell.hide();
+	mainblock.append(tabs_spell);
 	
 //Characters Tab
 	tabs_chars.hide();
@@ -80,6 +86,9 @@ function reveal(data){
 		case 'chars':
 			tabs_chars.show();
 			break;
+		case 'spell':
+			tabs_spell.show();
+			break;
 		default:
 			tabs_main.show();
 			data = 'main';
@@ -91,6 +100,7 @@ function displayStats(){
 	statblock.empty();
 	tabs_main.empty();
 	tabs_rolls.empty();
+	tabs_spell.empty();
 	var disTemp;
 
 //basic
@@ -187,6 +197,12 @@ function displayStats(){
 	}
 	tabs_rolls.append(disTempRow);
 	
+//Spells and Abilities
+	tabs_spell.append("<h1>Abilities</h1>");
+	tabs_spell.append(characters[current].Abilities().toString());
+	tabs_spell.append("<hr><h1>Spells</h1>");
+	tabs_spell.append(characters[current].Spells().toString());
+	
 	if(statblock.height() > (window.innerHeight-disChars[0].clientHeight *2.5)){
 		statblock.append("<span class='spacer'>");
 	}
@@ -198,6 +214,9 @@ function displayStats(){
 	}
 	if(tabs_chars.height() > (window.innerHeight-disChars[0].clientHeight *2.5)){
 		tabs_chars.append("<span class='spacer'>");
+	}
+	if(tabs_spell.height() > (window.innerHeight-disChars[0].clientHeight *2.5)){
+		tabs_spell.append("<span class='spacer'>");
 	}
 }
 

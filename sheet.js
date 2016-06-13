@@ -25,7 +25,7 @@ function Save(base,ability,magic,misc){
 	return {Base:base,Ability:ability,Magic:magic,Misc:misc};
 }
 function Size (name,mod,spmod,fly,stealth,space,reach,height,weight){
-	return {Name:name,Mod:mod,SPMod:spmod,FLY:fly,Stealth:stealth,Space:space,Reach:reach,TH:height,TW:weight};
+	return {Name:name,Mod:mod,SPMod:spmod,Fly:fly,Stealth:stealth,Space:space,Reach:reach,TH:height,TW:weight};
 }
 
 function Stats(str,dex,con,intt,wis,cha){
@@ -94,6 +94,8 @@ function Stats(str,dex,con,intt,wis,cha){
 		this.saves['reflex'] = new Save(0,"DEX");
 		this.saves['will'] = new Save(0,"WIS");
 	this.HP = 0;
+	this.Spells = [];
+	this.Abilities = [];
 }
 
 function Money(cp,sp,gp,pp){
@@ -121,6 +123,58 @@ function Weapon(name, hands, proficency, use, dmg, typ, crit, range, ammo, w, co
 	this.Weight = this.Item.Weight;
 	this.Cost = this.Item.Cost;
 }
+
+function as(name,typ,range,save,resist,dmg,effect,area){
+	this.Name = name;
+	this.Type = typ;
+	this.r = range;
+	this.Area = function(){
+		return Scaled(r);
+	}
+	this.s = save;
+	this.Resistance = resist;
+	this.d = dmg;
+	this.Area = function(){
+		return Scaled(d);
+	}
+	this.Effect = effect;
+	this.a = area;
+	this.Area = function(){
+		return Scaled(a);
+	}
+}
+
+function scale(base,rate,stat,per){
+	if(base == undefined){
+		base = 0;
+	}
+	if(rate == undefined){
+		rate = 0;
+	}
+	if(stat == undefined){
+		stat = "";
+	}
+	if(per == undefined){
+		per = 1;
+	}
+	return [base,rate, stat, per];
+}
+
+function Scaled(data){
+	var result = 0;
+	result += data[0];
+	switch(data[2]){
+		case "Level":
+			result += (data[1] * characters[current].Level * data[3]);
+			break;
+		default:
+			if(Abilities.indexOf(data[2]) > -1){
+				result += (data[1] * characters[current].ability_mod(data[2]) * data[3]);
+			}
+	}
+	return data;
+}
+
 
 function Character (name,player,level,race,clas,al,str,dex,con,intt,wis,cha,deity,HL,g,h,w,s,hair,eye){
 	this.Name = name;
@@ -176,6 +230,14 @@ function Character (name,player,level,race,clas,al,str,dex,con,intt,wis,cha,deit
 		}
 		if(!clas && trained){
 			result = NaN;
+		}
+		switch(what){
+			case "Fly":
+				result += characters[current].Size.Fly;
+				break;
+			case "Stealth":
+				result += characters[current].Size.Stealth;
+				break;
 		}
 		//need circumstance bonus
 		return result;
@@ -332,6 +394,21 @@ function Character (name,player,level,race,clas,al,str,dex,con,intt,wis,cha,deit
 		//add checks for hands and stuff here
 		weapons.push(data);
 	}
+	
+	this.Spells = function(){
+		var result = [];
+		for(var i = 0; i < this.stats.length; i++){
+			result = result.concat(this.stats[i][1].Spells);
+		}
+		return result;
+	}
+	this.Abilities = function(){
+		var result = [];
+		for(var i = 0; i < this.stats.length; i++){
+			result = result.concat(this.stats[i][1].Abilities);
+		}
+		return result;
+	}
 }
 
 
@@ -448,6 +525,7 @@ function rollatk(stat,misc){
 			break;
 	}
 	result += characters[current].BABmax();
+	result += characters[current].Size.Mod;
 	result += roll_d20();
 	return result;
 }
@@ -472,7 +550,7 @@ function roll_atk_melee(){
 	chat_msg("Melee Attack: " +rollatk("melee"));
 }
 function roll_atk_range(penalty){
-	chat_msg("Ranged Attack: " +rollatk("ranged",penalty));
+	chat_msg("Ranged Attack: " +rollatk("ranged",penalty) + " - range penalty");
 }
 function roll_atk_touch(){
 	chat_msg("Melee Touch Attack: " +rollatk("melee"));
