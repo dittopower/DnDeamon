@@ -1,7 +1,7 @@
 /*
 Character Implementations
 */
-ItemId = 0;
+
 function Ability(score,bonus,circumstance){
 	if(circumstance == undefined){
 		circumstance = "";
@@ -11,7 +11,7 @@ function Ability(score,bonus,circumstance){
 
 function Skill(trained,clas,ability,rank,bonus,circumstance){
 	if(circumstance == undefined){
-		circumstance = "";
+		circumstance = [];
 	}
 	return [trained,clas,ability,rank,bonus,circumstance];
 }
@@ -98,83 +98,6 @@ function Stats(str,dex,con,intt,wis,cha){
 	this.Abilities = [];
 }
 
-function Money(cp,sp,gp,pp){
-	return cp + sp*100 + gp*100 + pp*100;
-}
-function Item(name, w, cost){
-	this.Name = name;
-	this.Id = ItemId;
-	ItemId++;
-	this.Weight = w;
-	this.Cost = cost;
-}
-function Weapon(name, hands, proficency, use, dmg, typ, crit, range, ammo, w, cost){
-	this.Item = new Item(name, w, cost);
-	this.Name = this.Item.Name;
-	this.Id = this.Item.ItemId;
-	this.Hands = hands;
-	this.DMG = dmg;
-	this.Proficency = proficency;
-	this.Use = use;
-	this.Type = typ;
-	this.Crit = crit;
-	this.Range = range;
-	this.Ammo = ammo;
-	this.Weight = this.Item.Weight;
-	this.Cost = this.Item.Cost;
-}
-
-function as(name,typ,range,save,resist,dmg,effect,area){
-	this.Name = name;
-	this.Type = typ;
-	this.r = range;
-	this.Area = function(){
-		return Scaled(r);
-	}
-	this.s = save;
-	this.Resistance = resist;
-	this.d = dmg;
-	this.Area = function(){
-		return Scaled(d);
-	}
-	this.Effect = effect;
-	this.a = area;
-	this.Area = function(){
-		return Scaled(a);
-	}
-}
-
-function scale(base,rate,stat,per){
-	if(base == undefined){
-		base = 0;
-	}
-	if(rate == undefined){
-		rate = 0;
-	}
-	if(stat == undefined){
-		stat = "";
-	}
-	if(per == undefined){
-		per = 1;
-	}
-	return [base,rate, stat, per];
-}
-
-function Scaled(data){
-	var result = 0;
-	result += data[0];
-	switch(data[2]){
-		case "Level":
-			result += (data[1] * characters[current].Level * data[3]);
-			break;
-		default:
-			if(Abilities.indexOf(data[2]) > -1){
-				result += (data[1] * characters[current].ability_mod(data[2]) * data[3]);
-			}
-	}
-	return data;
-}
-
 
 function Character (name,player,level,race,clas,al,str,dex,con,intt,wis,cha,deity,HL,g,h,w,s,hair,eye){
 	this.Name = name;
@@ -192,8 +115,9 @@ function Character (name,player,level,race,clas,al,str,dex,con,intt,wis,cha,deit
 	this.Size = s;
 	this.Hair = hair;
 	this.Eye = eye;
+	this.Money = 0;
 	this.stats = [];
-	this.stats.push( ['Base',new Stats(str,dex,con,intt,wis,cha),'perm'] );
+	this.stats.push( ['Base Stats',new Stats(str,dex,con,intt,wis,cha),'Base'] );
 	
 	this.ability_score = function (what){
 		var result = 0;
@@ -223,10 +147,20 @@ function Character (name,player,level,race,clas,al,str,dex,con,intt,wis,cha,deit
 			clas = clas || this.stats[ia][1].skill[what][1];
 			resultb += this.stats[ia][1].skill[what][3];
 			result += this.stats[ia][1].skill[what][4];
+			if(this.stats[ia][1].skill[what][5].length > 0){
+				for(var i = 0;i < this.stats[ia][1].skill[what][5].length;i++){
+					if(Check_Cirumstance(this.stats[ia][1].skill[what][5][i][0])){
+						result += this.stats[ia][1].skill[what][5][i][1];
+					}
+				}
+			}
 		}
 		result += this.ability_mod(this.stats[0][1].skill[what][2]);
 		if(clas || !trained){
 			result += resultb;
+			if(resultb > 0){
+				result += 3;
+			}
 		}
 		if(!clas && trained){
 			result = NaN;
@@ -411,175 +345,92 @@ function Character (name,player,level,race,clas,al,str,dex,con,intt,wis,cha,deit
 	}
 }
 
-
-//Rolls
-function roll(num){
-	return Math.floor(Math.random()*num+1);
-}
-function roll_d20(){
-	var result = roll(20);
-	if(result == 20){
-		chat_msg("Natural 20!!","crit_suc");
-		sound_play(audio_crit_sucess);
-	}else if(result == 1){
-		chat_msg("Natural 1...","crit_fail");
-		sound_play(audio_crit_failure);
+function Check_Cirumstance(stance){
+	var Pat = RegExp("Subtype","i");
+	if(Pat.test(stance)){
+		Pat = /Subtype (.*)/i;
+		Temp = Pat.exec(stance)[1];
+		Temp = cStatus[Circumstances.lastIndexOf("Subtype")].toLowerCase() == Temp.toLowerCase();
+		return Temp;
 	}
-	return result;
-}
-
-function roll_abl(stat){
-	var result = 0;
-	var text = '';
-	switch(stat){
-		case "STR":
-			result = characters[current].ability_mod('STR');
-			text = 'Strength';
-			break;
-		case "DEX":
-			result = characters[current].ability_mod('DEX');
-			text = 'Dexterity';
-			break;
-		case "CON":
-			result = characters[current].ability_mod('CON');
-			text = 'Consititution';
-			break;
-		case "INT":
-			result = characters[current].ability_mod('INT');
-			text = 'Intelligence';
-			break;
-		case "WIS":
-			result = characters[current].ability_mod('WIS');
-			text = 'Wisdom';
-			break;
-		case "CHA":
-			result = characters[current].ability_mod('CHA');
-			text = 'Charisma';
-			break;
-		default:
-			text = 'None';
+	var Pat = RegExp("Source","i");
+	if(Pat.test(stance)){
+		Pat = /Source (.*)/i;
+		Temp = Pat.exec(stance)[1];
+		Temp = cStatus[Circumstances.lastIndexOf("Source")].toLowerCase() == Temp.toLowerCase();
+		return Temp;
 	}
-	result += roll_d20();
-	chat_msg(text+": " +result);
-}
-function roll_skl(stat){
-	var result = 0;
-	result += characters[current].skill_score(stat);
-	if(!isNaN(result)){
-		result += roll_d20();
-	}else{
-		result = "Skill Requires Training";
+	Pat = RegExp("Opposed","i");
+	if(Pat.test(stance)){
+		return cStatus[Circumstances.lastIndexOf("Opposed")];
 	}
-	chat_msg(stat+": " +result);
-}
-function roll_save(stat){
-	var result = 0;
-	var text = '';
-	switch(stat){
-		case "fort":
-			result = characters[current].save_fort();
-			text = 'Fortitude';
-			break;
-		case "will":
-			result = characters[current].save_will();
-			text = 'Will';
-			break;
-		case "refl":
-			result = characters[current].save_refl();
-			text = 'Reflex';
-			break;
-		default:
-			text = 'None';
-	}
-	result += roll_d20();
-	chat_msg("Save: "+text+": " +result);
-}
-function roll_CMB(){
-	var result = 0;
-	result += characters[current].CMB();
-	result += roll_d20();
-	chat_msg("Combat Maneuver: " +result);
-}
-function roll_CMD(){
-	var result = 0;
-	result += characters[current].CMD();
-	result += roll_d20();
-	chat_msg("Defence Maneuver: " +result);
-}
-
-function rollatk(stat,misc){
-	stat = stat.toLowerCase();
-	if(misc == undefined){
-		misc = 0;
-	}
-	var result = 0;
-	result += misc;
-	switch(stat){
-		case "STR":
-		case "melee":
-			result += characters[current].ability_mod("STR");
-			break;
-		case "DEX":
-		case "ranged":
-			result += characters[current].ability_mod("DEX");
-			break;
-	}
-	result += characters[current].BABmax();
-	result += characters[current].Size.Mod;
-	result += roll_d20();
-	return result;
-}
-function atk_abl(stat){
-	stat = stat.toLowerCase();
-	var result = 0;
-	switch(stat){
-		case "STR":
-		case "melee":
-			result += characters[current].ability_mod("STR");
-			break;
-		case "DEX":
-		case "ranged":
-			result += characters[current].ability_mod("DEX");
-			break;
-	}
-	result += characters[current].BABmax();
-	return result;
-}
-
-function roll_atk_melee(){
-	chat_msg("Melee Attack: " +rollatk("melee"));
-}
-function roll_atk_range(penalty){
-	chat_msg("Ranged Attack: " +rollatk("ranged",penalty) + " - range penalty");
-}
-function roll_atk_touch(){
-	chat_msg("Melee Touch Attack: " +rollatk("melee"));
-}
-function roll_atk_Rtouch(){
-	chat_msg("Ranged Touch Attack: " +rollatk("ranged"));
-}
-
-function roll_Watk(data){
-	if(characters[current].weapons[data].Use == "Melee"){
-		chat_msg(characters[current].weapons[data].Name + " Attack: " +rollatk("melee"));
-	}else{
-		chat_msg(characters[current].weapons[data].Name + " Attack: " +rollatk("ranged"));
-	}
-}
-function roll_Wdmg(data){
-	var result = 0;
-	for(var i = 0;i < characters[current].weapons[data].DMG[0];i++){
-		result += roll(characters[current].weapons[data].DMG[1]);
-	}
-	if(characters[current].weapons[data].Use == "Melee"){
-		switch(characters[current].weapons[data].Hands){
-			case "2":
-				result += (characters[current].ability_mod("STR") *1.5);
+	Pat = RegExp("light|darkness","i");
+	if(Pat.test(stance)){
+		Pat = /light ([^ ]*) ?(less|more)?/i;
+		var Temp = Pat.exec(stance);
+		Pat = cStatus[Circumstances.lastIndexOf("light")];
+		switch(Temp[1]){
+			case "dim":
+				if(Pat == "dim"){
+					return true;
+				}
+				if(Temp[2] == "less"){
+					if(Pat == "darkness"){
+						return true;
+					}
+					return false;
+				}
+				if(Temp[2] == "more"){
+					if(Pat != "darkness"){
+						return true;
+					}
+					return false;
+				}
+				return false;
 				break;
-			case "1":
-				result += characters[current].ability_mod("STR");
+			case "normal":
+				if(Pat == "normal"){
+					return true;
+				}
+				if(Temp[2] == "less"){
+					if(Pat != "bright"){
+						return true;
+					}
+					return false;
+				}
+				if(Temp[2] == "more"){
+					if(Pat == "bright"){
+						return true;
+					}
+					return false;
+				}
+				return false;
+				break;
+			case "bright":
+				if(Pat == "bright"){
+					return true;
+				}
+				if(Temp[2] == "less"){
+					if(Pat != "bright"){
+						return true;
+					}
+					return false;
+				}
+				return false;
+				break;
+			default:
+				if(Pat == "darkness"){
+					return true;
+				}
+				if(Temp[2] == "more"){
+					if(Pat != "darkness"){
+						return true;
+					}
+					return false;
+				}
+				return false;
 				break;
 		}
 	}
-	chat_msg(characters[current].weapons[data].Name + " DMG: " +result);
+	return false;
 }

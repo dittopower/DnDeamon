@@ -3,35 +3,113 @@
 <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js" type="text/javascript"></script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.indigo-pink.min.css">
+<script src="util.js" type="text/javascript"></script>
+<script src="spells.js" type="text/javascript"></script>
+<script src="items.js" type="text/javascript"></script>
 <script src="sheet.js" type="text/javascript"></script>
+<script src="feats.js" type="text/javascript"></script>
 <script src="res.js" type="text/javascript"></script>
+<script src="rolls.js" type="text/javascript"></script>
 <script src="ui.js" type="text/javascript"></script>
 <link rel='stylesheet' href='style.css'>
+
+<script src="debug.js" type="text/javascript"></script>
 </head>
 <body>
 <script>
-current = "Lucifer";
-characters[current] = new Character(current,'Damon',4,'Elf','Sorceror','CN',12,10,12,12,14,14,"The Moth","Unknown",'Male',5.9,90,Sizes[4],'blond','green');
+ninja = "Ajax";
+current = ninja;
+characters[ninja] = new Character(ninja,'Damon',10,'Drow','Ninja','CN',10,16,14,10,14,14,"The Butterfly","Dark Lands",'Male',5.92,115,Sizes[4],'blond','green');
 
-myrace = new Stats(0,2,-2,2,0,0);
-myrace.bab[0] = 2;
-characters[current].stats.push(['Elf',myrace,'perm']);
+characters[ninja].Money = Money(0,2,1163);
 
-buff = new Stats(0,0,0,0,0,0);
-buff.skill['Appraise'][1] = true;
-buff.skill['Bluff'][1] = true;
-buff.skill['Craft'][1] = true;
-buff.skill['Fly'][1] = true;
-buff.skill['Intimidate'][1] = true;
-buff.skill['Knowledge Arcana'][1] = true;
-buff.skill['Profession'][1] = true;
-buff.skill['Spellcraft'][1] = true;
-buff.skill['Use Magic Device'][1] = true;
-characters[current].stats.push(['Sorceror',buff,'perm']);
+ninjarace = new Stats(0,2,-2,0,0,2);
+ninjarace.skill['Stealth'][5].push(["light dim less",2]);
+ninjarace.skill['Intimidate'][5].push(["light dim less",2]);
+ninjarace.SpellResistance = 16;
+characters[ninja].stats.push(["Drow",ninjarace,"Race"]);
 
-weap = new Weapon("Longsword", "2", "Martial", "Melee", [1,8], "P", [19,2], "-", "-", 10, Money(0,0,15,0));
-characters[current].weapons.push(weap);
-spel = new as("Magic Missile","Spell",scale(100,10,"Level"),["none","none"],"spell",scale(1,4,"Level",2),undefined,scale());
-buff.Spells.push(spel);
+ninjaclass = new Stats(0,0,0,0,0,0);
+ninjaclass.bab[0] = 7;
+ninjaclass.bab[1] = 2;
+ninjaclass.saves['fortitude'].Base = 3;
+ninjaclass.saves['reflex'].Base = 7;
+ninjaclass.saves['will'].Base = 3;
+ninjaclass.skill['Acrobatics'][1] = true;
+ninjaclass.skill['Appraise'][1] = true;
+ninjaclass.skill['Bluff'][1] = true;
+ninjaclass.skill['Climb'][1] = true;
+ninjaclass.skill['Craft'][1] = true;
+ninjaclass.skill['Diplomacy'][1] = true;
+ninjaclass.skill['Disable Device'][1] = true;
+ninjaclass.skill['Disguise'][1] = true;
+ninjaclass.skill['Escape Artist'][1] = true;
+ninjaclass.skill['Intimidate'][1] = true;
+ninjaclass.skill['Knowledge Local'][1] = true;
+ninjaclass.skill['Knowledge Nobility'][1] = true;
+ninjaclass.skill['Linguistics'][1] = true;
+ninjaclass.skill['Perception'][1] = true;
+ninjaclass.skill['Perform'][1] = true;
+ninjaclass.skill['Profession'][1] = true;
+ninjaclass.skill['Sense Motive'][1] = true;
+ninjaclass.skill['Sleight of Hand'][1] = true;
+ninjaclass.skill['Stealth'][1] = true;
+ninjaclass.skill['Swim'][1] = true;
+ninjaclass.skill['Use Magic Device'][1] = true;
+
+ninjaclass.skill['Acrobatics'][3] = 5;
+ninjaclass.skill['Appraise'][3] = 1;
+ninjaclass.skill['Bluff'][3] = 6;
+ninjaclass.skill['Climb'][3] = 5;
+ninjaclass.skill['Craft'][3] = 1;
+ninjaclass.skill['Diplomacy'][3] = 1;
+ninjaclass.skill['Disable Device'][3] = 10;
+ninjaclass.skill['Disguise'][3] = 1;
+ninjaclass.skill['Escape Artist'][3] = 5;
+ninjaclass.skill['Intimidate'][3] = 6;
+ninjaclass.skill['Knowledge Local'][3] = 4;
+ninjaclass.skill['Knowledge Nobility'][3] = 4;
+ninjaclass.skill['Linguistics'][3] = 1;
+ninjaclass.skill['Perception'][3] = 10;
+ninjaclass.skill['Sense Motive'][3] = 4;
+ninjaclass.skill['Sleight of Hand'][3] = 1;
+ninjaclass.skill['Stealth'][3] = 10;
+ninjaclass.skill['Swim'][3] = 5;
+ninjaclass.skill['Use Magic Device'][3] = 5;
+
+ninjaclass.skill['Disguise'][4] = 3;
+ninjaclass.skill['Disable Device'][5].push(["light dim less",5]);
+ninjaclass.skill['Perception'][5].push(["light dim less",5]);
+ninjarace.skill['Stealth'][5].push(["opposed",3]);
+characters[ninja].stats.push(["Ninja",ninjaclass,"Class"]);
+
+//items
+characters[ninja].stats.push(["Belt of Incredible Dexterity",new Stats(0,2,0,0,0,0),"Item"]);
+characters[ninja].stats.push(["Headband of Charisma",new Stats(0,0,0,0,0,2),"Item"]);
+var ninjaclass = new Stats(0,0,0,0,0,0);
+ninjaclass.saves['fortitude'].Misc = 2;
+ninjaclass.saves['reflex'].Misc = 2;
+ninjaclass.saves['will'].Misc = 2;
+characters[ninja].stats.push(["Cloak of resistance",ninjaclass,"Item"]);
+var ninjaclass = new Stats(0,0,0,0,0,0);
+ninjaclass.skill['Perception'][4] = 5;
+characters[ninja].stats.push(["Eyes of the Eagle",ninjaclass,"Item"]);
+var ninjaclass = new Stats(0,0,0,0,0,0);
+ninjaclass.skill['Disable Device'][4] = 2;
+characters[ninja].stats.push(["Masterwork Theives Tools",ninjaclass,"Item"]);
+var ninjaclass = new Stats(0,0,0,0,0,0);
+ninjaclass.armour['armour'] = 4;
+ninjaclass.resistance['damage'] = 5;
+ninjaclass.skill['Stealth'][4] = 5;
+characters[ninja].stats.push(["Armour",ninjaclass,"Armour"]);
+var ninjaclass = new Stats(0,0,0,0,0,0);
+ninjaclass.skill['Stealth'][4] = 6;
+characters[ninja].stats.push(["skill focus(stealth)",ninjaclass,"Feat"]);
+
+var weap = new Weapon("+1 Keen Corrosive Chthonic Wakizashi", 1, "Exotic", "Melee", [1,6], "P/S", [15,2], " - ", " - ", 10, cMoney(17285,"cp"));
+characters[ninja].weapons.push(weap);
+var weap = new Weapon("+1 Cold Iron Shuriken", 1, "Exotic", "Thrown", [1,2], "P", [20,2], " - ", 100, 0.5, cMoney(640,"cp"));
+characters[ninja].weapons.push(weap);
+
 </script>
 </body>

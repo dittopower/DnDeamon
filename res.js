@@ -23,3 +23,31 @@ Sizes.push(new Size("Gargantuan",	-4,	4,	-6,	-12,	20,		20,	[64,">"],	[250000,">"
 Sizes.push(new Size("Colossal",		-8,	8,	-8,	-16,	30,		30,	[64,"<"],	[250000,"<"]));
 
 EnergyTypes = ["damage", "positive", "negative", "acid", "cold", "electricity", "fire", "sonic"];
+
+//Potential Circumstances
+Circumstances = []; cStatus = [];
+Circumstances.push("light"); cStatus.push("normal");
+Circumstances.push("Subtype"); cStatus.push("");
+Circumstances.push("Opposed"); cStatus.push(false);
+Circumstances.push("Source"); cStatus.push("");
+
+//spell & abilities
+/*
+name - 
+type - ability, spell-like ability, spell
+range -  base, rate, stat, per (100 + 10 level / 2)
+targets - base, rate, stat, per
+area - base, rate, stat, per
+dmg - base, number, dice, base per dice
+	base - base, rate, stat, per
+	number - base, rate, stat, per 
+	per dice - base, rate, stat, per 
+schools - [main, subschool]
+spell resistance - y/n
+saves - [type,result],...
+cast time - time
+duration - time
+*/
+Castable = [];
+//Castable.push(["Name","Type",["range"],["targets"],["area"],["dmg"],"School", "Subschool","spell resistance",["saves"],"cast time","duration","effect"])
+Castable.push(["Magic Missiles","Spell",scale(100,10,"Level",1),scale(1,1,"Level",2,1,5),scale(),[scale(1),scale(4),scale()],"Evocation", "Force",true,null,[1,"standard"],scale(),null])

@@ -8,12 +8,16 @@ var tabs_rolls = $("<div id='controls-rolls' class='stat mrolls'>");
 var tabs_main = $("<div id='controls-main' class='stat mmain'>");
 var tabs_chars = $("<div id='controls-char' class='stat mchars'>");
 var tabs_spell = $("<div id='spell' class='stat mspell'>");
+var tabs_settings = $("<div id='settings' class='msetting'>");
+var tabs_circumstance = $("<div id='circumstance' class='mcir'>");
 
 var disChars = $("<select id=charsel>");
 var audio;
 
 characters = new Array();
 current = "Default";
+pref_unit = "ft";
+pref_wt = "lbs";
 characters[current] = new Character(current,'D_player',1,'Human','Fighter','N',10,10,10,10,10,10,"None","Australia",'Male',5.7,90,Sizes[4],'blond','green');
 
 function mytabs(){
@@ -29,6 +33,9 @@ function mytabs(){
 	menublock.append("<h4 class='mrolls' onclick=\"reveal('rolls')\">Combat & Defence</h4>");
 	menublock.append("<h4 class='mspell' onclick=\"reveal('spell')\">Spells & Abilities</h4>");
 	menublock.append("<h4 class='mchars' onclick=\"reveal('chars')\">Characters</h4>");
+	menublock.append("<h4 class='mcir' onclick=\"reveal('cir')\">Circumstances</h4>");
+	
+	menublock.append("<h4 class='msetting' onclick=\"reveal('setting')\">Settings</h4>");
 	
 	disChars[0].onchange = function(eve){current=eve.target.value; displayStats();}
 	
@@ -53,6 +60,75 @@ function mytabs(){
 //Stats Tab
 	statblock.hide();
 	mainblock.append(statblock);
+	
+//Settings
+	tabs_settings.hide();
+	tabs_settings.append("<h1>Settings</h1>");
+	
+	var div = $("<div class='statdiv'>");
+	div.append("<label for=disUnit>Distance Unit</label> ");
+	var temp = $("<select id=disUnit>");
+	temp.append("<option value='ft' selected>Foot</option>");
+	temp.append("<option value='in' select>Inch</option>");
+	temp.append("<option value='m' select>Metres</option>");
+	temp.append("<option value='cm' select>Centimetres</option>");
+	div.append(temp);
+	tabs_settings.append(div);
+	temp[0].onchange = function(eve){pref_unit=eve.target.value; displayStats();}
+	
+	var div = $("<div class='statdiv'>");
+	div.append("<label for=wtUnit>Weight Unit</label> ");
+	var temp = $("<select id=wtUnit>");
+	temp.append("<option value='lbs' selected>Pounds</option>");
+	temp.append("<option value='kg' select>Kilograms</option>");
+	temp.append("<option value='g' select>Grams</option>");
+	div.append(temp);
+	tabs_settings.append(div);
+	temp[0].onchange = function(eve){pref_wt=eve.target.value; displayStats();}
+	mainblock.append(tabs_settings);
+	
+//circumstances
+	tabs_circumstance.hide();
+	tabs_circumstance.append("<h1>Circumstances</h1>");
+	
+	var div = $("<div class='statdiv'>");
+	div.append("<label for=lighting>Light Level: </label> ");
+	var temp = $("<select id=lighting>");
+	temp.append("<option value='darkness' select>Darkness</option>");
+	temp.append("<option value='dim' select>Dim Light</option>");
+	temp.append("<option value='normal' selected>Normal Light</option>");
+	temp.append("<option value='bright' select>Bright Light</option>");
+	div.append(temp);
+	tabs_circumstance.append(div);
+	temp[0].onchange = function(eve){cStatus[Circumstances.lastIndexOf("light")]=eve.target.value; displayStats();}
+	
+	var div = $("<div class='statdiv'>");
+	div.append("<label for=Source>Effect Source: </label> ");
+	var temp = $("<select id=Source>");
+	temp.append("<option value='' selected>none</option>");
+	temp.append("<option value='poison' select>Poison</option>");
+	temp.append("<option value='ability' select>Ability</option>");
+	temp.append("<option value='spell' select>Spell</option>");
+	temp.append("<option value='spell-like ability' select>Spell-like Ability</option>");
+	div.append(temp);
+	tabs_circumstance.append(div);
+	temp[0].onchange = function(eve){cStatus[Circumstances.lastIndexOf("Source")]=eve.target.value; displayStats();}
+	
+	var div = $("<div class='statdiv'>");
+	div.append("<label for=Opposed>Opposed Check: </label> ");
+	var temp = $("<input type=checkbox id=Opposed>");
+	div.append(temp);
+	tabs_circumstance.append(div);
+	temp[0].onchange = function(eve){cStatus[Circumstances.lastIndexOf("Opposed")]=eve.target.value; displayStats();}
+
+	var div = $("<div class='statdiv'>");
+	div.append("<label for=Subtype>Target's Subtype: </label> ");
+	var temp = $("<input type=text id=Subtype>");
+	div.append(temp);
+	tabs_circumstance.append(div);
+	temp[0].onchange = function(eve){cStatus[Circumstances.lastIndexOf("Subtype")]=eve.target.value;}
+	
+	mainblock.append(tabs_circumstance);
 
 //Log
 	logblock.append("<h1>Log</h1>");
@@ -89,6 +165,12 @@ function reveal(data){
 		case 'spell':
 			tabs_spell.show();
 			break;
+		case 'setting':
+			tabs_settings.show();
+			break;
+		case 'cir':
+			tabs_circumstance.show();
+			break;
 		default:
 			tabs_main.show();
 			data = 'main';
@@ -101,6 +183,9 @@ function displayStats(){
 	tabs_main.empty();
 	tabs_rolls.empty();
 	tabs_spell.empty();
+	if(current == null || current == ""){
+		return;
+	}
 	var disTemp;
 
 //basic
@@ -114,10 +199,16 @@ function displayStats(){
 	tabs_main.append("<div class='deity statdiv'>Deity: "+ characters[current].Deity +"</div>");
 	tabs_main.append("<div class='homeland statdiv'>Homeland: "+ characters[current].Homeland +"</div>");
 	tabs_main.append("<div class='gender statdiv'>Gender: "+ characters[current].Gender +"</div>");
-	tabs_main.append("<div class='height statdiv'>Height: "+ characters[current].Height +"</div>");
-	tabs_main.append("<div class='weight statdiv'>Weight: "+ characters[current].Weight +"</div>");
+	tabs_main.append("<div class='height statdiv'>Height: "+ distance(characters[current].Height,pref_unit)+pref_unit +"</div>");
+	tabs_main.append("<div class='weight statdiv'>Weight: "+ weight(characters[current].Weight,pref_wt)+pref_wt +"</div>");
 	tabs_main.append("<div class='hair statdiv'>Hair: "+ characters[current].Hair +"</div>");
 	tabs_main.append("<div class='eye statdiv'>Eye: "+ characters[current].Eye +"</div>");
+	tabs_main.append("<div class='money statdiv'>Money: "+ pMoney(characters[current].Money) +"</div>");
+	
+	tabs_main.append("<hr>");
+	for(var i = 0; i < characters[current].stats.length;i++){
+		tabs_main.append("<div class='effects statdiv'>Sources: "+ characters[current].stats[i][0] +" : "+ characters[current].stats[i][2] +"</div>");
+	}
 
 	statblock.append("<h1>Abilities & Skills</h1>");
 //abilitys
@@ -142,8 +233,8 @@ function displayStats(){
 		for(ic = 0; ic < characters[current].stats.length; ic++){
 			trained = trained || characters[current].stats[ic][1].skill[Skills[ib]][0];
 			clas = clas || characters[current].stats[ic][1].skill[Skills[ib]][1];
-			ranks = characters[current].stats[ic][1].skill[Skills[ib]][3];
-			bonus = characters[current].stats[ic][1].skill[Skills[ib]][4];
+			ranks += characters[current].stats[ic][1].skill[Skills[ib]][3];
+			bonus += characters[current].stats[ic][1].skill[Skills[ib]][4];
 		}
 		disTempRow.append("<td><div class='rollable' onclick='roll_skl(\""+Skills[ib]+"\")'>x</div></td>");
 		if(clas){
@@ -171,7 +262,7 @@ function displayStats(){
 	
 	var disTempRow = $("<table class='resistances'><tr><th>Resistance</th><th>Total</th></tr></table>");
 	for(var i = 0;i< EnergyTypes.length; i++){
-		disTempRow.append("<tr><td>"+ EnergyTypes[i] + "</td><td>" + characters[current].resistance(EnergyTypes[i]) +"</td></tr>");
+		disTempRow.append("<tr><td>"+ EnergyTypes[i].UCfirst() + "</td><td>" + characters[current].resistance(EnergyTypes[i]) +"</td></tr>");
 	}
 	tabs_rolls.append(disTempRow);
 	
@@ -188,13 +279,13 @@ function displayStats(){
 	tabs_rolls.append("<div class='cmd statdiv'>CMD: "+ characters[current].CMD() +" <div class='rollable' onclick='roll_CMD()'>x</div></div>");
 	
 	var disTempRow = $("<table class='Attacks'><tr><th>Attack</th><th>ATK Bonus</th><th>Critical</th><th>Type</th><th>Damage</th><th>Range</th><th>Ammunition</th></tr></table>");
+	for(var i = 0; i < characters[current].weapons.length;i++){
+		disTempRow.append("<tr><td>"+characters[current].weapons[i].Name+"</td><td><div class='rollable' onclick='roll_Watk("+i+")'>x</div>+"+atk_abl(characters[current].weapons[i].Use)+"</td><td>"+characters[current].weapons[i].Crit[0]+"-20, x"+characters[current].weapons[i].Crit[1]+"</td><td>"+characters[current].weapons[i].Type+"</td><td><div class='rollable' onclick='roll_Wdmg("+i+")'>x</div>"+characters[current].weapons[i].DMG.toString().replace(",","d")+"</td><td>"+characters[current].weapons[i].Range+"</td><td>"+characters[current].weapons[i].Ammo+"</td></tr>");
+	}
 	disTempRow.append("<tr><td>Melee</td><td><div class='rollable' onclick='roll_atk_melee()'>x</div>+"+atk_abl("Melee")+"</td><td>20</td><td> - </td><td> - </td><td> - </td><td> - </td></tr>");
 	disTempRow.append("<tr><td>Ranged</td><td><div class='rollable' onclick='roll_atk_range()'>x</div>+"+atk_abl("Ranged")+"</td><td>20</td><td> - </td><td> - </td><td> - </td><td> - </td></tr>");
 	disTempRow.append("<tr><td>Melee Touch</td><td><div class='rollable' onclick='roll_atk_touch()'>x</div>+"+atk_abl("melee")+"</td><td>20</td><td> - </td><td> - </td><td> - </td><td> - </td></tr>");
 	disTempRow.append("<tr><td>Ranged Touch</td><td><div class='rollable' onclick='roll_atk_Rtouch()'>x</div>+"+atk_abl("ranged")+"</td><td>20</td><td> - </td><td> - </td><td> - </td><td> - </td></tr>");
-	for(var i = 0; i < characters[current].weapons.length;i++){
-		disTempRow.append("<tr><td>"+characters[current].weapons[i].Name+"</td><td><div class='rollable' onclick='roll_Watk("+i+")'>x</div>+"+atk_abl(characters[current].weapons[i].Use)+"</td><td>"+characters[current].weapons[i].Crit[0]+"-20, x"+characters[current].weapons[i].Crit[1]+"</td><td>"+characters[current].weapons[i].Type+"</td><td><div class='rollable' onclick='roll_Wdmg("+i+")'>x</div>"+characters[current].weapons[i].DMG.toString().replace(",","d")+"</td><td>"+characters[current].weapons[i].Range+"</td><td>"+characters[current].weapons[i].Ammo+"</td></tr>");
-	}
 	tabs_rolls.append(disTempRow);
 	
 //Spells and Abilities

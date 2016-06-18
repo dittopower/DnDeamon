@@ -40,7 +40,7 @@ body{
 .statdiv{
 	margin:3px;
     display: inline-block;
-    background-color: #bfbfbf;
+    background-color: rgba(255,255,255,0.7);
     padding: 0.3em;
     font-size: x-large;
 }
@@ -129,6 +129,12 @@ body{
 .mspell {
     background-color: #FF9800;
 }
+.msetting {
+    background-color: #607D8B;
+}
+.mcir {
+    background-color: #4CAF50;
+}
 .rollable{
     color: rgba(0,0,0,0);
     background-image: url('d6.png');
@@ -139,6 +145,8 @@ body{
 	height: 2em;
     width: 2em;
     border-radius: 0.6em;
+	border:black dotted 1px;
+	margin: 3px;
 }
 .rollable:hover {
     background-color: white;
@@ -196,7 +204,9 @@ body{
 .Attacks td:nth-child(n+2){
 	text-align:center;
 }
-
+tr:nth-child(even){
+	background-color:rgba(255,255,255,0.2);
+}
 .spacer{
 	display:block;
 	width:100%;
