@@ -68,16 +68,18 @@ function Item(name, w, cost){
 	this.Weight = w;
 	this.Cost = cost;
 }
-function Weapon(name, hands, proficency, use, dmg, typ, crit, range, ammo, w, cost){
+function Weapon(name, hands, proficency, use, dmg, typ, crit, range, ammo, w, cost, master, bonus){
 	this.Item = new Item(name, w, cost);
 	this.Name = this.Item.Name;
 	this.Id = this.Item.ItemId;
 	this.Hands = hands;
+	this.Masterwork = master;
 	this.DMG = dmg;
 	this.Proficency = proficency;
 	this.Use = use;
 	this.Type = typ;
 	this.Crit = crit;
+	this.Bonus = bonus;
 	this.Range = range;
 	this.Ammo = ammo;
 	this.Weight = this.Item.Weight;

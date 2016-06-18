@@ -434,3 +434,13 @@ function Check_Cirumstance(stance){
 	}
 	return false;
 }
+
+
+function checkStat(stat,who){
+	for(var i = 0; i < who.stats.length;i++){
+		if(who.stats[i][0] == stat){
+			return true;
+		}
+	}
+	return false;
+}
