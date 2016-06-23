@@ -1,25 +1,88 @@
 
 //Rolls
+var show_all_res = true;
+
 function roll(num){
 	return Math.floor(Math.random()*num+1);
 }
-function roll_d20(threashold){
+function roll_d20(b,threashold){
 	if(threashold == undefined){
 		threashold = 20;
 	}
+	if(b == undefined){
+		b = 0;
+	}
+	var out = "";
 	var result = roll(20);
-	if(result == 20){
-		chat_msg("Natural 20!!","crit_suc");
-		sound_play(audio_crit_sucess);
-	}else if(result >= threashold){
-		chat_msg("Crit: "+result,"crit_suc");
+	var crit = 0;
+	
+	if(result >= threashold){
+		crit = 1;
 		sound_play(audio_crit_sucess);
 	}else if(result == 1){
-		chat_msg("Natural 1...","crit_fail");
+		crit = 2;
 		sound_play(audio_crit_failure);
 	}
-	return result;
+	
+	out += "<span class=dres>"+1+"d"+20;
+	if(b != 0){
+		out += " + " + b;
+	}
+	out += ": " + (result+b);
+	if(show_all_res){
+		switch(crit){
+			case 0:
+				out += " [" + result + "]";
+				break;
+			default:
+				out += " <span class=emphasis>[" + result + "]</span>";
+		}
+	}
+	out += "</span>";
+	
+	return [out,crit];
 }
+
+
+function multi_roll(n,s,b){
+	if(b == undefined){
+		b = 0;
+	}
+	var temp = 0;
+	var results = [];
+	for(var i = 0; i < n;i++){
+		var t = roll(s);
+		results.push(t);
+		temp += t;
+	}
+	results = results.join(", ");
+	
+	var crit = 0;
+	if(temp == s){
+		crit = 1;
+	}else if(temp == 1){
+		crit = 2;
+	}
+	temp += Number(b);
+	
+	var out = n+"d"+s;
+	if(b != 0){
+		out += " + " + b;
+	}
+	out += ": " + temp;
+	if(show_all_res){
+		switch(crit){
+			case 0:
+				out += " [" + results + "]";
+				break;
+			default:
+				out += " <span class=emphasis>[" + results + "]</span>";
+		}
+	}
+	
+	return "<span class=dres>"+out+"</span>";
+}
+
 
 function roll_abl(stat){
 	var result = 0;
@@ -52,18 +115,16 @@ function roll_abl(stat){
 		default:
 			text = 'None';
 	}
-	result += roll_d20();
-	chat_msg(text+": " +result);
+	chat_msg(text+roll_d20(result)[0]);
 }
 function roll_skl(stat){
 	var result = 0;
 	result += characters[current].skill_score(stat);
-	if(!isNaN(result)){
-		result += roll_d20();
-	}else{
-		result = "Skill Requires Training";
+	if(isNaN(result)){
+		chat_msg(stat+": Skill Requires Training");
+		return;
 	}
-	chat_msg(stat+": " +result);
+	chat_msg(stat+roll_d20(result)[0]);
 }
 function roll_save(stat){
 	var result = 0;
@@ -84,20 +145,17 @@ function roll_save(stat){
 		default:
 			text = 'None';
 	}
-	result += roll_d20();
-	chat_msg("Save: "+text+": " +result);
+	chat_msg("Save: "+text+" "+roll_d20(result)[0]);
 }
 function roll_CMB(){
 	var result = 0;
 	result += characters[current].CMB();
-	result += roll_d20();
-	chat_msg("Combat Maneuver: " +result);
+	chat_msg("Combat Maneuver: " +roll_d20(result)[0]);
 }
 function roll_CMD(){
 	var result = 0;
 	result += characters[current].CMD();
-	result += roll_d20();
-	chat_msg("Defence Maneuver: " +result);
+	chat_msg("Defence Maneuver: " +roll_d20(result)[0]);
 }
 
 
@@ -122,8 +180,7 @@ function rollatk(stat,misc){
 	}
 	result += characters[current].BABmax();
 	result += characters[current].Size.Mod;
-	result += roll_d20();
-	return result;
+	return roll_d20(result)[0];
 }
 function atk_abl(stat){
 	stat = stat.toLowerCase();
@@ -164,6 +221,7 @@ function weapon_atk_abl(data){
 function weapon_atk_bonus(data){
 	var result = 0;
 	result += weapon_atk_abl(data);
+	result += characters[current].Size.Mod;
 	result += UI['atk_bonus'];
 	switch(characters[current].weapons[data].Masterwork){
 		case "Masterwork":
@@ -181,7 +239,7 @@ function roll_atk_melee(){
 	chat_msg("Melee Attack: " +rollatk("melee"));
 }
 function roll_atk_range(penalty){
-	chat_msg("Ranged Attack: " +rollatk("ranged",penalty) + " - range penalty");
+	chat_msg("Ranged Attack: " +rollatk("ranged",penalty) + " (- range penalty)");
 }
 function roll_atk_touch(){
 	chat_msg("Melee Touch Attack: " +rollatk("melee"));
@@ -191,20 +249,19 @@ function roll_atk_Rtouch(){
 }
 
 function roll_Watk(data){
-	var temp = roll_d20(characters[current].weapons[data].Crit[0]);
-	if(temp >= characters[current].weapons[data].Crit[0]){
-		chat_msg(characters[current].weapons[data].Name + " Attack: " +(temp+weapon_atk_bonus(data)));
-		chat_msg("Confirm Crit: " +(roll_d20()+weapon_atk_bonus(data)));
-		
+	var temp = roll_d20(weapon_atk_bonus(data),characters[current].weapons[data].Crit[0]);
+	if(temp[1] == 1){
+		chat_msg(characters[current].weapons[data].Name + " Attack: " +temp[0],"crit_suc");
+		chat_msg("Confirm Crit: " + multi_roll(1,20,weapon_atk_bonus(data)+characters[current].CritConfirm()));
+	}else if(temp[1] == 2){
+		chat_msg(characters[current].weapons[data].Name + " Attack: " +temp[0],"crit_fail");
+		chat_msg("Crit Fail: roll coming sometime");
 	}else{
-		chat_msg(characters[current].weapons[data].Name + " Attack: " +(temp+weapon_atk_bonus(data)));
+		chat_msg(characters[current].weapons[data].Name + " Attack: " +temp[0]);
 	}
 }
 function roll_Wdmg(data){
 	var result = 0;
-	for(var i = 0;i < characters[current].weapons[data].DMG[0];i++){
-		result += roll(characters[current].weapons[data].DMG[1]);
-	}
 	var mod = characters[current].ability_mod("STR");
 	if(checkStat("Fatal Finesse",characters[current])){
 		var Pat = RegExp("elven curve blade|rapier|spiked chain","i");
@@ -223,16 +280,22 @@ function roll_Wdmg(data){
 				break;
 		}
 	}
+	switch(characters[current].weapons[data].Masterwork){
+		case "Masterwork":
+		case "":
+			break;
+		default:
+			result += characters[current].weapons[data].Masterwork;
+	}
+	
+	result = multi_roll(characters[current].weapons[data].DMG[0],characters[current].weapons[data].DMG[1],result);
+
 	var Temp = "";
 	for(var i = 0;i < characters[current].weapons[data].Bonus.length;i++){
-		var Total = 0;
-		Temp += ", "
-		for(var ia = 0;ia < characters[current].weapons[data].Bonus[i][0];ia++){
-			Total += roll(characters[current].weapons[data].Bonus[i][1]);
-		}
-		Temp += Total+"-"+characters[current].weapons[data].Bonus[i][2];
+		Temp += "; "
+		Temp += multi_roll(characters[current].weapons[data].Bonus[i][0],characters[current].weapons[data].Bonus[i][1])+" "+characters[current].weapons[data].Bonus[i][2].UCfirst();
 	}
-	chat_msg(characters[current].weapons[data].Name + " DMG: " +result +"-"+characters[current].weapons[data].Type +Temp);
+	chat_msg(characters[current].weapons[data].Name +": "+result+" "+ characters[current].weapons[data].Type+" "  +Temp);
 }
 function roll_W(data){
 	roll_Watk(data);

@@ -94,14 +94,12 @@ body{
 	border-bottom: 1px black solid;
     overflow-wrap: break-word;
 }
-.msg.crit_fail {
-    background-color: #E91E63;
-    margin-bottom: -10px;
+.crit_fail {
+    background-color: #ff5722;
 	border-bottom:none;
 }
-.msg.crit_suc {
-    margin-bottom: -10px;
-    background-color: rgb(101, 161, 18);
+.crit_suc {
+    background-color: #8BC34A;
 	border-bottom:none;
 }
 #charsel{
@@ -221,4 +219,26 @@ tr:nth-child(even){
 	display:block;
 	width:100%;
 	height:3em;
+}
+.spacer2{
+	display:block;
+	width:100%;
+	height:1em;
+}
+.meas[type="number"]{
+	width:4em;
+}
+.unit{
+	width:5em;
+}
+.diceroll[type="number"]{
+	width:3em;
+}
+.dres{
+	background-color:rgba(255,255,255,0.3);
+	padding: 0.3em;
+}
+.emphasis{
+    font-weight: 900;
+    background-color: rgba(0,0,0,0.2);
 }

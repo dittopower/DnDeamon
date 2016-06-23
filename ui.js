@@ -11,6 +11,16 @@ var tabs_spell = $("<div id='spell' class='stat mspell'>");
 var tabs_settings = $("<div id='settings' class='msetting'>");
 var tabs_circumstance = $("<div id='circumstance' class='mcir'>");
 
+var extras = $("<div id='converter'>");
+var extra_meters = $("<input class='meas' type=number value=0>");
+var extra_foot = $("<input class='meas' type=number value=0>");
+var extra_unita = $("<select class='unit' id='unita'>");
+var extra_unitb = $("<select class='unit' id='unitb'>");
+var extra_nd = $("<input class='diceroll' id='num_d' type=number value=1>");
+var extra_ds = $("<input class='diceroll' id='num_sides' type=number value=6>");
+var extra_dmod = $("<input class='diceroll' id='dice_mod' type=number value=0>");
+var extra_dsum = $("<input class='dicerollsum' id='dice_mod' type=checkbox checked>");
+
 var disChars = $("<select id=charsel>");
 var audio;
 
@@ -33,8 +43,8 @@ function mytabs(){
 	menublock.append("<h4 class='mstats' onclick=\"reveal('stats')\">Abilities & Skills</h4>");
 	menublock.append("<h4 class='mrolls' onclick=\"reveal('rolls')\">Combat & Defence</h4>");
 	menublock.append("<h4 class='mspell' onclick=\"reveal('spell')\">Spells & Abilities</h4>");
-	menublock.append("<h4 class='mchars' onclick=\"reveal('chars')\">Characters</h4>");
 	menublock.append("<h4 class='mcir' onclick=\"reveal('cir')\">Circumstances</h4>");
+	menublock.append("<h4 class='mchars' onclick=\"reveal('chars')\">Characters</h4>");
 	
 	menublock.append("<h4 class='msetting' onclick=\"reveal('setting')\">Settings</h4>");
 	
@@ -87,6 +97,37 @@ function mytabs(){
 	div.append(temp);
 	tabs_settings.append(div);
 	temp[0].onchange = function(eve){pref_wt=eve.target.value; displayStats();}
+	
+	var div = $("<div class='statdiv'>");
+	div.append("Distance Converter: ");
+	div.append(extra_meters);
+	div.append(extra_unita);
+	div.append(" to ");
+	div.append(extra_foot);
+	div.append(extra_unitb);
+	extra_unita.append("<option value='ft' selected>Foot</option>");
+	extra_unita.append("<option value='in'>Inch</option>");
+	extra_unita.append("<option value='m'>Metres</option>");
+	extra_unita.append("<option value='cm'>Centimetres</option>");
+	extra_unitb.append("<option value='ft'>Foot</option>");
+	extra_unitb.append("<option value='in'>Inch</option>");
+	extra_unitb.append("<option value='m' selected>Metres</option>");
+	extra_unitb.append("<option value='cm'>Centimetres</option>");
+	tabs_settings.append(div);
+	var round = 1000;
+	extra_meters[0].onchange = function(){
+		extra_foot.val(Math.round(distance(extra_meters.val(),extra_unitb.val(),extra_unita.val()) * round)/round);
+	}
+	extra_foot[0].onchange = function(){
+		extra_meters.val(Math.round(distance(extra_foot.val(),extra_unitb.val(),extra_unita.val()) * round)/round);
+	}
+	extra_unita[0].onchange = function(){
+		extra_foot.val(Math.round(distance(extra_meters.val(),extra_unitb.val(),extra_unita.val()) * round)/round);
+	}
+	extra_unitb[0].onchange = function(){
+		extra_foot.val(Math.round(distance(extra_meters.val(),extra_unitb.val(),extra_unita.val()) * round)/round);
+	}
+	
 	mainblock.append(tabs_settings);
 	
 //circumstances
@@ -135,8 +176,28 @@ function mytabs(){
 //Log
 	logblock.append("<h1>Log</h1>");
 	logblock.append(textblock);
+	logblock.append("<hr>");
+	logblock.append(extras);
+	extras.append("Roll: ");
+	extras.append(extra_nd);
+	extras.append(" d ");
+	extras.append(extra_ds);
+	extras.append(" + ");
+	extras.append(extra_dmod);
+	extras.append("<div class='rollable' style='display:inline-block;' onclick='r()'>x</div>");
+	extras.append("<hr><b>Show Individual Rolls?<b>");
+	extras.append(extra_dsum);
+	extra_dsum[0].onchange = function(){
+		show_all_res = extra_dsum.prop("checked");
+	}
+	extras.append("<span class='spacer2'>");
+	
 	reveal();
 	upkeep();
+}
+
+function r(){
+	chat_msg("Custom: "+multi_roll(extra_nd.val(),extra_ds.val(),extra_dmod.val()));
 }
 
 function charsUpdate(){
@@ -189,6 +250,7 @@ function displayStats(){
 	if(current == null || current == ""){
 		return;
 	}
+	show_all_res = extra_dsum.prop("checked");
 	var disTemp;
 
 //basic
@@ -306,19 +368,20 @@ function displayStats(){
 	tabs_spell.append("<hr><h1>Spells</h1>");
 	tabs_spell.append(characters[current].Spells().toString());
 	
-	if(statblock.height() > (window.innerHeight-disChars[0].clientHeight *2.5)){
+	var temp = mainblock.height()*0.95;
+	if(statblock.height() > temp){
 		statblock.append("<span class='spacer'>");
 	}
-	if(tabs_rolls.height() > (window.innerHeight-disChars[0].clientHeight *2.5)){
+	if(tabs_rolls.height() > temp){
 		tabs_rolls.append("<span class='spacer'>");
 	}
-	if(tabs_main.height() > (window.innerHeight-disChars[0].clientHeight *2.5)){
+	if(tabs_main.height() > temp){
 		tabs_main.append("<span class='spacer'>");
 	}
-	if(tabs_chars.height() > (window.innerHeight-disChars[0].clientHeight *2.5)){
+	if(tabs_chars.height() > temp){
 		tabs_chars.append("<span class='spacer'>");
 	}
-	if(tabs_spell.height() > (window.innerHeight-disChars[0].clientHeight *2.5)){
+	if(tabs_spell.height() > temp){
 		tabs_spell.append("<span class='spacer'>");
 	}
 }
@@ -360,5 +423,16 @@ onload = function(){
 window.onresize = function(){resise();}
 
 function resise(){
-	mainblock.height((window.innerHeight-disChars[0].clientHeight *1.5));
+	var temp = window.innerHeight - disChars.outerHeight(true);
+	mainblock.height(temp);
+	logblock.height(temp);
+	menublock.height(temp);
+	var tem = logblock.children();
+	for(var te = 0; te < tem.length;te++){
+		if(tem[te] != textblock[0]){
+			temp -= $(tem[te]).outerHeight(true);
+		}
+	}
+	textblock.height(temp);
+	displayStats();
 }

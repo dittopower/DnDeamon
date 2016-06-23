@@ -96,6 +96,8 @@ function Stats(str,dex,con,intt,wis,cha){
 	this.HP = 0;
 	this.Spells = [];
 	this.Abilities = [];
+	this.CritConfirm = 0;
+	this.Crit = "";
 }
 
 
@@ -307,6 +309,13 @@ function Character (name,player,level,race,clas,al,str,dex,con,intt,wis,cha,deit
 			resultb = Math.max(result[i],resultb);
 		}
 		return resultb;
+	}
+	this.CritConfirm = function(){
+		var result = 0;
+		for(ia = 0; ia < this.stats.length; ia++){
+			result += this.stats[ia][1].CritConfirm;
+		}
+		return result;
 	}
 	this.CMB = function (){
 		var result = this.BABmax();
