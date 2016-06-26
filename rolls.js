@@ -28,7 +28,7 @@ function roll_d20(b,threashold){
 	if(b != 0){
 		out += " + " + b;
 	}
-	out += ": " + (result+b);
+	out += ": <span class=result>" + (result+b)+ "</span>";
 	if(show_all_res){
 		switch(crit){
 			case 0:
@@ -69,7 +69,7 @@ function multi_roll(n,s,b){
 	if(b != 0){
 		out += " + " + b;
 	}
-	out += ": " + temp;
+	out += ": <span class=result>" + temp + "</span>";
 	if(show_all_res){
 		switch(crit){
 			case 0:
@@ -252,7 +252,7 @@ function roll_Watk(data){
 	var temp = roll_d20(weapon_atk_bonus(data),characters[current].weapons[data].Crit[0]);
 	if(temp[1] == 1){
 		chat_msg(characters[current].weapons[data].Name + " Attack: " +temp[0],"crit_suc");
-		chat_msg("Confirm Crit: " + multi_roll(1,20,weapon_atk_bonus(data)+characters[current].CritConfirm()));
+		chat_msg("Confirm Crit: " + multi_roll(1,20,weapon_atk_bonus(data)+characters[current].CritConfirm()+characters[current].weapons[data].CritBonus));
 	}else if(temp[1] == 2){
 		chat_msg(characters[current].weapons[data].Name + " Attack: " +temp[0],"crit_fail");
 		chat_msg("Crit Fail: roll coming sometime");
@@ -300,4 +300,11 @@ function roll_Wdmg(data){
 function roll_W(data){
 	roll_Watk(data);
 	roll_Wdmg(data);
+}
+
+
+function makeRollable(text){
+	text = text.replace(/((\d+)d(\d+)\s?\+?\s?(\d+)?)/igm,"\<span><div class='rollable' onclick='chat_msg(multi_roll\($2,$3,$4))'\>x</div>$1</span>");
+	text = text.replace(/,\)/igm,")");
+	return text;
 }

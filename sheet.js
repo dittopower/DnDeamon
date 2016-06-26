@@ -98,13 +98,21 @@ function Stats(str,dex,con,intt,wis,cha){
 	this.Abilities = [];
 	this.CritConfirm = 0;
 	this.Crit = "";
+	this.level = 0;
+	this.mod = "";
 }
 
 
-function Character (name,player,level,race,clas,al,str,dex,con,intt,wis,cha,deity,HL,g,h,w,s,hair,eye){
+function Character (name,player,race,clas,al,str,dex,con,intt,wis,cha,deity,HL,g,h,w,s,hair,eye){
 	this.Name = name;
 	this.Player = player;
-	this.Level = level;
+	this.Level = function (){
+		var result = 0;
+		for(ia = 0; ia < this.stats.length; ia++){
+			result += this.stats[ia][1].level;
+		}
+		return result;
+	}
 	this.Race = race;
 	this.Class = clas
 	this.Alignment = al;
@@ -130,6 +138,9 @@ function Character (name,player,level,race,clas,al,str,dex,con,intt,wis,cha,deit
 		return result;
 	}
 	this.ability_mod = function (what){
+		if(what == ""||what == undefined){
+			return 0;
+		}
 		var result = 0;
 		var resultb = 0;
 		for(ia = 0; ia < this.stats.length; ia++){
@@ -333,9 +344,10 @@ function Character (name,player,level,race,clas,al,str,dex,con,intt,wis,cha,deit
 	}
 	
 	this.weapons = [];
+	this.items = [];
 	this.Equip = function(data){
 		//add checks for hands and stuff here
-		weapons.push(data);
+		this.weapons.push(data);
 	}
 	
 	this.Spells = function(){
@@ -352,6 +364,24 @@ function Character (name,player,level,race,clas,al,str,dex,con,intt,wis,cha,deit
 		}
 		return result;
 	}
+	this.set_CLV = function(id){//Replace this with checking a list//stored class against possessed classes
+		this.CasterLV = this.Level();
+		this.CasterMod = "";
+		var temp = ClassSpells.spell.indexOf(id);
+		while(temp > -1){
+			for(var i = 0; i < this.stats.length; i++){
+				if(this.stats[i][0] == ClassSpells.class[temp]){
+					if(this.CasterLV <= this.stats[i][1].level){
+						this.CasterLV = this.stats[i][1].level;
+						this.CasterMod = this.stats[i][1].mod;
+					}
+				}
+			}
+			temp = ClassSpells.spell.indexOf(id,(temp+1));
+		}
+	}
+	this.CasterLV = 0;
+	this.CasterMod = "";
 }
 
 function Check_Cirumstance(stance){

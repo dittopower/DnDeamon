@@ -29,7 +29,7 @@ current = "Default";
 pref_unit = "ft";
 pref_wt = "lbs";
 UI = [];
-characters[current] = new Character(current,'D_player',1,'Human','Fighter','N',10,10,10,10,10,10,"None","Australia",'Male',5.7,90,Sizes[4],'blond','green');
+characters[current] = new Character(current,'D_player','Human','Fighter','N',10,10,10,10,10,10,"None","Australia",'Male',5.7,90,Sizes[4],'blond','green');
 
 function mytabs(){
 	disChars.appendTo(document.body);
@@ -260,7 +260,7 @@ function displayStats(){
 	tabs_main.append("<div class='player statdiv'>Player: "+ characters[current].Player +"</div>");
 	tabs_main.append("<div class='race statdiv'>Race: "+ characters[current].Race +"</div>");
 	tabs_main.append("<div class='class statdiv'>Class: "+ characters[current].Class +"</div>");
-	tabs_main.append("<div class='level statdiv'>Level: "+ characters[current].Level +"</div>");
+	tabs_main.append("<div class='level statdiv'>Level: "+ characters[current].Level() +"</div>");
 	tabs_main.append("<div class='deity statdiv'>Deity: "+ characters[current].Deity +"</div>");
 	tabs_main.append("<div class='homeland statdiv'>Homeland: "+ characters[current].Homeland +"</div>");
 	tabs_main.append("<div class='gender statdiv'>Gender: "+ characters[current].Gender +"</div>");
@@ -356,17 +356,27 @@ function displayStats(){
 		}
 		disTempRow.append("<tr><td><div class='rollable' onclick='roll_W("+i+")'>x</div></td><td>"+characters[current].weapons[i].Name+"</td><td><div class='rollable' onclick='roll_Watk("+i+")'>x</div>+"+weapon_atk_bonus(i)+"</td><td>"+characters[current].weapons[i].Crit[0]+"-20, x"+characters[current].weapons[i].Crit[1]+"</td><td><div class='rollable' onclick='roll_Wdmg("+i+")'>x</div>"+characters[current].weapons[i].DMG.toString().replace(",","d")+"-"+characters[current].weapons[i].Type+Temp+"</td><td>"+characters[current].weapons[i].Range+"</td><td>"+characters[current].weapons[i].Ammo+"</td></tr>");
 	}
-	disTempRow.append("<tr><td>Melee</td><td><div class='rollable' onclick='roll_atk_melee()'>x</div>+"+atk_abl("Melee")+"</td><td>20</td><td> - </td><td> - </td><td> - </td><td> - </td></tr>");
-	disTempRow.append("<tr><td>Ranged</td><td><div class='rollable' onclick='roll_atk_range()'>x</div>+"+atk_abl("Ranged")+"</td><td>20</td><td> - </td><td> - </td><td> - </td><td> - </td></tr>");
-	disTempRow.append("<tr><td>Melee Touch</td><td><div class='rollable' onclick='roll_atk_touch()'>x</div>+"+atk_abl("melee")+"</td><td>20</td><td> - </td><td> - </td><td> - </td><td> - </td></tr>");
-	disTempRow.append("<tr><td>Ranged Touch</td><td><div class='rollable' onclick='roll_atk_Rtouch()'>x</div>+"+atk_abl("ranged")+"</td><td>20</td><td> - </td><td> - </td><td> - </td><td> - </td></tr>");
+	disTempRow.append("<tr><td></td><td>Melee</td><td><div class='rollable' onclick='roll_atk_melee()'>x</div>+"+atk_abl("Melee")+"</td><td>20</td><td> - </td><td> - </td><td> - </td><td> - </td></tr>");
+	disTempRow.append("<tr><td></td><td>Ranged</td><td><div class='rollable' onclick='roll_atk_range()'>x</div>+"+atk_abl("Ranged")+"</td><td>20</td><td> - </td><td> - </td><td> - </td><td> - </td></tr>");
+	disTempRow.append("<tr><td></td><td>Melee Touch</td><td><div class='rollable' onclick='roll_atk_touch()'>x</div>+"+atk_abl("melee")+"</td><td>20</td><td> - </td><td> - </td><td> - </td><td> - </td></tr>");
+	disTempRow.append("<tr><td></td><td>Ranged Touch</td><td><div class='rollable' onclick='roll_atk_Rtouch()'>x</div>+"+atk_abl("ranged")+"</td><td>20</td><td> - </td><td> - </td><td> - </td><td> - </td></tr>");
 	tabs_rolls.append(disTempRow);
 	
 //Spells and Abilities
 	tabs_spell.append("<h1>Abilities</h1>");
-	tabs_spell.append(characters[current].Abilities().toString());
+	var disTempRow = $("<table class=castable>");
+	tabs_spell.append(disTempRow);
+	var temp = characters[current].Abilities();
+	for(var i = 0; i < temp.length; i++){
+		disTempRow.append("<tr><td>"+print_Castable(temp[i])+"</tr>");
+	}
 	tabs_spell.append("<hr><h1>Spells</h1>");
-	tabs_spell.append(characters[current].Spells().toString());
+	var disTempRow = $("<table class=castable>");
+	tabs_spell.append(disTempRow);
+	var temp = characters[current].Spells();
+	for(var i = 0; i < temp.length; i++){
+		disTempRow.append("<tr><td>"+print_Castable(temp[i])+"</tr>");
+	}
 	
 	var temp = mainblock.height()*0.95;
 	if(statblock.height() > temp){

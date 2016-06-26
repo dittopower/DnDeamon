@@ -61,15 +61,17 @@ function pMoney(data,unit){
 	return result;
 }
 
-function Item(name, w, cost){
+function Item(name, w, cost,des){
 	this.Name = name;
 	this.Id = ItemId;
 	ItemId++;
 	this.Weight = w;
 	this.Cost = cost;
+	this.Description = des;
 }
-function Weapon(name, hands, proficency, use, dmg, typ, crit, range, ammo, w, cost, master, bonus){
-	this.Item = new Item(name, w, cost);
+//weapons
+function Weapon(name, hands, proficency, use, dmg, typ, crit, range, ammo, w, cost, master, bonus, cb, des){
+	this.Item = new Item(name, w, cost, des);
 	this.Name = this.Item.Name;
 	this.Id = this.Item.ItemId;
 	this.Hands = hands;
@@ -79,9 +81,14 @@ function Weapon(name, hands, proficency, use, dmg, typ, crit, range, ammo, w, co
 	this.Use = use;
 	this.Type = typ;
 	this.Crit = crit;
+	this.CritBonus = cb||0;
 	this.Bonus = bonus;
 	this.Range = range;
 	this.Ammo = ammo;
 	this.Weight = this.Item.Weight;
 	this.Cost = this.Item.Cost;
 }
+//ammo
+
+//armour
+

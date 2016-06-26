@@ -145,6 +145,8 @@ body{
     border-radius: 0.6em;
 	border:black dotted 1px;
 	margin: 3px;
+    display: inline-block;
+    vertical-align: middle;
 }
 .rollable:hover {
     background-color: white;
@@ -159,6 +161,7 @@ body{
     width: 2em;
     border-radius: 0.6em;
     background-color: white;
+    margin: 3px;
 }
 .atkbonus {
     padding: 2;
@@ -239,6 +242,55 @@ tr:nth-child(even){
 	padding: 0.3em;
 }
 .emphasis{
-    font-weight: 900;
     background-color: rgba(0,0,0,0.2);
 }
+.result{
+    font-weight: 900;
+}
+#spell td{
+	padding:5px;
+    /*border-right: 1px black dashed;
+    border-left: 1px dashed black;*/
+}
+#spell table{
+	margin:0px;
+    border-bottom: none;
+	background-color:#ffc107;
+    width: calc(100% - 2em);
+}
+#spell table h3{
+	margin-top:0px;
+	margin-bottom:12px;
+}
+#spell tr{
+	padding:0.3em;
+}
+#spell tr:nth-child(even){
+	background-color:rgba(255,255,255,0.1);
+}
+#spell tr:nth-child(odd){
+	background-color:rgba(0,0,0,0.1);
+}
+#spell td:nth-child(1){
+	padding:0.3em;
+}
+#spell th:nth-child(1){
+	padding:0.3em;
+}
+.spell_stat {
+    font-weight: bolder;
+    display: inline-block;
+    margin-right: 1em;
+    margin-bottom: 0.3em;
+    background: rgba(0,0,0,0.15);
+    padding: 0.2em;
+}
+.spell_des {
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+/*
+.castable td:hover {
+    background-color: white;
+}
+*/

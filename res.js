@@ -48,6 +48,4 @@ saves - [type,result],...
 cast time - time
 duration - time
 */
-Castable = [];
-//Castable.push(["Name","Type",["range"],["targets"],["area"],["dmg"],"School", "Subschool","spell resistance",["saves"],"cast time","duration","effect"])
-Castable.push(["Magic Missiles","Spell",scale(100,10,"Level",1),scale(1,1,"Level",2,1,5),scale(),[scale(1),scale(4),scale()],"Evocation", "Force",true,null,[1,"standard"],scale(),null])
+
