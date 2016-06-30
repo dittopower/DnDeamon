@@ -102,12 +102,20 @@ body{
     background-color: #8BC34A;
 	border-bottom:none;
 }
-#charsel{
+#cirs{
     display: block;
-    width: calc(100% - 24px);
-    padding: 0.5em;
-    margin: 12px;
     font-size: large;
+    width: calc(100% - 1em);
+    padding: 0.5em;
+	overflow-y:auto;
+}
+#cirs h1{
+	font-size:1em;
+	margin:0;
+    font-weight: bold;
+}
+#cirs * {
+    font-size: 0.8em;
 }
 .sections h1{
 	margin-top:0;
@@ -122,16 +130,16 @@ body{
 	background-color: #00BCD4;
 }
 .mchars{
-	background-color: #ff5722;
+	background-color: #009688;
+}
+.mcharcreator{
+	background-color: #009688;
 }
 .mspell {
     background-color: #FF9800;
 }
 .msetting {
-    background-color: #607D8B;
-}
-.mcir {
-    background-color: #4CAF50;
+    background-color: #9E9E9E;
 }
 .rollable{
     color: rgba(0,0,0,0);
@@ -150,6 +158,7 @@ body{
 }
 .rollable:hover {
     background-color: white;
+    border: black dashed 1px;
 }
 .rollableicon{
     color: rgba(0,0,0,0);
@@ -162,6 +171,29 @@ body{
     border-radius: 0.6em;
     background-color: white;
     margin: 3px;
+}
+.clickable{
+	background-color:rgba(255,255,255,0.3);
+	border-radius:1em;
+	cursor:pointer;
+	padding:0.3em;
+	margin:0.5em;
+	display:inline-block;
+    border: black dotted 1px;
+}
+.clickable:hover{
+	background-color:rgba(255,255,255,0.6);
+    border: black dashed 1px;
+}
+.clickablenot{
+	background-color:rgba(255,255,255,0.6);
+	border-radius:2em;
+	cursor:no-drop;
+	padding:0.3em;
+	margin:0.5em;
+	display:inline-block;
+	font-weight:bold;
+    border: white solid 1px;
 }
 .atkbonus {
     padding: 2;
@@ -185,10 +217,10 @@ body{
     border-collapse: collapse;
 }
 #stat table{
-	background-color: #CDDC39;
+	background-color: #AED581;
 }
 #controls-rolls table{
-	background-color: #009688;
+	background-color: #4DD0E1;
 }
 #main td{
 	padding:5px;
@@ -209,6 +241,9 @@ body{
 .skills td:nth-child(n+4){
 	text-align:center;
 }
+.skills td:nth-child(5) {
+    text-align: left;
+}
 .abilities td:nth-child(n+3){
 	text-align:center;
 }
@@ -216,7 +251,13 @@ body{
 	text-align:center;
 }
 tr:nth-child(even){
-	background-color:rgba(255,255,255,0.2);
+	background-color:rgba(255,255,255,0.1);
+}
+tr:nth-child(odd){
+	background-color:rgba(0,0,0,0.1);
+}
+tr:nth-child(1){
+	background:none;
 }
 .spacer{
 	display:block;
@@ -255,7 +296,7 @@ tr:nth-child(even){
 #spell table{
 	margin:0px;
     border-bottom: none;
-	background-color:#ffc107;
+	background-color:#FFB74D;
     width: calc(100% - 2em);
 }
 #spell table h3{
@@ -294,3 +335,31 @@ tr:nth-child(even){
     background-color: white;
 }
 */
+#Races h3{
+	margin:0;
+}
+#Races ul{
+	margin-top:0;
+}
+#races {
+    padding: 1em;
+    width: calc(100% - 4em);
+	overflow:auto;
+}
+#races tr {
+    width: 100%;
+    /*display: inline-table;*/
+}
+#races .statdiv {
+    background-color: rgba(255,193,7,0.8);
+    vertical-align: text-top;
+    border-radius: 0.7em;
+}
+#chars table{
+	margin:0;
+    background-color: #4DB6AC;
+}
+#races td {
+    border-left: 1px black dotted;
+    border-right: 1px black dotted;
+}

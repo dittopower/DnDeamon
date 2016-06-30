@@ -114,7 +114,8 @@ function Character (name,player,race,clas,al,str,dex,con,intt,wis,cha,deity,HL,g
 		return result;
 	}
 	this.Race = race;
-	this.Class = clas
+	this.Class = clas;
+	this.Note = "";
 	this.Alignment = al;
 	this.Deity = deity;
 	this.Homeland = HL;

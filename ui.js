@@ -6,10 +6,10 @@ var mainblock = $("<div id='main' class='sections'>");
 var statblock = $("<div id='stat' class='mstats'>");
 var tabs_rolls = $("<div id='controls-rolls' class='stat mrolls'>");
 var tabs_main = $("<div id='controls-main' class='stat mmain'>");
-var tabs_chars = $("<div id='controls-char' class='stat mchars'>");
+var tabs_chars = $("<div id='chars' class='stat mchars'>");
 var tabs_spell = $("<div id='spell' class='stat mspell'>");
 var tabs_settings = $("<div id='settings' class='msetting'>");
-var tabs_circumstance = $("<div id='circumstance' class='mcir'>");
+var tabs_circumstance = $("<div id='cirs' class='mcir'>");
 
 var extras = $("<div id='converter'>");
 var extra_meters = $("<input class='meas' type=number value=0>");
@@ -21,7 +21,8 @@ var extra_ds = $("<input class='diceroll' id='num_sides' type=number value=6>");
 var extra_dmod = $("<input class='diceroll' id='dice_mod' type=number value=0>");
 var extra_dsum = $("<input class='dicerollsum' id='dice_mod' type=checkbox checked>");
 
-var disChars = $("<select id=charsel>");
+var cirs = $("<div id=cirs>");
+var disChars = $("<table id=charsel>");
 var audio;
 
 characters = new Array();
@@ -32,23 +33,23 @@ UI = [];
 characters[current] = new Character(current,'D_player','Human','Fighter','N',10,10,10,10,10,10,"None","Australia",'Male',5.7,90,Sizes[4],'blond','green');
 
 function mytabs(){
-	disChars.appendTo(document.body);
+	tabs_circumstance.appendTo(document.body);
 	menublock.appendTo(document.body);
 	mainblock.appendTo(document.body);
 	logblock.appendTo(document.body);
 	
 //Menu
 	menublock.append("<h1>Menu</h1>");
+	menublock.append("<h4 class='mchars' onclick=\"reveal('chars')\">Characters</h4>");
 	menublock.append("<h4 class='mmain' onclick=\"reveal('main')\">Character Info</h4>");
 	menublock.append("<h4 class='mstats' onclick=\"reveal('stats')\">Abilities & Skills</h4>");
 	menublock.append("<h4 class='mrolls' onclick=\"reveal('rolls')\">Combat & Defence</h4>");
 	menublock.append("<h4 class='mspell' onclick=\"reveal('spell')\">Spells & Abilities</h4>");
-	menublock.append("<h4 class='mcir' onclick=\"reveal('cir')\">Circumstances</h4>");
-	menublock.append("<h4 class='mchars' onclick=\"reveal('chars')\">Characters</h4>");
+	//menublock.append("<h4 class='mcir' onclick=\"reveal('cir')\">Circumstances</h4>");
 	
 	menublock.append("<h4 class='msetting' onclick=\"reveal('setting')\">Settings</h4>");
 	
-	disChars[0].onchange = function(eve){current=eve.target.value; displayStats();}
+	//disChars[0].onchange = function(eve){current=eve.target.value; displayStats();}
 	
 //Main Tab
 	tabs_main.hide();
@@ -65,7 +66,13 @@ function mytabs(){
 	
 //Characters Tab
 	tabs_chars.hide();
-	tabs_chars.append("<hr><h2>Create a Character (CS)</h2>");
+	tabs_chars.append("<h1>Characters</h1>");
+	tabs_chars.append("<h2>Select Character</h2>");
+	tabs_chars.append(disChars);
+	
+	tabs_chars.append("<div class='clickable' onclick='reveal(\"charcreator\")'>Create Character</div>");
+	mainblock.append(char_creator);
+	
 	tabs_chars.append("<hr><h2>Level Up(CS)</h2>");
 	mainblock.append(tabs_chars);
 
@@ -131,16 +138,34 @@ function mytabs(){
 	mainblock.append(tabs_settings);
 	
 //circumstances
-	tabs_circumstance.hide();
+	//tabs_circumstance.hide();
 	tabs_circumstance.append("<h1>Circumstances</h1>");
 	
 	var div = $("<div class='statdiv'>");
 	div.append("<label for=lighting>Light Level: </label> ");
 	var temp = $("<select id=lighting>");
-	temp.append("<option value='darkness' select>Darkness</option>");
-	temp.append("<option value='dim' select>Dim Light</option>");
-	temp.append("<option value='normal' selected>Normal Light</option>");
-	temp.append("<option value='bright' select>Bright Light</option>");
+	var vtemp = cStatus[Circumstances.lastIndexOf("light")];
+	if(vtemp == 'normal'){
+		temp.append("<option value='darkness'>Darkness</option>");
+		temp.append("<option value='dim'>Dim Light</option>");
+		temp.append("<option value='normal' selected>Normal Light</option>");
+		temp.append("<option value='bright'>Bright Light</option>");
+	}else if(vtemp == 'darkness'){
+		temp.append("<option value='darkness' selected>Darkness</option>");
+		temp.append("<option value='dim'>Dim Light</option>");
+		temp.append("<option value='normal'>Normal Light</option>");
+		temp.append("<option value='bright'>Bright Light</option>");
+	}else if(vtemp == 'dim'){
+		temp.append("<option value='darkness'>Darkness</option>");
+		temp.append("<option value='dim' selected>Dim Light</option>");
+		temp.append("<option value='normal'>Normal Light</option>");
+		temp.append("<option value='bright'>Bright Light</option>");		
+	}else{
+		temp.append("<option value='darkness'>Darkness</option>");
+		temp.append("<option value='dim'>Dim Light</option>");
+		temp.append("<option value='normal'>Normal Light</option>");
+		temp.append("<option value='bright' selected>Bright Light</option>");
+	}
 	div.append(temp);
 	tabs_circumstance.append(div);
 	temp[0].onchange = function(eve){cStatus[Circumstances.lastIndexOf("light")]=eve.target.value; displayStats();}
@@ -148,11 +173,38 @@ function mytabs(){
 	var div = $("<div class='statdiv'>");
 	div.append("<label for=Source>Effect Source: </label> ");
 	var temp = $("<select id=Source>");
-	temp.append("<option value='' selected>none</option>");
-	temp.append("<option value='poison' select>Poison</option>");
-	temp.append("<option value='ability' select>Ability</option>");
-	temp.append("<option value='spell' select>Spell</option>");
-	temp.append("<option value='spell-like ability' select>Spell-like Ability</option>");
+	var vtemp = cStatus[Circumstances.lastIndexOf("Source")];
+	if(vtemp == 'spell-like ability'){
+		temp.append("<option value=''>none</option>");
+		temp.append("<option value='poison'>Poison</option>");
+		temp.append("<option value='ability'>Ability</option>");
+		temp.append("<option value='spell'>Spell</option>");
+		temp.append("<option value='spell-like ability' selected>Spell-like Ability</option>");
+	}else if(vtemp == 'spell'){
+		temp.append("<option value=''>none</option>");
+		temp.append("<option value='poison'>Poison</option>");
+		temp.append("<option value='ability'>Ability</option>");
+		temp.append("<option value='spell' selected>Spell</option>");
+		temp.append("<option value='spell-like ability'>Spell-like Ability</option>");
+	}else if(vtemp == 'ability'){
+		temp.append("<option value=''>none</option>");
+		temp.append("<option value='poison'>Poison</option>");
+		temp.append("<option value='ability' selected>Ability</option>");
+		temp.append("<option value='spell'>Spell</option>");
+		temp.append("<option value='spell-like ability'>Spell-like Ability</option>");
+	}else if(vtemp == 'poison'){
+		temp.append("<option value=''>none</option>");
+		temp.append("<option value='poison' selected>Poison</option>");
+		temp.append("<option value='ability'>Ability</option>");
+		temp.append("<option value='spell'>Spell</option>");
+		temp.append("<option value='spell-like ability'>Spell-like Ability</option>");
+	}else{
+		temp.append("<option value='' selected>none</option>");
+		temp.append("<option value='poison'>Poison</option>");
+		temp.append("<option value='ability'>Ability</option>");
+		temp.append("<option value='spell'>Spell</option>");
+		temp.append("<option value='spell-like ability'>Spell-like Ability</option>");
+	}
 	div.append(temp);
 	tabs_circumstance.append(div);
 	temp[0].onchange = function(eve){cStatus[Circumstances.lastIndexOf("Source")]=eve.target.value; displayStats();}
@@ -160,18 +212,20 @@ function mytabs(){
 	var div = $("<div class='statdiv'>");
 	div.append("<label for=Opposed>Opposed Check: </label> ");
 	var temp = $("<input type=checkbox id=Opposed>");
+	temp.prop("checked",cStatus[Circumstances.lastIndexOf("Opposed")]);
 	div.append(temp);
 	tabs_circumstance.append(div);
-	temp[0].onchange = function(eve){cStatus[Circumstances.lastIndexOf("Opposed")]=eve.target.value; displayStats();}
+	temp[0].onchange = function(eve){cStatus[Circumstances.lastIndexOf("Opposed")]=eve.target.checked; displayStats();}
 
 	var div = $("<div class='statdiv'>");
 	div.append("<label for=Subtype>Target's Subtype: </label> ");
 	var temp = $("<input type=text id=Subtype>");
+	temp.val(cStatus[Circumstances.lastIndexOf("Subtype")]);
 	div.append(temp);
 	tabs_circumstance.append(div);
 	temp[0].onchange = function(eve){cStatus[Circumstances.lastIndexOf("Subtype")]=eve.target.value;}
 	
-	mainblock.append(tabs_circumstance);
+	//mainblock.append(tabs_circumstance);
 
 //Log
 	logblock.append("<h1>Log</h1>");
@@ -192,7 +246,7 @@ function mytabs(){
 	}
 	extras.append("<span class='spacer2'>");
 	
-	reveal();
+	reveal("chars");
 	upkeep();
 }
 
@@ -202,12 +256,18 @@ function r(){
 
 function charsUpdate(){
 	disChars.empty();
+	disChars.append("<tr><th></th><th>Name</th><th>Race</th><th>Note</th></tr>");
 	for(var ib in characters){
+		var temp = $("<tr>");
 		if(ib == current){
-			disChars.append("<option value='"+ib+"' selected>"+ib+"</option>");
+			temp.append("<td><span class='clickablenot'>Current</span></td>");
 		}else{
-			disChars.append("<option value='"+ib+"'>"+ib+"</option>");
+			temp.append("<td><span class='clickable' onclick='current = \""+ib+"\";displayStats();'>Select</span></td>");
 		}
+		temp.append("<td>"+ib+"</td>");
+		temp.append("<td>"+characters[ib].Race+"</td>");
+		temp.append("<td>"+characters[ib].Note+"</td>");
+		disChars.append(temp);
 	}
 }
 
@@ -231,8 +291,9 @@ function reveal(data){
 		case 'setting':
 			tabs_settings.show();
 			break;
-		case 'cir':
-			tabs_circumstance.show();
+		case 'charcreator':
+			char_creator.show();
+			nextStage();
 			break;
 		default:
 			tabs_main.show();
@@ -247,6 +308,7 @@ function displayStats(){
 	tabs_main.empty();
 	tabs_rolls.empty();
 	tabs_spell.empty();
+	charsUpdate();
 	if(current == null || current == ""){
 		return;
 	}
@@ -304,12 +366,15 @@ function displayStats(){
 		disTempRow.append("<td><div class='rollable' onclick='roll_skl(\""+Skills[ib]+"\")'>x</div></td>");
 		if(clas){
 			disTempRow.append("<td>X</td>");
+			if(ranks > 0){
+				bonus += 3;
+			}
 		}else{
 			disTempRow.append("<td></td>");
 		}
 		disTempRow.append("<td>"+Skills[ib]+"</td>");
 		disTempRow.append("<td>"+characters[current].skill_score(Skills[ib])+"</td>");
-		disTempRow.append("<td>"+characters[current].stats[0][1].skill[Skills[ib]][2]+"</td>");
+		disTempRow.append("<td>"+characters[current].stats[0][1].skill[Skills[ib]][2]+" "+characters[current].ability_mod(characters[current].stats[0][1].skill[Skills[ib]][2])+"</td>");
 		disTempRow.append("<td>"+ranks+"</td>");
 		disTempRow.append("<td>"+bonus+"</td>");
 		if(!trained || clas){
@@ -342,7 +407,7 @@ function displayStats(){
 	var Temp = $("<div class='bab statdiv'>Attack Bonus: </div>");
 	var result = characters[current].BAB();
 	for(var i = 0; i < result.length;i++ ){
-		Temp.append("<span class='atkbonus' onclick=\"setATKbonus("+result[i]+")\">"+result[i]+"</span>");
+		Temp.append("<span class='clickable' onclick=\"setATKbonus("+result[i]+")\">"+result[i]+"</span>");
 	}
 	tabs_rolls.append(Temp);
 	tabs_rolls.append("<div class='cmb statdiv'>CMB: "+ characters[current].CMB() +" <div class='rollable' onclick='roll_CMB()'>x</div></div>");
@@ -413,19 +478,28 @@ function sound_play(sound){
 	audio.src = sound;
 	audio.play();
 }
+function loadAudio(url){
+	var audio = new Audio();
+	audio.src = url;
+	audio.preload = "auto";
+	return;
+}
 
 function upkeep(){
 	displayStats();
 	var il = 0; var data;
 	for(data in characters){il++;}
-	if(disChars.children().length != il){
+	/*if(disChars.children().length != il){
 		charsUpdate();
-	}
+	}*/
 }
 
 onload = function(){
+	load_stuff();
 	mytabs();
 	resise();
+	loadAudio(audio_crit_sucess);
+	loadAudio(audio_crit_failure);
 	audio = new Audio();
 	//tick = setInterval(function(){upkeep();}, 10000);
 }
@@ -433,7 +507,7 @@ onload = function(){
 window.onresize = function(){resise();}
 
 function resise(){
-	var temp = window.innerHeight - disChars.outerHeight(true);
+	var temp = window.innerHeight - tabs_circumstance.outerHeight(true);
 	mainblock.height(temp);
 	logblock.height(temp);
 	menublock.height(temp);
