@@ -70,7 +70,7 @@ function mytabs(){
 	tabs_chars.append("<h2>Select Character</h2>");
 	tabs_chars.append(disChars);
 	
-	tabs_chars.append("<div class='clickable' onclick='reveal(\"charcreator\")'>Create Character</div>");
+	tabs_chars.append("<br><div class='clickable' onclick='reveal(\"charcreator\")'>Create Character</div>");
 	mainblock.append(char_creator);
 	
 	tabs_chars.append("<hr><h2>Level Up(CS)</h2>");
@@ -293,7 +293,7 @@ function reveal(data){
 			break;
 		case 'charcreator':
 			char_creator.show();
-			nextStage();
+			resetStage();
 			break;
 		default:
 			tabs_main.show();
@@ -518,5 +518,6 @@ function resise(){
 		}
 	}
 	textblock.height(temp);
+	StageControls.width(mainblock.width()-5);
 	displayStats();
 }

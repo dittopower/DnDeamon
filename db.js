@@ -104,12 +104,20 @@ function load_stuff(){
 	for(var i = 0; i < Circumstances.length;i++){
 		cStatus[i] = localLoad(Circumstances[i],cStatus[i]);
 	}
+	loadChars();//needs implementation
+	current = localLoad("Current","Default");
+	console.log(current);
+	console.log(characters[current] == undefined);
+	if(characters[current] == undefined){
+		current = "Default";
+	}
 }
 
 function save_stuff(){
 	for(var i = 0; i < Circumstances.length;i++){
 		localSave(Circumstances[i],cStatus[i]);
 	}
+	localSave("Current",current)
 }
 
 function localLoad(what,alt){

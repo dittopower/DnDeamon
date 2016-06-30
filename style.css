@@ -363,3 +363,16 @@ tr:nth-child(1){
     border-left: 1px black dotted;
     border-right: 1px black dotted;
 }
+#controls {
+    position: absolute;
+}
+#Char_creator table {
+	margin:0;
+    background-color: #4DB6AC;
+    width: calc(100% - 32px);
+}
+#controls div, #controls h2 {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 0.2em;
+}
