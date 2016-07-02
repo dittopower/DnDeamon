@@ -29,6 +29,24 @@ function Size (name,mod,spmod,fly,stealth,space,reach,height,weight){
 }
 
 function Stats(str,dex,con,intt,wis,cha){
+	if(str == undefined){
+		str = 0;
+	}
+	if(dex == undefined){
+		dex = 0;
+	}
+	if(con == undefined){
+		con = 0;
+	}
+	if(intt == undefined){
+		intt = 0;
+	}
+	if(wis == undefined){
+		wis = 0;
+	}
+	if(cha == undefined){
+		cha = 0;
+	}
 	this.ability = [];
 		this.ability["STR"] = new Ability(str,0);
 		this.ability["DEX"] = new Ability(dex,0);
@@ -100,35 +118,40 @@ function Stats(str,dex,con,intt,wis,cha){
 	this.Crit = "";
 	this.level = 0;
 	this.mod = "";
+	this.speed = 0;
+	this.swim = 0;
+	this.fly = 0;
 }
 
 
-function Character (name,player,race,clas,al,str,dex,con,intt,wis,cha,deity,HL,g,h,w,s,hair,eye){
+function Character (name,player){
 	this.Name = name;
 	this.Player = player;
 	this.Level = function (){
 		var result = 0;
-		for(ia = 0; ia < this.stats.length; ia++){
+		for(var ia = 0; ia < this.stats.length; ia++){
 			result += this.stats[ia][1].level;
 		}
 		return result;
 	}
-	this.Race = race;
-	this.Class = clas;
+	this.Race = "None";
+	this.Class = [];
 	this.Note = "";
-	this.Alignment = al;
-	this.Deity = deity;
-	this.Homeland = HL;
-	this.Gender = g;
+	this.Alignment = "Neutral";
+	this.Deity = "None";
+	this.Homeland = "Unknown";
+	this.Gender = "Female";
 	//need age
-	this.Height = h;
-	this.Weight = w;
-	this.Size = s;
-	this.Hair = hair;
-	this.Eye = eye;
+	this.Height = 5.9;
+	this.Weight = 154;
+	this.Size = Sizes[4];
+	this.Hair = "None";
+	this.Eye = "Brown";
+	this.Type = "Humanoid";
+	this.SubType = "";
 	this.Money = 0;
 	this.stats = [];
-	this.stats.push( ['Base Stats',new Stats(str,dex,con,intt,wis,cha),'Base'] );
+	this.stats.push( ['Base Stats',new Stats(0,0,0,0,0,0),'Base'] );
 	
 	this.ability_score = function (what){
 		var result = 0;

@@ -19,7 +19,14 @@ function totalranks(){
 function loadChars(){
 ninja = "Ajax";
 current = ninja;
-characters[ninja] = new Character(ninja,'Damon','Drow','Ninja','CN',10,16,14,10,14,14,"The Butterfly","Dark Lands",'Male',5.92,115,Sizes[4],'Grey','Red');
+characters[ninja] = new Character(ninja,'Damon');
+characters[ninja].stats[0][1].ability['STR'][0] = 10;
+characters[ninja].stats[0][1].ability['DEX'][0] = 16;
+characters[ninja].stats[0][1].ability['CON'][0] = 14;
+characters[ninja].stats[0][1].ability['INT'][0] = 10;
+characters[ninja].stats[0][1].ability['WIS'][0] = 14;
+characters[ninja].stats[0][1].ability['CHA'][0] = 14;
+characters[ninja].Race = "Drow";
 
 characters[ninja].Money = Money(0,2,1163);
 

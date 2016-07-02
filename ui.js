@@ -30,7 +30,7 @@ current = "Default";
 pref_unit = "ft";
 pref_wt = "lbs";
 UI = [];
-characters[current] = new Character(current,'D_player','Human','Fighter','N',10,10,10,10,10,10,"None","Australia",'Male',5.7,90,Sizes[4],'blond','green');
+characters[current] = new Character(current,'D_player');
 
 function mytabs(){
 	tabs_circumstance.appendTo(document.body);
