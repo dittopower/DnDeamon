@@ -45,3 +45,9 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+
+#http2 server
+cert.pem
+key.pem
+push.json
+simplehttp2server_windows_amd64.exe

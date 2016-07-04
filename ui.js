@@ -10,6 +10,7 @@ var tabs_chars = $("<div id='chars' class='stat mchars'>");
 var tabs_spell = $("<div id='spell' class='stat mspell'>");
 var tabs_settings = $("<div id='settings' class='msetting'>");
 var tabs_circumstance = $("<div id='cirs' class='mcir'>");
+var tabs_about = $("<div id='about' class='mabout'>");
 
 var extras = $("<div id='converter'>");
 var extra_meters = $("<input class='meas' type=number value=0>");
@@ -48,6 +49,7 @@ function mytabs(){
 	//menublock.append("<h4 class='mcir' onclick=\"reveal('cir')\">Circumstances</h4>");
 	
 	menublock.append("<h4 class='msetting' onclick=\"reveal('setting')\">Settings</h4>");
+	menublock.append("<h4 class='mabout' onclick=\"reveal('about')\">About</h4>");
 	
 	//disChars[0].onchange = function(eve){current=eve.target.value; displayStats();}
 	
@@ -136,6 +138,13 @@ function mytabs(){
 	}
 	
 	mainblock.append(tabs_settings);
+	
+//about
+	tabs_about.append("<h1>About</h1>");
+	tabs_about.append("<div>You should support the Official pathfinder from <a href='//paizo.com/'>Pazio</a>.</div>");
+	tabs_about.append("<div>Another good source of information on pathfinder is <a href='//www.d20pfsrd.com/'><div class='d20pfsrd'></div></a></div>");
+	tabs_about.append();
+	mainblock.append(tabs_about);
 	
 //circumstances
 	//tabs_circumstance.hide();
@@ -290,6 +299,9 @@ function reveal(data){
 			break;
 		case 'setting':
 			tabs_settings.show();
+			break;
+		case 'about':
+			tabs_about.show();
 			break;
 		case 'charcreator':
 			char_creator.show();

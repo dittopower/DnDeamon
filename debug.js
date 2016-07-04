@@ -1,6 +1,5 @@
-//fuck off page refreshing
 //setTimeout(function(){clearInterval(tick)},2000);
-
+var dev = confirm("Dev Mode");
 
 function totalranks(){
 	var ranks = 0;

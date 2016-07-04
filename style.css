@@ -376,3 +376,19 @@ tr:nth-child(1){
     vertical-align: middle;
     margin-right: 0.2em;
 }
+.mabout{
+	background-color:#673ab7;
+    color: white;
+}
+.d20pfsrd{
+	background-image: url('http://www.d20pfsrd.com/_/rsrc/1452829549563/config/customLogo.gif');
+	width: 10em;
+	height: 3em;
+	background-size: cover;
+    display: inline-block;
+}
+.clickable.disabled {
+    cursor: not-allowed;
+    background-color: #BDBDBD;
+    color: #616161;
+}

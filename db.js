@@ -15,7 +15,7 @@ function race_list(){
 		var Races = snapshot.val();
 		for(var i in Races){
 			var temprow = $("<tr>");
-			temprow.append("<td><input id='rc_"+i+"' name='race_sel' type=radio value='"+i+"'></td>");
+			temprow.append("<td><input id='rc_"+i+"' name='race_sel' type=radio value='"+i+"' onclick='eNext()'></td>");
 			//race
 			temprow.append("<td><label for='rc_"+i+"'><b>"+i+"</b><br>"+Races[i].Type+": "+Races[i].Subtype+"</label></td>");
 			//ability scores
@@ -106,8 +106,6 @@ function load_stuff(){
 	}
 	loadChars();//needs implementation
 	current = localLoad("Current","Default");
-	console.log(current);
-	console.log(characters[current] == undefined);
 	if(characters[current] == undefined){
 		current = "Default";
 	}
