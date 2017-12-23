@@ -54,4 +54,6 @@ http2
 #simplehttp2server_windows_amd64.exe
 
 # Bower Files
-bower_components
+bower_components/
+build/
+node_modules/
