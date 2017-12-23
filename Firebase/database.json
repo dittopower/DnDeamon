@@ -1,0 +1,152 @@
+{
+    "Characters": {
+        "player": {
+            "Character": {
+                "Charisma": "score",
+                "Constitution": "score",
+                "Dexterity": "score",
+                "Equiptment": {
+                    "Item": {
+                        "Condition": {
+                            "Damage": "hp damage",
+                            "Statuses": "list"
+                        },
+                        "Equipt": "bool",
+                        "Material": "value"
+                    }
+                },
+                "Feats": "list",
+                "Height": "value",
+                "Intelligence": "score",
+                "Spell-like": {
+                    "ability": {
+                        "DC": "formula",
+                        "Uses": "formula"
+                    }
+                },
+                "Spells": "list",
+                "Strength": "score",
+                "Traits": "list",
+                "Weight": "value",
+                "Wisdom": "score",
+                "listskills": "ranks"
+            }
+        }
+    },
+    "Conditions": {
+        "Condition": {
+            "Description": "value",
+            "Values": "list",
+            "Conditional": {
+                "Conditions": {
+                    "Stat": "value",
+                    "env": "value"
+                },
+                "Effects": {
+                    "Stat": "value"
+                }
+            },
+            "Effects": {
+                "EffectA": {
+                    "Stat": "value",
+                    "Type": "bonus type"
+                }
+            }
+        }
+    },
+    "Feats": {
+        "Example": {
+            "Conditional": {
+                "Conditions": {
+                    "Stat": "value",
+                    "env": "value"
+                },
+                "Effects": {
+                    "Stat": "value"
+                }
+            },
+            "Description": "desc text",
+            "Effects": {
+                "EffectA": {
+                    "Stat": "value",
+                    "Type": "bonus type"
+                }
+            },
+            "Requirements": {
+                "EffectA": {
+                    "Stat": "value",
+                    "Type": "none"
+                }
+            },
+            "Type": "trait type"
+        }
+    },
+    "Sizes": {
+        "name": {
+            "sizemod": "value"
+        }
+    },
+    "Traits": {
+        "Example": {
+            "Conditional": {
+                "Conditions": {
+                    "Stat": "value",
+                    "env": "value"
+                },
+                "Effects": {
+                    "Stat": "value"
+                }
+            },
+            "Description": "desc text",
+            "Effects": {
+                "EffectA": {
+                    "Stat": "value",
+                    "Type": "bonus type"
+                }
+            },
+            "Requirements": {
+                "EffectA": {
+                    "Stat": "value",
+                    "Type": "none"
+                }
+            },
+            "Type": "trait type"
+        }
+    },
+    "Weapons": {
+        "weapon": {
+            "AOE": {
+                "Range": "value",
+                "Type": "value"
+            },
+            "Abilities": "list",
+            "Ammo": "list",
+            "Crit Multiplier": "value",
+            "Crit Range": "range",
+            "Damage": "dice",
+            "Damage Type": "list",
+            "Effects": {
+                "Have": {
+                    "Effect": "value"
+                },
+                "Hit": {
+                    "Effect": "value"
+                },
+                "Hold": {
+                    "Effect": "value"
+                },
+                "Touch": {
+                    "Effect": "value"
+                }
+            },
+            "GP": "$",
+            "Range": "value",
+            "Special": {
+                "AttackMod": "value",
+                "DamageMod": "value"
+            },
+            "Type": "x handed",
+            "Weight": "lbs"
+        }
+    }
+}

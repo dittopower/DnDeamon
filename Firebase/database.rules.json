@@ -1,0 +1,15 @@
+{
+    "rules": {
+        ".read": "auth != null",
+        ".write": "false",
+        "Characters": {
+            "$uid": {
+                ".read": "$uid === auth.uid",
+                ".write": "$uid === auth.uid"
+            }
+        },
+        "Race": {
+            ".read": "true"
+        }
+    }
+}
