@@ -1,14 +1,23 @@
-<h2>Setup</h2>
-<ul>
-<li>Install nodeJs</li>
-<li>Install Git</li>
-</ul>
+# DnDeamon
+A Character Manager
 
-<ol>
-<li>npm install -g bower</li>
-<li>npm install -g polymer-cli</li>
-<li>bower install Polymer/polymer#^2.0.0</li>
-</ol>
+## Setup
++ Install nodeJs
++ Install Git
 
-<h2>Run</h2>
+1. npm install -g bower
+1. npm install -g polymer-cli
+1. bower install Polymer/polymer#^2.0.0
+
+## Run
 polymer serve
+
+## Project Links
++ [Database](https://console.firebase.google.com/project/dndeamon)
++ [Repository](https://github.com/dittopower/DnDeamon)
+
+## Project References | Dependencies
++ [Polymer](https://www.polymer-project.org/)
++ [NodeJs](https://nodejs.org/)
++ [Git](https://git-scm.com/)
++ [GitHub](https://github.com/)
