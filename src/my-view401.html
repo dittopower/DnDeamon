@@ -20,10 +20,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         padding: 10px;
       }
 
-      .head {
-        display: inline-block;
-      }
-
       .error {
         background: #f44336;
         color: white;
@@ -67,8 +63,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </firebase-auth>
 
     <div class="card">
-      <div class="circle head">!</div>
-      <h1 class="head">Sign In</h1>
+      <div class="circle">!</div>
+      <h1>Sign In</h1>
       <hr>
       <div class="error" hidden$="[[!error]]">[[error.code]]: [[error.message]]</div>
       <p>Please choose a provider to sign in with:</p>
