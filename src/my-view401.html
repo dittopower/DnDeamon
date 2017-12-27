@@ -1,0 +1,118 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="my-view401">
+  <template>
+    <style include="shared-styles">
+       :host {
+        display: block;
+
+        padding: 10px;
+      }
+
+      .head {
+        display: inline-block;
+      }
+
+      .error {
+        background: #f44336;
+        color: white;
+        padding: 8px;
+        font-size: 14px;
+        border-radius: 3px;
+        margin: 16px auto;
+        max-width: 800px;
+      }
+
+      button {
+        color: white;
+        border: 0;
+        border-radius: 3px;
+        text-transform: uppercase;
+        padding: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .Gbutton {
+        background: #2196F3;
+      }
+
+      .FBbutton {
+        background: #2F21F3;
+      }
+
+      .Tbutton {
+        background: #21DBF3;
+      }
+
+      button:disabled{
+        background-color: grey;
+        color: darkgrey;
+      }
+    </style>
+
+    <firebase-auth id="auth" user="{{user}}" provider="google" on-error="handleError">
+    </firebase-auth>
+
+    <div class="card">
+      <div class="circle head">!</div>
+      <h1 class="head">Sign In</h1>
+      <hr>
+      <div class="error" hidden$="[[!error]]">[[error.code]]: [[error.message]]</div>
+      <p>Please choose a provider to sign in with:</p>
+      <button class="Gbutton" on-click="signInWithGoogle">Google</button>
+      <button class="FBbutton" on-click="signInWithFacebook" disabled>Facebook (Coming soon-ish-ish)</button>
+      <button class="Tbutton" on-click="signInWithTwitter" disabled>Twitter (Coming soon-ish-ish)</button>
+    </div>
+  </template>
+
+  <script>
+    class Myview401 extends Polymer.Element {
+      static get is() { return 'my-view401'; }
+      constructor() {
+        super();
+        this.error = null;
+      }
+      signInWithGoogle() {
+        this.signIn('google');
+      }
+      signInWithFacebook() {
+        this.signIn('facebook');
+      }
+      signInWithTwitter() {
+        this.signIn('twitter');
+      }
+
+      signIn(provider) {
+        this.error = null;
+
+        this.$.auth.signInWithPopup(provider)
+          .then(function (response) {
+            // successful authentication response here
+            // this.set("route.page", this.redirpage);
+            // this.set("redirpage", undefined);
+
+          }.bind(this)).catch(function (error) {
+            // unsuccessful authentication response here
+            console.error(error);
+            this.error = error;
+          }.bind(this));
+      }
+
+    }
+
+    window.customElements.define(Myview401.is, Myview401);
+  </script>
+</dom-module>

@@ -27,6 +27,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="lazy-import" href="my-view1.html">
 <link rel="lazy-import" href="my-view2.html">
 <link rel="lazy-import" href="my-view3.html">
+<link rel="lazy-import" href="my-view401.html">
 <link rel="lazy-import" href="my-view404.html">
 
 <dom-module id="my-app">
@@ -73,6 +74,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .drawer-list a:hover {
         background-color: #fce8b2;
       }
+
+      button {
+        background: #FFFFFF;
+        color: #000000;
+        border: 0;
+        border-radius: 3px;
+        text-transform: uppercase;
+        padding: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .profilepic{
+        width: 50px;
+        height: 50px;
+        margin-right: 5px;
+        border-radius: 20px;
+        border: 1px solid white;
+      }
     </style>
 
     <firebase-app auth-domain="dndeamon.firebaseapp.com" database-url="https://dndeamon.firebaseio.com" api-key="AIzaSyBuJNvcscqzbIJ2mc_ZV3_IkNQULJJVIYw"
@@ -108,6 +129,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <app-toolbar>
             <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
             <div main-title>DnDeamon</div>
+            <img class="profilepic" src="[[user.photoURL]]" hidden$="[[!user]]"/>
+            <button id="signout" on-click="onClickSignout" hidden$="[[!user]]">Sign Out</button>
           </app-toolbar>
         </app-header>
 
@@ -115,6 +138,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <my-view1 name="view1"></my-view1>
           <my-view2 name="view2"></my-view2>
           <my-view3 name="view3"></my-view3>
+          <my-view401 route="{{routeData}}" page="{{page}}" redirPage="{{redirectedPage}}" name="view401"></my-view401>
           <my-view404 name="view404"></my-view404>
         </iron-pages>
       </app-header-layout>
@@ -131,6 +155,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             type: String,
             reflectToAttribute: true,
             observer: '_pageChanged',
+          },
+          redirectedPage: {
+            type: String,
+            reflectToAttribute: true,
           },
           routeData: Object,
           subroute: String,
@@ -158,26 +186,52 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       _pageChanged(page) {
-        this.$.auth.signInWithPopup()
-          .then(function (response) {
-            // successful authentication response here
-            console.log(response);
-          }).catch(function (error) {
-            // unsuccessful authentication response here
-            console.error(error);
-          });
-
-        // Load page import on demand. Show 404 page if fails
-        var resolvedPageUrl = this.resolveUrl('my-' + page + '.html');
-        Polymer.importHref(
-          resolvedPageUrl,
-          null,
-          this._showPage404.bind(this),
-          true);
+        if (/view40\d/.test(page) || this.$.auth.signedIn) {
+          // Load page import on demand. Show 404 page if fails
+          var resolvedPageUrl = this.resolveUrl('my-' + page + '.html');
+          Polymer.importHref(
+            resolvedPageUrl,
+            null,
+            this._showPage404.bind(this),
+            true);
+        } else {
+          this._showPageLogin();
+        }
       }
 
       _showPage404() {
         this.page = 'view404';
+      }
+
+      _showPageLogin() {
+        // Login page
+        this.redirectedPage = this.page;
+        console.log("redir Page: " + this.redirectedPage)
+        this.page = 'view401';
+      }
+
+      connectedCallback() {
+        super.connectedCallback();
+        requestAnimationFrame(this._installListeners.bind(this));
+      }
+
+      _installListeners() {
+        this.$.auth.auth.onAuthStateChanged(this._authStateChanged.bind(this));
+      }
+
+      _authStateChanged() {
+        if (this.redirectedPage && this.$.auth.signedIn) {
+          this.routeData.page = this.redirectedPage;
+          this.page = this.redirectedPage;
+        } else if (!this.$.auth.signedIn) {
+          // this._showPageLogin();
+        }
+      }
+
+
+      onClickSignout() {
+        this._showPageLogin();
+        return this.$.auth.signOut();
       }
     }
 
