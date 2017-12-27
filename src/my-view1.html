@@ -14,7 +14,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <dom-module id="my-view1">
   <template>
     <style include="shared-styles">
-      :host {
+       :host {
         display: block;
 
         padding: 10px;
@@ -28,8 +28,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <div class="circle">1</div>
       <h1>View One</h1>
       <p>Ut labores minimum atomorum pro. Laudem tibique ut has.</p>
-      <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
+      <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per
+        in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
       <button id="testing" on-click="onClickTest" hidden$="[[!user]]">testing</button>
+      <firebase-query id="query" path="/Characters/[[user.uid]]" data="{{data}}">
+        <template is="dom-repeat" items="{{data}}" as="note">
+          <div>{{note}}</div>
+        </template>
+
+        <firebase-document id="doc" path="/Characters/[[user.uid]]" data="{{charData}}">
+        </firebase-document>
+      </firebase-query>
     </div>
   </template>
 
@@ -37,8 +46,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     class MyView1 extends Polymer.Element {
       static get is() { return 'my-view1'; }
 
-      onClickTest(){
+      onClickTest() {
         console.log(this.user);
+        console.log(this.data);
+        console.log(this.charData);
+        window.test = this;
       }
     }
 
