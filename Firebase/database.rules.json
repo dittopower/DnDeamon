@@ -4,6 +4,12 @@
         ".write": "false",
         "Characters": {
             "$uid": {
+                ".read": "auth != null",
+                ".write": "$uid === auth.uid"
+            }
+        },
+        "Preferences": {
+            "$uid": {
                 ".read": "$uid === auth.uid",
                 ".write": "$uid === auth.uid"
             }
