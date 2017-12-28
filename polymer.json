@@ -3,7 +3,7 @@
   "shell": "src/my-app.html",
   "fragments": [
     "src/my-view1.html",
-    "src/my-view2.html",
+    "src/my-characters.html",
     "src/my-settings.html",
     "src/my-view401.html",
     "src/my-view404.html"
@@ -18,7 +18,9 @@
     "bower_components/webcomponentsjs/*.js"
   ],
   "lint": {
-    "rules": ["polymer-2"]
+    "rules": [
+      "polymer-2"
+    ]
   },
   "builds": [
     {

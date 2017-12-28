@@ -20,6 +20,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="my-icons.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-app.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
@@ -27,7 +28,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
 
 <link rel="lazy-import" href="my-view1.html">
-<link rel="lazy-import" href="my-view2.html">
+<link rel="lazy-import" href="my-characters.html">
 <link rel="lazy-import" href="my-settings.html">
 <link rel="lazy-import" href="my-view401.html">
 <link rel="lazy-import" href="my-view404.html">
@@ -36,7 +37,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <template>
     <style>
       :host {
-        --app-primary-color: #f7cb4d;
+        --app-primary-color: var(--paper-amber-400);
         --app-secondary-color: black;
 
         display: block;
@@ -70,23 +71,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .drawer-list a.iron-selected {
         color: black;
         font-weight: bold;
-        background-color: #eeeeee;
+        background-color: var(--paper-grey-200);
       }
 
       .drawer-list a:hover {
-        background-color: #fce8b2;
+        background-color: var(--paper-amber-300);
       }
 
-      button {
-        background: #FFFFFF;
+      paper-button {
+        background: var(--paper-grey-100);
         color: #000000;
-        border: 0;
         border-radius: 3px;
         text-transform: uppercase;
-        padding: 8px;
         cursor: pointer;
         font-size: 14px;
         font-weight: 500;
+      }
+
+      paper-button:hover {
+        background: var(--paper-grey-200);
       }
 
       .profilepic {
@@ -94,7 +97,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         height: 50px;
         margin-right: 5px;
         border-radius: 20px;
-        border: 1px solid white;
+        border: 2px solid var(--paper-grey-100);
       }
     </style>
 
@@ -102,10 +105,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       storage-bucket="dndeamon.appspot.com" messaging-sender-id="1045036057257">
     </firebase-app>
 
-    <firebase-auth id="auth" user="{{user}}" provider="google" on-error="handleError">
+    <firebase-auth id="auth" user="{{global.user}}" provider="google" on-error="handleError">
     </firebase-auth>
 
-    <firebase-document id="preferences" path="/Preferences/[[user.uid]]" data="{{global.preferences}}">
+    <firebase-document id="preferences" path="/Preferences/[[global.user.uid]]" data="{{global.preferences}}">
     </firebase-document>
 
     <app-location route="{{route}}" url-space-regex="^[[rootPath]]">
@@ -121,8 +124,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <h2>Menu</h2>
         </app-toolbar>
         <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-          <a id="testing" name="view1" href="[[rootPath]]view1">View One</a>
-          <a name="view2" href="[[rootPath]]view2">View Two</a>
+          <a id="testing" name="view1" href="[[rootPath]]view1">Testing</a>
+          <a name="characters" href="[[rootPath]]characters">Characters</a>
           <a name="settings" href="[[rootPath]]settings">Settings</a>
         </iron-selector>
       </app-drawer>
@@ -134,14 +137,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <app-toolbar>
             <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
             <div main-title>DnDeamon</div>
-            <img class="profilepic" src="[[user.photoURL]]" hidden$="[[!user]]" />
-            <button id="signout" on-click="onClickSignout" hidden$="[[!user]]">Sign Out</button>
+            <img class="profilepic" src="[[global.user.photoURL]]" alt="[[global.user.displayName]]" hidden$="[[!global.user]]" />
+            <paper-button id="signout" on-click="onClickSignout" hidden$="[[!global.user]]">Sign Out</paper-button>
           </app-toolbar>
         </app-header>
 
         <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
           <my-view1 name="view1" global="{{global}}"></my-view1>
-          <my-view2 name="view2" global="{{global}}"></my-view2>
+          <my-characters name="characters" global="{{global}}"></my-characters>
           <my-settings name="settings" global="{{global}}"></my-settings>
           <my-view401 name="view401"></my-view401>
           <my-view404 name="view404"></my-view404>
@@ -234,7 +237,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (this.redirectedPage && this.$.auth.signedIn) {
           this.routeData.page = this.redirectedPage;
           this.page = this.redirectedPage;
-          if (this.user.email == "dittopower@gmail.com") {
+          if (this.global.user.email == "dittopower@gmail.com") {
             this.$.testing.style.display = "block"
           }
         } else if (!this.$.auth.signedIn) {
@@ -256,13 +259,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         } else {
           //Fix Missings Preferences
           if (!this.$.preferences.data.distance) {
-            this.$.preferences.setStoredValue(this.$.preferences.path+"/distance","Metric");
+            this.$.preferences.setStoredValue(this.$.preferences.path + "/distance", "Metric");
           }
           if (!this.$.preferences.data.mass) {
-            this.$.preferences.setStoredValue(this.$.preferences.path+"/mass","Metric");
+            this.$.preferences.setStoredValue(this.$.preferences.path + "/mass", "Metric");
           }
           if (!this.$.preferences.data.volume) {
-            this.$.preferences.setStoredValue(this.$.preferences.path+"/volume", "Metric");
+            this.$.preferences.setStoredValue(this.$.preferences.path + "/volume", "Metric");
           }
         }
       }
