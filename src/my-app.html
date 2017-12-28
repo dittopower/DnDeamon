@@ -92,12 +92,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         background: var(--paper-grey-200);
       }
 
-      .profilepic {
-        width: 50px;
+      img {
         height: 50px;
+        width: auto;
         margin-right: 5px;
+      }
+
+      .profilepic {
         border-radius: 20px;
         border: 2px solid var(--paper-grey-100);
+      }
+
+      .main-title {
+        font-size: 28px;
       }
     </style>
 
@@ -136,7 +143,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <app-header slot="header" condenses reveals effects="waterfall">
           <app-toolbar>
             <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
-            <div main-title>DnDeamon</div>
+            <img class="" src="images/dndeamon.png" />
+            <div class="main-title" main-title>DnDeamon</div>
             <img class="profilepic" src="[[global.user.photoURL]]" alt="[[global.user.displayName]]" hidden$="[[!global.user]]" />
             <paper-button id="signout" on-click="onClickSignout" hidden$="[[!global.user]]">Sign Out</paper-button>
           </app-toolbar>
