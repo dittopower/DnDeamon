@@ -14,37 +14,88 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <dom-module id="my-settings">
   <template>
     <style include="shared-styles">
-       :host {
+      :host {
         display: block;
-
         padding: 10px;
+      }
+
+      iron-selector {
+        border-radius: 16px;
+        overflow: hidden;
+        display: inline-flex;
+      }
+
+      iron-selector>* {
+        padding: 8px;
+        background: #e0e0e0;
+      }
+
+      iron-selector>*:hover {
+        background: #f7cb4d;
+      }
+
+      .iron-selected {
+        background: #fce8b2;
+      }
+
+      span {
+        margin: 8px;
+        display: block;
+      }
+
+      span p {
+        display: inline-block;
+        margin: 0;
+      }
+
+      span p::after {
+        content: ":";
+      }
+
+      span .iron-selector {
+        display: inline-block;
       }
     </style>
 
     <div class="card">
       <div class="circle">3</div>
       <h1>Settings</h1>
-      <table>
-        <tr><th>Prefered Units</th></tr>
-        <tr>
-          <td>Distance</td>
-          <td>[[global.preferences.distance]]</td>
-        </tr>
-        <tr>
-          <td>Mass</td>
-          <td>[[global.preferences.mass]]</td>
-        </tr>
-        <tr>
-          <td>Volume</td>
-          <td>[[global.preferences.volume]]</td>
-        </tr>
-      </table>
+      <h2>Prefered Units</h2>
+      <div>
+        <span>
+          <p>Distance</p>
+          <iron-selector attr-for-selected="name" selected="{{global.preferences.distance}}" on-selected-changed="_onSelectedChanged"
+            fallback-selection="Metric">
+            <div name="Metric">Metric - Meters</div>
+            <div name="Imperial">Imperial - Feet</div>
+          </iron-selector>
+        </span>
+        <span>
+          <p>Mass</p>
+          <iron-selector attr-for-selected="name" selected="{{global.preferences.mass}}" on-selected-changed="_onSelectedChanged" fallback-selection="Metric">
+            <div name="Metric">Metric - Kilogram</div>
+            <div name="Imperial">Imperial - Pound</div>
+          </iron-selector>
+        </span>
+        <span>
+          <p>Volume</p>
+          <iron-selector attr-for-selected="name" selected="{{global.preferences.volume}}" on-selected-changed="_onSelectedChanged"
+            fallback-selection="Metric">
+            <div name="Metric">Metric - Litre</div>
+            <div name="Imperial">Imperial - </div>
+          </iron-selector>
+        </span>
+      </div>
     </div>
   </template>
 
   <script>
     class MySettings extends Polymer.Element {
       static get is() { return 'my-settings'; }
+
+      _onSelectedChanged(e) {
+        console.log('route', e.detail.value);
+      }
     }
 
     window.customElements.define(MySettings.is, MySettings);

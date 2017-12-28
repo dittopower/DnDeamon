@@ -21,3 +21,6 @@ polymer serve
 + [NodeJs](https://nodejs.org/)
 + [Git](https://git-scm.com/)
 + [GitHub](https://github.com/)
+
+### Notes
+bower install --save webcomponents/webcomponentsjs
