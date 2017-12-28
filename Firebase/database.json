@@ -2,6 +2,7 @@
     "Characters": {
         "player": {
             "Character": {
+                "GameRoom": "PlayerDM/room",
                 "Charisma": "score",
                 "Constitution": "score",
                 "Dexterity": "score",
@@ -153,6 +154,23 @@
             },
             "Type": "x handed",
             "Weight": "lbs"
+        }
+    },
+    "GameRooms": {
+        "playerDM":{
+            "room": {
+                "Races": "list",
+                "Classes": "list",
+                "Feats": "list",
+                "Traits": "list",
+                "Items": "list",
+                "Spells": "list",
+                "Factions": "list",
+                "Religions": "list",
+                "Ability Scores": "method 4d6",
+                "gold": "normal|150",
+                "level": 1
+            }
         }
     }
 }
