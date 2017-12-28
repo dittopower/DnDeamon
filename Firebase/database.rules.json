@@ -4,7 +4,6 @@
         ".write": "false",
         "Characters": {
             "$uid": {
-                ".read": "auth != null",
                 ".write": "$uid === auth.uid"
             }
         },
@@ -16,6 +15,11 @@
         },
         "Race": {
             ".read": "true"
+        },
+        "GameRooms": {
+            "$uid": {
+                ".write": "$uid === auth.uid"
+            }
         }
     }
 }
