@@ -97,9 +97,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.$.auth.signInWithPopup(provider)
           .then(function (response) {
             // successful authentication response here
-            // this.set("route.page", this.redirpage);
-            // this.set("redirpage", undefined);
-
+            // Auth redirect handled by auth changed event
           }.bind(this)).catch(function (error) {
             // unsuccessful authentication response here
             console.error(error);
