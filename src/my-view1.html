@@ -14,9 +14,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <dom-module id="my-view1">
   <template>
     <style include="shared-styles">
-      :host {
+       :host {
         display: block;
         padding: 10px;
+      }
+      .addbutton{
+        position: fixed;
+        right: 1em;
+        bottom: 1em;
+        background: var(--paper-amber-700);
+        color: var(--paper-grey-50);
+      }
+      .addbutton:hover{
+        background: var(--paper-amber-600);
       }
     </style>
 
@@ -26,7 +36,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <p>Ut labores minimum atomorum pro. Laudem tibique ut has.</p>
       <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per
         in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
-      <paper-button id="testing" on-click="onClickTest" hidden$="[[!global.user]]">testing</paper-button>
+      <paper-button id="testing" class="paperbutton" on-tap="onClickTest" hidden$="[[!global.user]]">testing</paper-button>
       <firebase-query id="query" path="/Characters/[[global.user.uid]]" data="{{data}}">
         <template is="dom-repeat" items="{{data}}" as="note">
           <div>{{note}}</div>
@@ -36,6 +46,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </firebase-document>
       </firebase-query>
     </div>
+    <paper-button id="addCharacter" class="circle addbutton" on-tap="onTest">+</paper-button>
   </template>
 
   <script>
@@ -50,6 +61,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         window.test = this;
         window.global = this.global;
         window.main = this.global.cheat;
+      }
+
+      onTest() {
+        console.log("test");
       }
     }
 
