@@ -1,4 +1,84 @@
 {
+    "old": {
+        "Race": {
+            "Drow": {
+                "Abilities": {
+                    "dancing lights": "1 day",
+                    "darkness": "1 day",
+                    "faerie fire": "1 day"
+                },
+                "Darkvision": 120,
+                "Immunities": "sleep",
+                "Poison Use": true,
+                "SR": "scale(6,1,'Level')",
+                "Size": "Medium",
+                "Skills": {
+                    "Perception": 2
+                },
+                "Speed": 30,
+                "Stats": {
+                    "CHA": 2,
+                    "CON": -2,
+                    "DEX": 2
+                },
+                "Subtype": "Elf",
+                "Type": "Humanoid",
+                "conditions": {
+                    "light bright": {
+                        "1": "blind",
+                        "+": "dazzled"
+                    },
+                    "light dim less": {
+                        "Intimidate": 2,
+                        "Stealth": 2
+                    },
+                    "source enchantment effect": {
+                        "save": 2
+                    }
+                }
+            },
+            "Dwarf": {
+                "Darkvision": 60,
+                "Size": "Medium",
+                "Speed": 20,
+                "Stats": {
+                    "CHA": -2,
+                    "CON": 2,
+                    "WIS": 2
+                },
+                "Subtype": "Dwarf",
+                "Type": "Humanoid",
+                "conditions": {
+                    "cmd": {
+                        "bull rush": 4,
+                        "trip": 4
+                    },
+                    "enviroment stonework": {
+                        "Perception": 2,
+                        "auto": "10ft, Perception"
+                    },
+                    "price": {
+                        "Appraise": 2
+                    },
+                    "source poison": {
+                        "save": 2
+                    },
+                    "source spells": {
+                        "save": 2
+                    },
+                    "subtype giant": {
+                        "armour dodge": 4
+                    },
+                    "subtype goblin": {
+                        "atk_roll": 1
+                    },
+                    "subtype orc": {
+                        "atk_roll": 1
+                    }
+                }
+            }
+        }
+    },
     "Characters": {
         "player": {
             "Character": {
@@ -82,15 +162,320 @@
             "Type": "trait type"
         }
     },
+    "Languages": {
+        "Aboleth": {
+            "Normal": true
+        },
+        "Abyssal": {
+            "Normal": true
+        },
+        "Aklo": {
+            "Normal": true
+        },
+        "Aquan": {
+            "Normal": true
+        },
+        "Auran": {
+            "Normal": true
+        },
+        "Boggard": {
+            "Normal": true
+        },
+        "Celestial": {
+            "Normal": true
+        },
+        "Common": {
+            "Normal": true
+        },
+        "Cyclops": {
+            "Normal": true
+        },
+        "Dark Folk": {
+            "Normal": true
+        },
+        "Draconic": {
+            "Normal": true
+        },
+        "Drow Sign Language": {
+            "Normal": false,
+            "Secret": true
+        },
+        "Druidic": {
+            "Normal": true,
+            "Secret": true
+        },
+        "Dwarven": {
+            "Normal": true
+        },
+        "D’ziriak": {
+            "Normal": true
+        },
+        "Elven": {
+            "Normal": true
+        },
+        "Giant": {
+            "Normal": true
+        },
+        "Gnoll": {
+            "Normal": true
+        },
+        "Gnome": {
+            "Normal": true
+        },
+        "Goblin": {
+            "Normal": true
+        },
+        "Grippli": {
+            "Normal": true
+        },
+        "Halfling": {
+            "Normal": true
+        },
+        "Ignan": {
+            "Normal": true
+        },
+        "Infernal": {
+            "Normal": true
+        },
+        "Necril": {
+            "Normal": true
+        },
+        "Orc": {
+            "Normal": true
+        },
+        "Protean": {
+            "Normal": false
+        },
+        "Sphinx": {
+            "Normal": true
+        },
+        "Sylvan": {
+            "Normal": true
+        },
+        "Tengu": {
+            "Normal": true
+        },
+        "Terran": {
+            "Normal": true
+        },
+        "Treant": {
+            "Normal": true
+        },
+        "Undercommon": {
+            "Normal": true
+        },
+        "Vegepygmy": {
+            "Normal": false
+        }
+    },
     "Preferences": {
-        "player":{
-            "Distance" : "Meters",
+        "player": {
+            "Distance": "Meters",
             "Mass": "Kilograms"
         }
     },
     "Sizes": {
-        "name": {
-            "sizemod": "value"
+        "Fine": {
+            "Modifier": 8,
+            "Special": -8,
+            "Fly": 8,
+            "Stealth": 16,
+            "Space": 0.5,
+            "Reach": 0,
+            "Height": {
+                "Max": 0.5
+            },
+            "Weight": {
+                "Max": 0.125
+            }
+        },
+        "Diminutive": {
+            "Modifier": 4,
+            "Special": -4,
+            "Fly": 6,
+            "Stealth": 12,
+            "Space": 1,
+            "Reach": 0,
+            "Height": {
+                "Max": 1,
+                "Min": 0.5
+            },
+            "Weight": {
+                "Min": 0.125,
+                "Max": 1
+            }
+        },
+        "Tiny": {
+            "Modifier": 2,
+            "Special": -2,
+            "Fly": 4,
+            "Stealth": 8,
+            "Space": 2.5,
+            "Reach": 0,
+            "Height": {
+                "Max": 2,
+                "Min": 1
+            },
+            "Weight": {
+                "Max": 8,
+                "Min": 1
+            }
+        },
+        "Small": {
+            "Modifier": 1,
+            "Special": -1,
+            "Fly": 2,
+            "Stealth": 4,
+            "Space": 5,
+            "Reach": 5,
+            "Height": {
+                "Max": 4,
+                "Min": 2
+            },
+            "Weight": {
+                "Max": 60,
+                "Min": 8
+            }
+        },
+        "Medium": {
+            "Modifier": 0,
+            "Special": 0,
+            "Fly": 0,
+            "Stealth": 0,
+            "Space": 5,
+            "Reach": 5,
+            "Height": {
+                "Max": 8,
+                "Min": 4
+            },
+            "Weight": {
+                "Max": 500,
+                "Min": 60
+            }
+        },
+        "LargeTall": {
+            "Modifier": -1,
+            "Special": 1,
+            "Fly": -2,
+            "Stealth": -4,
+            "Space": 10,
+            "Reach": 10,
+            "Height": {
+                "Max": 16,
+                "Min": 8
+            },
+            "Weight": {
+                "Max": 4000,
+                "Min": 500
+            }
+        },
+        "LargeLong": {
+            "Modifier": -1,
+            "Special": 1,
+            "Fly": -2,
+            "Stealth": -4,
+            "Space": 10,
+            "Reach": 5,
+            "Height": {
+                "Max": 16,
+                "Min": 8
+            },
+            "Weight": {
+                "Max": 4000,
+                "Min": 500
+            }
+        },
+        "HugeTall": {
+            "Modifier": -2,
+            "Special": 2,
+            "Fly": -4,
+            "Stealth": -8,
+            "Space": 15,
+            "Reach": 15,
+            "Height": {
+                "Max": 32,
+                "Min": 16
+            },
+            "Weight": {
+                "Max": 32000,
+                "Min": 4000
+            }
+        },
+        "HugeLong": {
+            "Modifier": -2,
+            "Special": 2,
+            "Fly": -4,
+            "Stealth": -8,
+            "Space": 15,
+            "Reach": 10,
+            "Height": {
+                "Max": 32,
+                "Min": 16
+            },
+            "Weight": {
+                "Max": 32000,
+                "Min": 4000
+            }
+        },
+        "GargantuanTall": {
+            "Modifier": -4,
+            "Special": 4,
+            "Fly": -6,
+            "Stealth": -12,
+            "Space": 20,
+            "Reach": 20,
+            "Height": {
+                "Max": 64,
+                "Min": 32
+            },
+            "Weight": {
+                "Max": 250000,
+                "Min": 32000
+            }
+        },
+        "GargantuanLong": {
+            "Modifier": -4,
+            "Special": 4,
+            "Fly": -6,
+            "Stealth": -12,
+            "Space": 20,
+            "Reach": 15,
+            "Height": {
+                "Max": 64,
+                "Min": 32
+            },
+            "Weight": {
+                "Max": 250000,
+                "Min": 32000
+            }
+        },
+        "ColossalTall": {
+            "Modifier": -8,
+            "Special": 8,
+            "Fly": -8,
+            "Stealth": -16,
+            "Space": 30,
+            "Reach": 30,
+            "Height": {
+                "Min": 64
+            },
+            "Weight": {
+                "Min": 250000
+            }
+        },
+        "ColossalLong": {
+            "Modifier": -8,
+            "Special": 8,
+            "Fly": -8,
+            "Stealth": -16,
+            "Space": 30,
+            "Reach": 20,
+            "Height": {
+                "Min": 64
+            },
+            "Weight": {
+                "Min": 250000
+            }
         }
     },
     "Traits": {
@@ -157,7 +542,7 @@
         }
     },
     "GameRooms": {
-        "playerDM":{
+        "playerDM": {
             "room": {
                 "Races": "list",
                 "Classes": "list",
@@ -170,6 +555,126 @@
                 "Ability Scores": "method 4d6",
                 "gold": "normal|150",
                 "level": 1
+            }
+        }
+    },
+    "RaceTraits": {
+        "Example": {
+            "Conditional": {
+                "Conditions": {
+                    "Stat": "value",
+                    "env": "value"
+                },
+                "Effects": {
+                    "Stat": "value"
+                }
+            },
+            "Description": "desc text",
+            "Effects": {
+                "EffectA": {
+                    "Stat": "value",
+                    "Type": "bonus type"
+                }
+            },
+            "Requirements": {
+                "EffectA": {
+                    "Stat": "value",
+                    "Type": "none"
+                }
+            },
+            "Type": "trait type"
+        }
+    },
+    "Races": {
+        "Ratfolk": {
+            "Scores": {
+                "Strength": -2,
+                "Dexterity": 2,
+                "Constitution": 0,
+                "Intelligence": 2,
+                "Wisdom": 0,
+                "Charisma": 0
+            },
+            "Type": "Humanoid",
+            "Subtype": "Ratfolk",
+            "Size": "Small",
+            "Speeds": {
+                "Land": 20
+            },
+            "Languages": {
+                "Known": "Common,Ratfolk",
+                "Learn": "Aklo,Draconic,Dwarven,Gnoll,Gnome,Goblin,Halfling,Orc,Undercommon"
+            },
+            "Traits": {
+                "Default": "Tinker,Rodent Empathy,Swarming,Darkvision",
+                "Alternate": {
+                    "Cornered Fury": "Swarming",
+                    "Market Dweller": "Tinker",
+                    "Scent": "Tinker",
+                    "Skulk": "Tinker",
+                    "Unnatural": "Rodent Empathy"
+                }
+            },
+            "Favored Class": {
+                "class": "bonus"
+            },
+            "Description": {
+                "Normal": "Ratfolk are small, rodent-like humanoids; originally native to subterranean areas in dry deserts and plains, they are now more often found in nomadic trading caravans. Much like the pack rats they resemble, ratfolk are tinkerers and hoarders by nature, and as a whole are masters of commerce, especially when it comes to acquiring and repairing mechanical or magical devices. Though some are shrewd merchants who carefully navigate the shifting alliances of black markets and bazaars, many ratfolk love their stockpiles of interesting items far more than money, and would rather trade for more such prizes to add to their hoards over mere coins. It’s common to see a successful crew of ratfolk traders rolling out of town with an even larger bundle than they entered with, the whole mess piled precariously high on a cart drawn by giant rats.",
+                "Physical": "Typical ratfolk are average 4 feet tall and weigh 80 pounds. They often wear robes to stay cool in the desert or conceal their forms in cities, as they know other humanoids find their rodent features distasteful. Ratfolk have a strong attraction to shiny jewelry, especially copper, bronze, and gold, and many decorate their ears and tails with small rings made of such metals. They are known to train giant rats (dire rats with the giant creature simple template), which they often use as pack animals and mounts.",
+                "Society": "Ratfolk are extremely communal, and live in large warrens with plenty of hidden crannies in which to stash their hoards or flee in times of danger, gravitating toward subterranean tunnels or tightly packed tenements in city slums. They feel an intense bond with their large families and kin networks, as well as with ordinary rodents of all sorts, living in chaotic harmony and fighting fiercely to defend each other when threatened. They are quick to use their stockpiles of gear in combat, but prefer to work out differences and settle disputes with mutually beneficial trades.\nWhen a specific ratfolk warren grows overcrowded and the surrounding environment won’t support a larger community, young ratfolk instinctively seek out new places in which to dwell. If a large enough group of ratfolk immigrants all settle down in a new, fertile area, they may create a new warren, often with strong political ties to their original homeland. Otherwise, individual ratfolk are inclined to simply leave home and take up residence elsewhere, or wander on caravan trips that last most of the year, reducing the pressure of overcrowding at home.",
+                "Relations": "Ratfolk tend to get along quite well with humans, and often develop ratfolk societies dwelling in the sewers, alleys, and shadows of human cities. Ratfolk find dwarves too hidebound and territorial, and often mistake even mild criticisms from dwarves as personal attacks. Ratfolk have no particular feelings about gnomes and halflings, although in areas where those races and ratfolk must compete for resources, clan warfare can become dogma for generations. Ratfolk enjoy the company of elves and half-elves, often seeing them as the calmest and most sane of the civilized humanoid races. Ratfolk are particularly fond of elven music and art, and many ratfolk warrens are decorated with elven art pieces acquired through generations of friendly trade.",
+                "Alignment": "Ratfolk individuals are driven by a desire to acquire interesting items and a compulsion to tinker with complex objects. The strong ties of ratfolk communities give them an appreciation for the benefits of an orderly society, even if they are willing to bend those rules when excited about accomplishing their individual goals. Most ratfolk are neutral.",
+                "Religion": "Those who take to religion tend to worship deities that represent commerce and family.",
+                "Adventurers": "Ratfolk are often driven by a desire to seek out new opportunities for trade, both for themselves and for their warrens. Ratfolk adventurers may seek potential markets for their clan’s goods, keep an eye out for sources of new commodities, or just wander about in hopes of unearthing enough treasure to fund less dangerous business ventures. Ratfolk battles are often decided by cunning traps, ambushes, or sabotage of enemy positions, and accordingly young ratfolk heroes often take up classes such as alchemist, gunslinger, and rogue."
+            },
+            "Race Point Costs": 9,
+            "Gender": {
+                "Male": {
+                    "Height": {
+                        "Base": 3.583333,
+                        "Dice": 4,
+                        "NoDice": 2,
+                        "Modifier": 0.083333
+                    },
+                    "Weight": {
+                        "Base": 65,
+                        "Dice": 4,
+                        "NoDice": 2,
+                        "Modifier": 3
+                    }
+                },
+                "Female": {
+                    "Height": {
+                        "Base": 3.333333,
+                        "Dice": 4,
+                        "NoDice": 2,
+                        "Modifier": 0.083333
+                    },
+                    "Weight": {
+                        "Base": 50,
+                        "Dice": 4,
+                        "NoDice": 2,
+                        "Modifier": 3
+                    }
+                }
+            },
+            "Age": {
+                "Adult": 12,
+                "Intuitive": {
+                    "Dice": 4,
+                    "NoDice": 1,
+                    "Modifier": 1
+                },
+                "Self-Taught": {
+                    "Dice": 6,
+                    "NoDice": 1,
+                    "Modifier": 1
+                },
+                "Trained": {
+                    "Dice": 6,
+                    "NoDice": 2,
+                    "Modifier": 1
+                }
             }
         }
     }

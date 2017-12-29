@@ -1,0 +1,300 @@
+{
+    "Characters": {
+        "player": {
+            "Character": {
+                "GameRoom": "PlayerDM/room",
+                "Charisma": "score",
+                "Constitution": "score",
+                "Dexterity": "score",
+                "Equiptment": {
+                    "Item": {
+                        "Condition": {
+                            "Damage": "hp damage",
+                            "Statuses": "list"
+                        },
+                        "Equipt": "bool",
+                        "Material": "value"
+                    }
+                },
+                "Feats": "list",
+                "Height": "value",
+                "Intelligence": "score",
+                "Spell-like": {
+                    "ability": {
+                        "DC": "formula",
+                        "Uses": "formula"
+                    }
+                },
+                "Spells": "list",
+                "Strength": "score",
+                "Traits": "list",
+                "Weight": "value",
+                "Wisdom": "score",
+                "listskills": "ranks"
+            }
+        }
+    },
+    "Conditions": {
+        "Condition": {
+            "Description": "value",
+            "Values": "list",
+            "Conditional": {
+                "Conditions": {
+                    "Stat": "value",
+                    "env": "value"
+                },
+                "Effects": {
+                    "Stat": "value"
+                }
+            },
+            "Effects": {
+                "EffectA": {
+                    "Stat": "value",
+                    "Type": "bonus type"
+                }
+            }
+        }
+    },
+    "Feats": {
+        "Example": {
+            "Conditional": {
+                "Conditions": {
+                    "Stat": "value",
+                    "env": "value"
+                },
+                "Effects": {
+                    "Stat": "value"
+                }
+            },
+            "Description": "desc text",
+            "Effects": {
+                "EffectA": {
+                    "Stat": "value",
+                    "Type": "bonus type"
+                }
+            },
+            "Requirements": {
+                "EffectA": {
+                    "Stat": "value",
+                    "Type": "none"
+                }
+            },
+            "Type": "trait type"
+        }
+    },
+    "Languages": {
+        "Aboleth": {
+            "Normal": true
+        },
+        "Drow Sign Language": {
+            "Normal": false,
+            "Secret": true
+        }
+    },
+    "Preferences": {
+        "player": {
+            "Distance": "Metric",
+            "Mass": "Imperial"
+        }
+    },
+    "Sizes": {
+        "Tiny": {
+            "Modifier": 2,
+            "Special": -2,
+            "Fly": 4,
+            "Stealth": 8,
+            "Space": 2.5,
+            "Reach": 0,
+            "Height": {
+                "Max": 2,
+                "Min": 1
+            },
+            "Weight": {
+                "Max": 8,
+                "Min": 1
+            }
+        }
+    },
+    "Traits": {
+        "Example": {
+            "Conditional": {
+                "Conditions": {
+                    "Stat": "value",
+                    "env": "value"
+                },
+                "Effects": {
+                    "Stat": "value"
+                }
+            },
+            "Description": "desc text",
+            "Effects": {
+                "EffectA": {
+                    "Stat": "value",
+                    "Type": "bonus type"
+                }
+            },
+            "Requirements": {
+                "EffectA": {
+                    "Stat": "value",
+                    "Type": "none"
+                }
+            },
+            "Type": "trait type"
+        }
+    },
+    "Weapons": {
+        "weapon": {
+            "AOE": {
+                "Range": "value",
+                "Type": "value"
+            },
+            "Abilities": "list",
+            "Ammo": "list",
+            "Crit Multiplier": "value",
+            "Crit Range": "range",
+            "Damage": "dice",
+            "Damage Type": "list",
+            "Effects": {
+                "Have": {
+                    "Effect": "value"
+                },
+                "Hit": {
+                    "Effect": "value"
+                },
+                "Hold": {
+                    "Effect": "value"
+                },
+                "Touch": {
+                    "Effect": "value"
+                }
+            },
+            "GP": "$",
+            "Range": "value",
+            "Special": {
+                "AttackMod": "value",
+                "DamageMod": "value"
+            },
+            "Type": "x handed",
+            "Weight": "lbs"
+        }
+    },
+    "GameRooms": {
+        "playerDM": {
+            "room": {
+                "Races": "list",
+                "Classes": "list",
+                "Feats": "list",
+                "Traits": "list",
+                "Items": "list",
+                "Spells": "list",
+                "Factions": "list",
+                "Religions": "list",
+                "Ability Scores": "method 4d6",
+                "gold": "normal|150",
+                "level": 1
+            }
+        }
+    },
+    "RaceTraits": {
+        "Example": {
+            "Conditional": {
+                "Conditions": {
+                    "Stat": "value",
+                    "env": "value"
+                },
+                "Effects": {
+                    "Stat": "value"
+                }
+            },
+            "Description": "desc text",
+            "Effects": {
+                "EffectA": {
+                    "Stat": "value",
+                    "Type": "bonus type"
+                }
+            },
+            "Requirements": {
+                "EffectA": {
+                    "Stat": "value",
+                    "Type": "none"
+                }
+            },
+            "Type": "trait type"
+        }
+    },
+    "Races": {
+        "Example": {
+            "Scores": {
+                "Strength": 0,
+                "Dexterity": 0,
+                "Constitution": 0,
+                "Intelligence": 0,
+                "Wisdom": 0,
+                "Charisma": 0
+            },
+            "Type": "Humanoid",
+            "Subtype": "something",
+            "Size": "Medium",
+            "Speeds": {
+                "Land": 30
+            },
+            "Languages": {
+                "Known": "list",
+                "Learn": "list"
+            },
+            "Traits": {
+                "Default": "list",
+                "Alternate": {
+                    "trait": "replaces list"
+                }
+            },
+            "Favored Class": {
+                "class": "bonus"
+            },
+            "Description": {
+                "Normal": "",
+                "Physical": "",
+                "Society": "",
+                "Relations": "",
+                "Alignment": "",
+                "Religion": "",
+                "Adventurers": ""
+            },
+            "Race Point Costs": "-",
+            "Gender": {
+                "Male": {
+                    "Height": {
+                        "Base": 3.583333,
+                        "Dice": 4,
+                        "NoDice": 2,
+                        "Modifier": 0.0833333
+                    },
+                    "Weight": {
+                        "Base": 65,
+                        "Dice": 4,
+                        "NoDice": 2,
+                        "Modifier": 3
+                    }
+                }
+            },
+            "Age": {
+                "Adult": 12,
+                "Intuitive": {
+                    "Dice": 4,
+                    "NoDice": 1,
+                    "Modifier": 1
+                },
+                "Self-Taught": {
+                    "Dice": 6,
+                    "NoDice": 1,
+                    "Modifier": 1
+                },
+                "Trained": {
+                    "Dice": 6,
+                    "NoDice": 2,
+                    "Modifier": 1
+                }
+            }
+        }
+    }
+}
