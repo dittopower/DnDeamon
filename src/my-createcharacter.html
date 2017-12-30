@@ -11,7 +11,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="shared-styles.html">
 
-<dom-module id="my-characters">
+<dom-module id="my-createcharacter">
   <template>
     <style include="shared-styles">
        :host {
@@ -24,20 +24,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <div class="card">
       <div class="circle">2</div>
-      <h1>Characters</h1>
-      <p>Create Character</p>
-      <p>list of characters</p>
-      <template is="dom-repeat" items="{{people}}" as="person">
-        <h3>[[person]]</h3>
-      </template>
+      <h1>Create Character</h1>
+      <p>Name:
+        <iron-input bind-value="{{bindValue}}"><input pattern="[ a-zA-Z',]+"></iron-input>
+      </p>
 
     </div>
-    <paper-fab class="addbutton" on-tap="_onCreatecharacter" label="+"></paper-fab>
   </template>
 
   <script>
-    class MyCharacters extends Polymer.Element {
-      static get is() { return 'my-characters'; }
+    class MyCreatecharacter extends Polymer.Element {
+      static get is() { return 'my-createcharacter'; }
+      attached() {
+        super.attached();
+        console.log(' was attached');
+        //this._activateToolBarButtons();
+      }
+      ready() {
+        super.ready();
+        console.log(' is ready');
+
+      }
 
       _onDataChanged() {
         this.people = [];
@@ -47,14 +54,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
 
-      _onCreatecharacter() {
-        // this.route = { page: "createcharacter" };
-        // this.page = "createcharacter";
-        this.global.navigate("createcharacter");
-      }
-
     }
 
-    window.customElements.define(MyCharacters.is, MyCharacters);
+    window.customElements.define(MyCreatecharacter.is, MyCreatecharacter);
   </script>
 </dom-module>

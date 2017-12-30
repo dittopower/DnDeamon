@@ -22,6 +22,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/iron-input/iron-input.html">
 <link rel="import" href="my-icons.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-app.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
@@ -30,6 +31,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="lazy-import" href="my-view1.html">
 <link rel="lazy-import" href="my-characters.html">
+<link rel="import" href="my-createcharacter.html">
 <link rel="lazy-import" href="my-settings.html">
 <link rel="lazy-import" href="my-view401.html">
 <link rel="lazy-import" href="my-view404.html">
@@ -37,7 +39,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <dom-module id="my-app">
   <template>
     <style>
-      :host {
+       :host {
         --app-primary-color: var(--paper-amber-400);
         --app-secondary-color: black;
 
@@ -87,7 +89,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         cursor: pointer;
         font-size: 14px;
         font-weight: 500;
-        box-shadow: 0 3px 5px -1px rgba(0,0,0,.2), 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12);
+        box-shadow: 0 3px 5px -1px rgba(0, 0, 0, .2), 0 6px 10px 0 rgba(0, 0, 0, .14), 0 1px 18px 0 rgba(0, 0, 0, .12);
       }
 
       paper-button:hover {
@@ -103,7 +105,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .profilepic {
         border-radius: 20px;
         border: 2px solid var(--paper-grey-100);
-        box-shadow: 0 3px 5px -1px rgba(0,0,0,.2), 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12);
+        box-shadow: 0 3px 5px -1px rgba(0, 0, 0, .2), 0 6px 10px 0 rgba(0, 0, 0, .14), 0 1px 18px 0 rgba(0, 0, 0, .12);
       }
 
       .main-title {
@@ -156,6 +158,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
           <my-view1 name="view1" global="{{global}}"></my-view1>
           <my-characters name="characters" global="{{global}}"></my-characters>
+          <my-createcharacter name="createcharacter" global="{{global}}"></my-createcharacter>
           <my-settings name="settings" global="{{global}}"></my-settings>
           <my-view401 name="view401"></my-view401>
           <my-view404 name="view404"></my-view404>
@@ -169,7 +172,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       static get is() { return 'my-app'; }
       constructor() {
         super();
-        this.global = { cheat: this };
+        this.global = {
+          cheat: this,
+          navigate: function (page) {
+            this.routeData = { page: page };
+          }.bind(this)
+        };
       }
 
       static get properties() {
@@ -248,6 +256,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (this.redirectedPage && this.$.auth.signedIn) {
           this.routeData.page = this.redirectedPage;
           this.page = this.redirectedPage;
+
           if (this.global.user.email == "dittopower@gmail.com") {
             this.$.testing.style.display = "block"
           }

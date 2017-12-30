@@ -18,16 +18,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: block;
         padding: 10px;
       }
-      .addbutton{
-        position: fixed;
-        right: 1em;
-        bottom: 1em;
-        background: var(--paper-amber-700);
-        color: var(--paper-grey-50);
-      }
-      .addbutton:hover{
-        background: var(--paper-amber-600);
-      }
     </style>
 
     <div class="card">
@@ -46,8 +36,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </firebase-document>
       </firebase-query>
     </div>
-    <paper-button id="addCharacter" class="circle addbutton" on-tap="onTest">+</paper-button>
-    <paper-fab label="+"></paper-fab>
+    <paper-fab class="addbutton" on-tap="onTest" label="+"></paper-fab>
   </template>
 
   <script>
