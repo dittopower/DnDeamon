@@ -28,13 +28,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
       <paper-button id="testing" class="paperbutton" on-tap="onClickTest" hidden$="[[!global.user]]">testing</paper-button>
       <firebase-query id="query" path="/Characters/[[global.user.uid]]" data="{{data}}">
+      </firebase-query>
         <template is="dom-repeat" items="{{data}}" as="note">
           <div>{{note}}</div>
         </template>
 
         <firebase-document id="doc" path="/Characters/[[global.user.uid]]" data="{{charData}}">
         </firebase-document>
-      </firebase-query>
     </div>
     <paper-fab class="addbutton" on-tap="onTest" label="+"></paper-fab>
   </template>

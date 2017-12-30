@@ -27,9 +27,44 @@
             .scores td {
                 padding: 4px;
             }
+
+            table {
+                border-collapse: collapse;
+                background: inherit;
+            }
+
+            table td,
+            table th {
+                border: 1px solid var(--paper-amber-50);
+            }
+
+            table tr:first-child th {
+                border-top: 0;
+            }
+
+            table tr:last-child td {
+                border-bottom: 0;
+            }
+
+            table tr td:first-child,
+            table tr th:first-child {
+                border-left: 0;
+            }
+
+            table tr td:last-child,
+            table tr th:last-child {
+                border-right: 0;
+            }
+
+            .raceCard p {
+                margin: 0;
+                margin-bottom: 0.25em;
+            }
+
+            .raceCard ul {
+                margin: 0;
+            }
         </style>
-        <firebase-document id="doc" path="/Characters/[[global.user.uid]]" data="{{charData}}" on-data-changed="_onDataChanged">
-        </firebase-document>
 
         <iron-form id="form">
             <form>
@@ -59,76 +94,135 @@
                         </template>
                     </div>
                     <paper-button class="paperbutton" on-tap="_onGenerateScores" hidden$="[[scoresGenerated]]">Generate</paper-button>
-                    <table class="scores">
-                        <tr>
-                            <td>Strength</td>
-                            <td>{{character.Strength}}</td>
-                            <td>
-                                <iron-selector id="Strength" attr-for-selected="name" on-selected-changed="_onSelectedScoreChanged">
-                                    <template is="dom-repeat" items="{{scores}}" as="score">
-                                        <div name="{{score.num}}">{{score.total}}</div>
-                                    </template>
-                                </iron-selector>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Dexterity</td>
-                            <td>{{character.Dexterity}}</td>
-                            <td>
-                                <iron-selector id="Dexterity" attr-for-selected="name" on-selected-changed="_onSelectedScoreChanged">
-                                    <template is="dom-repeat" items="{{scores}}" as="score">
-                                        <div name="{{score.num}}">{{score.total}}</div>
-                                    </template>
-                                </iron-selector>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Constitution</td>
-                            <td>{{character.Constitution}}</td>
-                            <td>
-                                <iron-selector id="Constitution" attr-for-selected="name" on-selected-changed="_onSelectedScoreChanged">
-                                    <template is="dom-repeat" items="{{scores}}" as="score">
-                                        <div name="{{score.num}}">{{score.total}}</div>
-                                    </template>
-                                </iron-selector>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Intelligence</td>
-                            <td>{{character.Intelligence}}</td>
-                            <td>
-                                <iron-selector id="Intelligence" attr-for-selected="name" on-selected-changed="_onSelectedScoreChanged">
-                                    <template is="dom-repeat" items="{{scores}}" as="score">
-                                        <div name="{{score.num}}">{{score.total}}</div>
-                                    </template>
-                                </iron-selector>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Wisdom</td>
-                            <td>{{character.Wisdom}}</td>
-                            <td>
-                                <iron-selector id="Wisdom" attr-for-selected="name" on-selected-changed="_onSelectedScoreChanged">
-                                    <template is="dom-repeat" items="{{scores}}" as="score">
-                                        <div name="{{score.num}}">{{score.total}}</div>
-                                    </template>
-                                </iron-selector>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Charisma</td>
-                            <td>{{character.Charisma}}</td>
-                            <td>
-                                <iron-selector id="Charisma" attr-for-selected="name" on-selected-changed="_onSelectedScoreChanged">
-                                    <template is="dom-repeat" items="{{scores}}" as="score">
-                                        <div name="{{score.num}}">{{score.total}}</div>
-                                    </template>
-                                </iron-selector>
-                            </td>
-                        </tr>
-                    </table>
+
+                    <div class="card" hidden$=[[!scoresGenerated]]>
+                        <table class="scores">
+                            <tr>
+                                <th>Score</th>
+                                <th>Value</th>
+                                <th>Assign Roll</th>
+                            </tr>
+                            <tr>
+                                <td>Strength</td>
+                                <td class="textCentred">{{character.Strength}}</td>
+                                <td>
+                                    <iron-selector id="Strength" attr-for-selected="name" on-selected-changed="_onSelectedScoreChanged">
+                                        <template is="dom-repeat" items="{{scores}}" as="score">
+                                            <div name="{{score.num}}">{{score.total}}</div>
+                                        </template>
+                                    </iron-selector>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Dexterity</td>
+                                <td class="textCentred">{{character.Dexterity}}</td>
+                                <td>
+                                    <iron-selector id="Dexterity" attr-for-selected="name" on-selected-changed="_onSelectedScoreChanged">
+                                        <template is="dom-repeat" items="{{scores}}" as="score">
+                                            <div name="{{score.num}}">{{score.total}}</div>
+                                        </template>
+                                    </iron-selector>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Constitution</td>
+                                <td class="textCentred">{{character.Constitution}}</td>
+                                <td>
+                                    <iron-selector id="Constitution" attr-for-selected="name" on-selected-changed="_onSelectedScoreChanged">
+                                        <template is="dom-repeat" items="{{scores}}" as="score">
+                                            <div name="{{score.num}}">{{score.total}}</div>
+                                        </template>
+                                    </iron-selector>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Intelligence</td>
+                                <td class="textCentred">{{character.Intelligence}}</td>
+                                <td>
+                                    <iron-selector id="Intelligence" attr-for-selected="name" on-selected-changed="_onSelectedScoreChanged">
+                                        <template is="dom-repeat" items="{{scores}}" as="score">
+                                            <div name="{{score.num}}">{{score.total}}</div>
+                                        </template>
+                                    </iron-selector>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Wisdom</td>
+                                <td class="textCentred">{{character.Wisdom}}</td>
+                                <td>
+                                    <iron-selector id="Wisdom" attr-for-selected="name" on-selected-changed="_onSelectedScoreChanged">
+                                        <template is="dom-repeat" items="{{scores}}" as="score">
+                                            <div name="{{score.num}}">{{score.total}}</div>
+                                        </template>
+                                    </iron-selector>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Charisma</td>
+                                <td class="textCentred">{{character.Charisma}}</td>
+                                <td>
+                                    <iron-selector id="Charisma" attr-for-selected="name" on-selected-changed="_onSelectedScoreChanged">
+                                        <template is="dom-repeat" items="{{scores}}" as="score">
+                                            <div name="{{score.num}}">{{score.total}}</div>
+                                        </template>
+                                    </iron-selector>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
-                <paper-fab class="addbutton" on-tap="_onSubmit" label=">>>"></paper-fab>
+
+                <firebase-query id="doc" path="/Races" data="{{Races}}" on-data-changed="_onDataChanged">
+                </firebase-query>
+                <div class="card">
+                    <div class="circle lineup">1</div>
+                    <h2 class="lineup">Races</h2>
+                    <template is="dom-repeat" items="{{Races}}" as="race">
+                        <div class="card raceCard">
+                            <h3 class="cardtitle">{{race.Name}}</h3>
+                            <p class="cardsubtitle">[[race.Type]] - [[race.Subtype]]</p>
+                            <hr>
+                            <div class="column3">
+                                <p class="columnNoBreak">Race Points: [[race.Race_Point_Costs]]</p>
+                                <p class="columnNoBreak">Size: [[race.Size]]</p>
+                                <div class="columnNoBreak">Ability Scores:
+                                    <ul>
+                                        <li hidden$="[[!race.Scores.Strength]]">Strength [[race.Scores.Strength]]</li>
+                                        <li hidden$="[[!race.Scores.Dexterity]]">Dexterity [[race.Scores.Dexterity]]</li>
+                                        <li hidden$="[[!race.Scores.Constitution]]">Constitution [[race.Scores.Constitution]]</li>
+                                        <li hidden$="[[!race.Scores.Intelligence]]">Intelligence [[race.Scores.Intelligence]]</li>
+                                        <li hidden$="[[!race.Scores.Wisdom]]">Wisdom [[race.Scores.Wisdom]]</li>
+                                        <li hidden$="[[!race.Scores.Charisma]]">Charisma [[race.Scores.Charisma]]</li>
+                                    </ul>
+                                </div>
+                                <div class="columnNoBreak">Speed:
+                                    <ul>
+                                        <li hidden$="[[!race.Speeds.Land]]">Land [[race.Speeds.Land]]</li>
+                                        <li hidden$="[[!race.Speeds.Swim]]">Swim [[race.Speeds.Swim]]</li>
+                                        <li hidden$="[[!race.Speeds.Fly]]">Fly [[race.Speeds.Fly]]</li>
+                                    </ul>
+                                </div>
+                                <div class="columnNoBreak">Known Languages:
+                                    <ul>
+                                        <template is="dom-repeat" items="[[_arrayText(race.Languages.Known)]]" as="lang">
+                                            <li>[[lang]]</li>
+                                        </template>
+                                    </ul>
+                                </div>
+                                <div class="columnNoBreak">Available Languages:
+                                    <ul>
+                                        <template is="dom-repeat" items="[[_arrayText(race.Languages.Learn)]]" as="lang">
+                                            <li>[[lang]]</li>
+                                        </template>
+                                    </ul>
+                                </div>
+                                <h4>Traits</h4>
+                                <div>[[_spacing(race.Traits.Default)]]</div>
+                            </div>
+                    </template>
+                    </div>
+
+                    <paper-fab class="addbutton" on-tap="_onSubmit" label=">>>"></paper-fab>
             </form>
         </iron-form>
     </template>
@@ -199,6 +293,14 @@
                 this.$.Wisdom.select();
             }
 
+            _spacing(text) {
+                return text.replace(/,/g, ", ");
+            }
+
+            _arrayText(text) {
+                return text.split(",");
+            }
+
             _activeChanged(active) {
                 if (active) {
                     // this.reset();
@@ -209,11 +311,6 @@
             }
 
             _onDataChanged() {
-                this.people = [];
-                for (var person in this.charData) {
-                    // this.people.push(JSON.stringify(person));
-                    this.people.push(person);
-                }
             }
 
             _onScoreMethodChanged() {
@@ -383,6 +480,7 @@
 
             _onSubmit() {
                 //Validate and create - don't submit
+                //TODO: 
                 if (this.$.form.validate()) {
                     console.log(this.$.form.serializeForm());
                 }

@@ -12,99 +12,153 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <!-- shared styles for all views -->
 <dom-module id="shared-styles">
-  <template>
-    <style>
-      * {
-        font-family: 'Roboto', 'Noto', sans-serif;
-        font-weight: normal;
-      }
+    <template>
+        <style>
+            * {
+                font-family: 'Roboto', 'Noto', sans-serif;
+                font-weight: normal;
+            }
 
-      .card {
-        margin: 24px;
-        padding: 16px;
-        color: #757575;
-        border-radius: 5px;
-        background-color: #fff;
-        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
-      }
+            .card {
+                margin: 24px;
+                padding: 16px;
+                color: #757575;
+                border-radius: 5px;
+                background-color: #fff;
+                box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+            }
 
-      .circle {
-        display: inline-block;
-        width: 64px;
-        height: 64px;
-        text-align: center;
-        color: #555;
-        border-radius: 50%;
-        background: #ddd;
-        font-size: 30px;
-        line-height: 64px;
-      }
+            .card .card {
+                width: fit-content;
+            }
 
-      h1 {
-        margin: 16px 0;
-        color: #212121;
-        font-size: 22px;
-      }
+            .circle {
+                display: inline-block;
+                width: 64px;
+                height: 64px;
+                text-align: center;
+                color: #555;
+                border-radius: 50%;
+                background: #ddd;
+                font-size: 30px;
+                line-height: 64px;
+            }
 
-      .card .circle {
-        display: inline-block;
-      }
+            h1 {
+                margin: 16px 0;
+                color: #212121;
+                font-size: 22px;
+            }
 
-      .card h1 {
-        display: inline-block;
-        margin-left: 1ch;
-      }
-      .card h2 {
-        display: inline-block;
-        margin-left: 1ch;
-      }
+            .card .circle {
+                display: inline-block;
+            }
 
-      paper-button {
-        box-shadow: 0 3px 5px -1px rgba(0, 0, 0, .2), 0 6px 10px 0 rgba(0, 0, 0, .14), 0 1px 18px 0 rgba(0, 0, 0, .12);
-      }
+            .card h1 {
+                display: inline-block;
+                margin-left: 1ch;
+            }
 
-      .paperbutton {
-        background: var(--paper-amber-500);
-        color: var(--paper-grey-50);
-        border-radius: 3px;
-        cursor: pointer;
-      }
+            .card h2 {
+                display: inline-block;
+                margin-left: 1ch;
+            }
 
-      .paperbutton:hover {
-        background: var(--paper-amber-400);
-      }
+            paper-button {
+                box-shadow: 0 3px 5px -1px rgba(0, 0, 0, .2), 0 6px 10px 0 rgba(0, 0, 0, .14), 0 1px 18px 0 rgba(0, 0, 0, .12);
+            }
 
-      .addbutton {
-        position: fixed;
-        right: 1em;
-        bottom: 1em;
-        background: var(--paper-amber-700);
-      }
+            .paperbutton {
+                background: var(--paper-amber-500);
+                color: var(--paper-grey-50);
+                border-radius: 3px;
+                cursor: pointer;
+            }
 
-      .addbutton:hover {
-        background: var(--paper-amber-600);
-      }
+            .paperbutton:hover {
+                background: var(--paper-amber-400);
+            }
 
-      iron-selector {
-        border-radius: 8px;
-        overflow: hidden;
-        display: inline-flex;
-        box-shadow: 0 3px 5px -1px rgba(0,0,0,.2), 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12);
-      }
+            .addbutton {
+                position: fixed;
+                right: 1em;
+                bottom: 1em;
+                background: var(--paper-amber-700);
+            }
 
-      iron-selector>* {
-        padding: 8px;
-        background: var(--paper-amber-100);
-      }
+            .addbutton:hover {
+                background: var(--paper-amber-600);
+            }
 
-      iron-selector>*:hover {
-        background: var(--paper-amber-300);
-      }
+            iron-selector {
+                border-radius: 8px;
+                overflow: hidden;
+                display: inline-flex;
+                box-shadow: 0 3px 5px -1px rgba(0, 0, 0, .2), 0 6px 10px 0 rgba(0, 0, 0, .14), 0 1px 18px 0 rgba(0, 0, 0, .12);
+            }
 
-      iron-selector .iron-selected {
-        background: var(--paper-amber-500);
-        text-decoration: underline;
-      }
-    </style>
-  </template>
+            iron-selector>* {
+                padding: 8px;
+                background: var(--paper-amber-100);
+            }
+
+            iron-selector>*:hover {
+                background: var(--paper-amber-300);
+            }
+
+            iron-selector .iron-selected {
+                background: var(--paper-amber-500);
+                text-decoration: underline;
+            }
+
+            iron-selector div {
+                border-left: 1px solid var(--paper-amber-400);
+                user-select: none;
+            }
+
+            iron-selector div:first-child {
+                border-left: 0;
+            }
+
+            .textCentred {
+                text-align: center;
+            }
+
+            .textLeft {
+                text-align: left;
+            }
+
+            .textRight {
+                text-align: right;
+            }
+
+            .column2 {
+                column-count: 2;
+                column-rule-color: var(--paper-grey-300);
+                column-rule-width: 1px;
+                column-rule-style: solid;
+            }
+
+            .column3 {
+                column-count: 3;
+                column-rule-color: var(--paper-grey-300);
+                column-rule-width: 1px;
+                column-rule-style: solid;
+            }
+
+            .columnNoBreak {
+                -webkit-column-break-inside: avoid;
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+
+            .cardtitle {
+                margin: 0;
+            }
+
+            .cardsubtitle {
+                margin-top: 0;
+            }
+        </style>
+    </template>
 </dom-module>

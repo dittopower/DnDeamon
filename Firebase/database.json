@@ -587,13 +587,11 @@
     },
     "Races": {
         "Ratfolk": {
+            "Name": "Ratfolk",
             "Scores": {
                 "Strength": -2,
                 "Dexterity": 2,
-                "Constitution": 0,
-                "Intelligence": 2,
-                "Wisdom": 0,
-                "Charisma": 0
+                "Intelligence": 2
             },
             "Type": "Humanoid",
             "Subtype": "Ratfolk",
@@ -615,7 +613,7 @@
                     "Unnatural": "Rodent Empathy"
                 }
             },
-            "Favored Class": {
+            "Favored_Class": {
                 "class": "bonus"
             },
             "Description": {
@@ -627,7 +625,7 @@
                 "Religion": "Those who take to religion tend to worship deities that represent commerce and family.",
                 "Adventurers": "Ratfolk are often driven by a desire to seek out new opportunities for trade, both for themselves and for their warrens. Ratfolk adventurers may seek potential markets for their clan’s goods, keep an eye out for sources of new commodities, or just wander about in hopes of unearthing enough treasure to fund less dangerous business ventures. Ratfolk battles are often decided by cunning traps, ambushes, or sabotage of enemy positions, and accordingly young ratfolk heroes often take up classes such as alchemist, gunslinger, and rogue."
             },
-            "Race Point Costs": 9,
+            "Race_Point_Costs": 9,
             "Gender": {
                 "Male": {
                     "Height": {
