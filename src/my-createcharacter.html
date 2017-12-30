@@ -1,61 +1,395 @@
-<!--
-@license
-Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
-
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="my-createcharacter">
-  <template>
-    <style include="shared-styles">
-       :host {
-        display: block;
-        padding: 10px;
-      }
-    </style>
-    <firebase-document id="doc" path="/Characters/[[global.user.uid]]" data="{{charData}}" on-data-changed="_onDataChanged">
-    </firebase-document>
+    <template>
+        <style include="shared-styles">
+             :host {
+                display: block;
+                padding: 10px;
+            }
 
-    <div class="card">
-      <div class="circle">2</div>
-      <h1>Create Character</h1>
-      <p>Name:
-        <iron-input bind-value="{{bindValue}}"><input pattern="[ a-zA-Z',]+"></iron-input>
-      </p>
+            .scoresTable h3 {
+                display: inline-block;
+            }
 
-    </div>
-  </template>
+            .scoresTable p {
+                display: inline-block;
+                background: var(--paper-grey-300);
+                padding: 8px;
+                border-radius: 8px;
+            }
 
-  <script>
-    class MyCreatecharacter extends Polymer.Element {
-      static get is() { return 'my-createcharacter'; }
-      attached() {
-        super.attached();
-        console.log(' was attached');
-        //this._activateToolBarButtons();
-      }
-      ready() {
-        super.ready();
-        console.log(' is ready');
+            .scoresTable span {
+                font-weight: bold;
+            }
 
-      }
+            .scores td {
+                padding: 4px;
+            }
+        </style>
+        <firebase-document id="doc" path="/Characters/[[global.user.uid]]" data="{{charData}}" on-data-changed="_onDataChanged">
+        </firebase-document>
 
-      _onDataChanged() {
-        this.people = [];
-        for (var person in this.charData) {
-          // this.people.push(JSON.stringify(person));
-          this.people.push(person);
+        <iron-form id="form">
+            <form>
+                <div class="card">
+                    <div class="circle">2</div>
+                    <h1>Create Character</h1>
+                    <p>Name:
+                        <iron-input bind-value="{{character.Name}}"><input pattern="[ a-zA-Z',]+"></iron-input>
+                    </p>
+                    <paper-button class="paperbutton" on-tap="reset" hidden$="[[scoresGenerated]]">Reset</paper-button>
+                </div>
+                <div class="card">
+                    <div class="circle lineup">1</div>
+                    <h2 class="lineup">Ability Scores</h2>
+                    <br><label id="scoreMode">Generation Method:</label>
+                    <paper-radio-group selected="{{scoreMode}}" aria-labelledby="scoreMode">
+                        <paper-radio-button name="Standard">Standard</paper-radio-button>
+                        <paper-radio-button name="Classic">Classic</paper-radio-button>
+                        <paper-radio-button name="Heroic">Heroic</paper-radio-button>
+                        <paper-radio-button name="Dice Pool" disabled>Dice Pool</paper-radio-button>
+                        <paper-radio-button name="Purchase" disabled>Purchase</paper-radio-button>
+                    </paper-radio-group><br>
+                    <div class="scoresTable" hidden$="[[!scoresTable]]">
+                        <h3>Rolls:</h3>
+                        <template is="dom-repeat" items="{{scores}}" as="score">
+                            <p><span>{{score.total}}</span> {{score.rolls}}</p>
+                        </template>
+                    </div>
+                    <paper-button class="paperbutton" on-tap="_onGenerateScores" hidden$="[[scoresGenerated]]">Generate</paper-button>
+                    <table class="scores">
+                        <tr>
+                            <td>Strength</td>
+                            <td>{{character.Strength}}</td>
+                            <td>
+                                <iron-selector id="Strength" attr-for-selected="name" on-selected-changed="_onSelectedScoreChanged">
+                                    <template is="dom-repeat" items="{{scores}}" as="score">
+                                        <div name="{{score.num}}">{{score.total}}</div>
+                                    </template>
+                                </iron-selector>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Dexterity</td>
+                            <td>{{character.Dexterity}}</td>
+                            <td>
+                                <iron-selector id="Dexterity" attr-for-selected="name" on-selected-changed="_onSelectedScoreChanged">
+                                    <template is="dom-repeat" items="{{scores}}" as="score">
+                                        <div name="{{score.num}}">{{score.total}}</div>
+                                    </template>
+                                </iron-selector>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Constitution</td>
+                            <td>{{character.Constitution}}</td>
+                            <td>
+                                <iron-selector id="Constitution" attr-for-selected="name" on-selected-changed="_onSelectedScoreChanged">
+                                    <template is="dom-repeat" items="{{scores}}" as="score">
+                                        <div name="{{score.num}}">{{score.total}}</div>
+                                    </template>
+                                </iron-selector>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Intelligence</td>
+                            <td>{{character.Intelligence}}</td>
+                            <td>
+                                <iron-selector id="Intelligence" attr-for-selected="name" on-selected-changed="_onSelectedScoreChanged">
+                                    <template is="dom-repeat" items="{{scores}}" as="score">
+                                        <div name="{{score.num}}">{{score.total}}</div>
+                                    </template>
+                                </iron-selector>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Wisdom</td>
+                            <td>{{character.Wisdom}}</td>
+                            <td>
+                                <iron-selector id="Wisdom" attr-for-selected="name" on-selected-changed="_onSelectedScoreChanged">
+                                    <template is="dom-repeat" items="{{scores}}" as="score">
+                                        <div name="{{score.num}}">{{score.total}}</div>
+                                    </template>
+                                </iron-selector>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Charisma</td>
+                            <td>{{character.Charisma}}</td>
+                            <td>
+                                <iron-selector id="Charisma" attr-for-selected="name" on-selected-changed="_onSelectedScoreChanged">
+                                    <template is="dom-repeat" items="{{scores}}" as="score">
+                                        <div name="{{score.num}}">{{score.total}}</div>
+                                    </template>
+                                </iron-selector>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <paper-fab class="addbutton" on-tap="_onSubmit" label=">>>"></paper-fab>
+            </form>
+        </iron-form>
+    </template>
+
+    <script>
+        class MyCreatecharacter extends Polymer.Element {
+            static get is() { return 'my-createcharacter'; }
+            ready() {
+                super.ready();
+                window.createcharacter = this;
+            }
+
+            static get properties() {
+                return {
+                    // Other properties
+                    active: {
+                        type: Boolean,
+                        value: false,
+                        observer: '_activeChanged',
+                    },
+                    character: {
+                        type: Object,
+                        observer: '_characterChanged',
+                        value: {
+                            Charisma: 0,
+                            Constitution: 0,
+                            Dexterity: 0,
+                            Intelligence: 0,
+                            Strength: 0,
+                            Wisdom: 0,
+                        }
+                    },
+                    scoreMode: {
+                        type: String,
+                        value: "Standard",
+                        observer: '_onScoreMethodChanged'
+                    },
+                    scoresGenerated: {
+                        type: Boolean,
+                        value: false
+                    },
+                    scoresTable: {
+                        type: Boolean,
+                        value: false
+                    },
+                    scores: Array
+                };
+            }
+
+            reset() {
+                this.set("character.Name", "");
+                this.resetScores();
+                this.set("scoreMode", "Standard");
+            }
+
+            resetScores() {
+                this.set("character.Charisma", 0);
+                this.set("character.Constitution", 0);
+                this.set("character.Dexterity", 0);
+                this.set("character.Intelligence", 0);
+                this.set("character.Strength", 0);
+                this.set("character.Wisdom", 0);
+                this.$.Charisma.select();
+                this.$.Constitution.select();
+                this.$.Dexterity.select();
+                this.$.Intelligence.select();
+                this.$.Strength.select();
+                this.$.Wisdom.select();
+            }
+
+            _activeChanged(active) {
+                if (active) {
+                    // this.reset();
+                }
+            }
+            _characterChanged(character) {
+                console.log(character);
+            }
+
+            _onDataChanged() {
+                this.people = [];
+                for (var person in this.charData) {
+                    // this.people.push(JSON.stringify(person));
+                    this.people.push(person);
+                }
+            }
+
+            _onScoreMethodChanged() {
+                if (this.character) {
+                    this.resetScores();
+                }
+                switch (this.scoreMode) {
+                    case "Purchase":
+                        this.scoresGenerated = true;
+                        this.scoresTable = false;
+                        break;
+                    case "Dice Pool":
+                        this.scoresGenerated = false;
+                        this.scoresTable = true;
+                    default:
+                        this.scoresGenerated = false;
+                        this.scoresTable = false;
+                }
+                this.scores = [];
+            }
+
+            _onGenerateScores() {
+                this.scoresGenerated = true;
+                this.scores = [];
+                var dice = 0;
+                switch (this.scoreMode) {
+                    case "Classic":
+                        dice = 3;
+                        break;
+                    case "Heroic":
+                        dice = 2;
+                        break;
+                    default://Standard
+                        dice = 4;
+                }
+                for (var i = 0; i < 6; i++) {
+                    var rolls = this.global.rolls(dice, 6);
+                    var results = JSON.stringify(rolls);
+                    var total = 0;
+                    if (this.scoreMode == "Heroic") {
+                        total = rolls.pop() + rolls.pop() + 6;
+                        results += " + 6";
+                    } else {
+                        rolls.sort();
+                        total = rolls.pop() + rolls.pop() + rolls.pop();
+                    }
+                    this.scores.push({
+                        num: i,
+                        total: total,
+                        rolls: results
+                    });
+                }
+                this.scoresTable = true;
+            }
+
+            _onSelectedScoreChanged(event) {
+                switch (event.srcElement.id) {
+                    case "Charisma":
+                        if (this.$.Constitution.selected == event.detail.value) {
+                            this.$.Constitution.select();
+                        }
+                        if (this.$.Dexterity.selected == event.detail.value) {
+                            this.$.Dexterity.select();
+                        }
+                        if (this.$.Intelligence.selected == event.detail.value) {
+                            this.$.Intelligence.select();
+                        }
+                        if (this.$.Strength.selected == event.detail.value) {
+                            this.$.Strength.select();
+                        }
+                        if (this.$.Wisdom.selected == event.detail.value) {
+                            this.$.Wisdom.select();
+                        }
+                        break;
+                    case "Constitution":
+                        if (this.$.Charisma.selected == event.detail.value) {
+                            this.$.Charisma.select();
+                        }
+                        if (this.$.Dexterity.selected == event.detail.value) {
+                            this.$.Dexterity.select();
+                        }
+                        if (this.$.Intelligence.selected == event.detail.value) {
+                            this.$.Intelligence.select();
+                        }
+                        if (this.$.Strength.selected == event.detail.value) {
+                            this.$.Strength.select();
+                        }
+                        if (this.$.Wisdom.selected == event.detail.value) {
+                            this.$.Wisdom.select();
+                        }
+                        break;
+                    case "Dexterity":
+                        if (this.$.Charisma.selected == event.detail.value) {
+                            this.$.Charisma.select();
+                        }
+                        if (this.$.Constitution.selected == event.detail.value) {
+                            this.$.Constitution.select();
+                        }
+                        if (this.$.Intelligence.selected == event.detail.value) {
+                            this.$.Intelligence.select();
+                        }
+                        if (this.$.Strength.selected == event.detail.value) {
+                            this.$.Strength.select();
+                        }
+                        if (this.$.Wisdom.selected == event.detail.value) {
+                            this.$.Wisdom.select();
+                        }
+                        break;
+                    case "Intelligence":
+                        if (this.$.Charisma.selected == event.detail.value) {
+                            this.$.Charisma.select();
+                        }
+                        if (this.$.Constitution.selected == event.detail.value) {
+                            this.$.Constitution.select();
+                        }
+                        if (this.$.Dexterity.selected == event.detail.value) {
+                            this.$.Dexterity.select();
+                        }
+                        if (this.$.Strength.selected == event.detail.value) {
+                            this.$.Strength.select();
+                        }
+                        if (this.$.Wisdom.selected == event.detail.value) {
+                            this.$.Wisdom.select();
+                        }
+                        break;
+                    case "Strength":
+                        if (this.$.Charisma.selected == event.detail.value) {
+                            this.$.Charisma.select();
+                        }
+                        if (this.$.Constitution.selected == event.detail.value) {
+                            this.$.Constitution.select();
+                        }
+                        if (this.$.Dexterity.selected == event.detail.value) {
+                            this.$.Dexterity.select();
+                        }
+                        if (this.$.Intelligence.selected == event.detail.value) {
+                            this.$.Intelligence.select();
+                        }
+                        if (this.$.Wisdom.selected == event.detail.value) {
+                            this.$.Wisdom.select();
+                        }
+                        break;
+                    case "Wisdom":
+                        if (this.$.Charisma.selected == event.detail.value) {
+                            this.$.Charisma.select();
+                        }
+                        if (this.$.Constitution.selected == event.detail.value) {
+                            this.$.Constitution.select();
+                        }
+                        if (this.$.Dexterity.selected == event.detail.value) {
+                            this.$.Dexterity.select();
+                        }
+                        if (this.$.Intelligence.selected == event.detail.value) {
+                            this.$.Intelligence.select();
+                        }
+                        if (this.$.Strength.selected == event.detail.value) {
+                            this.$.Strength.select();
+                        }
+                        break;
+                }
+                try {
+                    this.set("character." + event.srcElement.id, this.scores[event.detail.value].total || 0);
+                } catch (e) {
+                    this.set("character." + event.srcElement.id, 0);
+                }
+            }
+
+            _onSubmit() {
+                //Validate and create - don't submit
+                if (this.$.form.validate()) {
+                    console.log(this.$.form.serializeForm());
+                }
+            }
+
         }
-      }
 
-    }
-
-    window.customElements.define(MyCreatecharacter.is, MyCreatecharacter);
-  </script>
+        window.customElements.define(MyCreatecharacter.is, MyCreatecharacter);
+    </script>
 </dom-module>
