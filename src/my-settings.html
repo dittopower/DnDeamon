@@ -45,23 +45,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <div>
         <span>
           <p>Distance</p>
-          <iron-selector attr-for-selected="name" selected="{{global.preferences.distance}}" on-selected-changed="_onSelectedChanged"
-            fallback-selection="Metric">
+          <iron-selector attr-for-selected="name" selected="{{global.preferences.distance}}" fallback-selection="Metric">
             <div name="Metric">Metric - Meters</div>
             <div name="Imperial">Imperial - Feet</div>
           </iron-selector>
         </span>
         <span>
           <p>Mass</p>
-          <iron-selector attr-for-selected="name" selected="{{global.preferences.mass}}" on-selected-changed="_onSelectedChanged" fallback-selection="Metric">
+          <iron-selector attr-for-selected="name" selected="{{global.preferences.mass}}" fallback-selection="Metric">
             <div name="Metric">Metric - Kilogram</div>
             <div name="Imperial">Imperial - Pound</div>
           </iron-selector>
         </span>
         <span>
           <p>Volume</p>
-          <iron-selector attr-for-selected="name" selected="{{global.preferences.volume}}" on-selected-changed="_onSelectedChanged"
-            fallback-selection="Metric">
+          <iron-selector attr-for-selected="name" selected="{{global.preferences.volume}}" fallback-selection="Metric">
             <div name="Metric">Metric - Litre</div>
             <div name="Imperial">Imperial - </div>
           </iron-selector>
@@ -74,9 +72,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     class MySettings extends Polymer.Element {
       static get is() { return 'my-settings'; }
 
-      _onSelectedChanged(e) {
-        console.log('route', e.detail.value);
-      }
+      // _onSelectedChanged(e) {
+      //   console.log('route', e.detail.value);
+      // }
     }
 
     window.customElements.define(MySettings.is, MySettings);

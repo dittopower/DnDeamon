@@ -13,14 +13,14 @@
                 display: inline-block;
             }
 
-            .scoresTable p {
+            .roll {
                 display: inline-block;
                 background: var(--paper-grey-300);
                 padding: 8px;
                 border-radius: 8px;
             }
 
-            .scoresTable span {
+            .roll span {
                 font-weight: bold;
             }
 
@@ -35,7 +35,7 @@
 
             table td,
             table th {
-                border: 1px solid var(--paper-amber-50);
+                border: 1px solid var(--paper-amber-100);
             }
 
             table tr:first-child th {
@@ -64,6 +64,16 @@
             .raceCard ul {
                 margin: 0;
             }
+
+            .paperbutton.select {
+                float: right;
+            }
+
+            .paperbutton.select.selected {
+                background-color: var(--paper-grey-300);
+                cursor: not-allowed;
+                pointer-events: none;
+            }
         </style>
 
         <iron-form id="form">
@@ -77,7 +87,7 @@
                     <paper-button class="paperbutton" on-tap="reset" hidden$="[[scoresGenerated]]">Reset</paper-button>
                 </div>
                 <div class="card">
-                    <div class="circle lineup">1</div>
+                    <div class="circle lineup">[[_cardNumber()]]</div>
                     <h2 class="lineup">Ability Scores</h2>
                     <br><label id="scoreMode">Generation Method:</label>
                     <paper-radio-group selected="{{scoreMode}}" aria-labelledby="scoreMode">
@@ -90,7 +100,7 @@
                     <div class="scoresTable" hidden$="[[!scoresTable]]">
                         <h3>Rolls:</h3>
                         <template is="dom-repeat" items="{{scores}}" as="score">
-                            <p><span>{{score.total}}</span> {{score.rolls}}</p>
+                            <p class="roll"><span>{{score.total}}</span> {{score.rolls}}</p>
                         </template>
                     </div>
                     <paper-button class="paperbutton" on-tap="_onGenerateScores" hidden$="[[scoresGenerated]]">Generate</paper-button>
@@ -175,10 +185,12 @@
                 <firebase-query id="doc" path="/Races" data="{{Races}}" on-data-changed="_onDataChanged">
                 </firebase-query>
                 <div class="card">
-                    <div class="circle lineup">1</div>
+                    <div class="circle lineup">[[_cardNumber()]]</div>
                     <h2 class="lineup">Races</h2>
                     <template is="dom-repeat" items="{{Races}}" as="race">
                         <div class="card raceCard">
+                            <paper-button id="{{race.Name}}" name="{{race.Name}}" class$="paperbutton select [[_selectedRaceClass(race.Name,character.Race)]]"
+                                on-tap="_onSelectRace">[[_selectedRaceText(race.Name,character.Race)]]</paper-button>
                             <h3 class="cardtitle">{{race.Name}}</h3>
                             <p class="cardsubtitle">[[race.Type]] - [[race.Subtype]]</p>
                             <hr>
@@ -219,10 +231,167 @@
                                 <h4>Traits</h4>
                                 <div>[[_spacing(race.Traits.Default)]]</div>
                             </div>
+                        </div>
                     </template>
-                    </div>
+                </div>
 
-                    <paper-fab class="addbutton" on-tap="_onSubmit" label=">>>"></paper-fab>
+                <firebase-document id="doc" path="/Races/[[character.Race]]" data="{{Race}}" on-data-changed="_onDataChanged">
+                </firebase-document>
+                <firebase-query id="doc" path="/RaceTraits" data="{{RaceTraits}}" on-data-changed="_onDataChanged">
+                </firebase-query>
+                <div class="card">
+                    <div class="circle lineup">[[_cardNumber()]]</div>
+                    <h2 class="lineup">Race Customisation</h2>
+                    <!-- hidden$="[[!raceStatsGenerated]]" -->
+                    <table class="raceStats" hidden$="[[!character.Race]]">
+                        <th></th>
+                        <th>Value</th>
+                        <th>Custom</th>
+                        <th>Base</th>
+                        <th>Modifier</th>
+                        <th>Rolls & Calculations</th>
+                        <!-- Age -->
+                        <tr>
+                            <td>Age</td>
+                            <td class="textCentred">[[character.Age]]</td>
+                            <td>input</td>
+                            <td>Adult: [[Race.Age.Adult]]</td>
+                            <td class="textCentred">
+                                <p>Training Level: </p>
+                                <iron-selector id="AgeLevel" attr-for-selected="name" on-selected-changed="_onSelectedAgeChanged">
+                                    <div name="Intuitive">Intuitive</div>
+                                    <div name="Self-Taught">Self-Taught</div>
+                                    <div name="Trained">Trained</div>
+                                </iron-selector>
+                            </td>
+                            <td class="textCentred">
+                                <p class="roll"><span>{{raceStats.age.total}}</span> {{raceStats.age.results}}</p>
+                            </td>
+                        </tr>
+                        <!-- Height -->
+                        <tr>
+                            <td>Height</td>
+                            <td class="textCentred">[[character.Height]]</td>
+                            <td>input</td>
+                            <td>[[_get_eightBase(character.Gender,"Height")]]</td>
+                            <td class="textCentred">
+                                <iron-selector id="gender" attr-for-selected="name" selected="{{character.Gender}}" on-selected-changed="_onGenderChanged">
+                                    <div name="Male">Male</div>
+                                    <div name="Female">Female</div>
+                                </iron-selector>
+                            </td>
+                            <td class="textCentred">
+                                <p class="roll"><span>{{raceStats.height.total}}</span> {{raceStats.height.results}}</p>
+                            </td>
+                        </tr>
+                        <!-- Weight -->
+                        <tr>
+                            <td>Weight</td>
+                            <td class="textCentred">[[character.Weight]]</td>
+                            <td>input</td>
+                            <td>[[_get_eightBase(character.Gender,"Weight")]]</td>
+                            <td class="textCentred">
+                                <iron-selector id="gender" attr-for-selected="name" selected="{{character.Gender}}" on-selected-changed="_onGenderChanged">
+                                    <div name="Male">Male</div>
+                                    <div name="Female">Female</div>
+                                </iron-selector>
+                            </td>
+                            <td class="textCentred">
+                                <p class="roll"><span>{{raceStats.weight.total}}</span> {{raceStats.weight.results}}</p>
+                            </td>
+                        </tr>
+
+                    </table>
+                    <br>
+                    <!-- <paper-button class="paperbutton" on-tap="_onGenerateStats" hidden$="[[!character.Race]]">Generate</paper-button> -->
+
+                </div>
+
+                <div class="card">
+                    <div class="circle lineup">[[_cardNumber()]]</div>
+                    <h2 class="lineup">Languages</h2>
+                    <!-- <paper-button class="paperbutton" on-tap="_onGenerateStats" hidden$="[[!character.Race]]">Generate</paper-button> -->
+                </div>
+
+                <div class="card">
+                    <div class="circle lineup">[[_cardNumber()]]</div>
+                    <h2 class="lineup">Class</h2>
+                    <!-- <paper-button class="paperbutton" on-tap="_onGenerateStats" hidden$="[[!character.Race]]">Generate</paper-button> -->
+                </div>
+
+                <div class="card">
+                    <div class="circle lineup">[[_cardNumber()]]</div>
+                    <h2 class="lineup">Class Customisation</h2>
+                    <!-- <paper-button class="paperbutton" on-tap="_onGenerateStats" hidden$="[[!character.Race]]">Generate</paper-button> -->
+                </div>
+
+                <div class="card">
+                    <div class="circle lineup">[[_cardNumber()]]</div>
+                    <h2 class="lineup">Hit Points</h2>
+                    <!-- <paper-button class="paperbutton" on-tap="_onGenerateStats" hidden$="[[!character.Race]]">Generate</paper-button> -->
+                </div>
+
+                <div class="card">
+                    <div class="circle lineup">[[_cardNumber()]]</div>
+                    <h2 class="lineup">Skills</h2>
+                    <!-- <paper-button class="paperbutton" on-tap="_onGenerateStats" hidden$="[[!character.Race]]">Generate</paper-button> -->
+                </div>
+
+                <div class="card">
+                    <div class="circle lineup">[[_cardNumber()]]</div>
+                    <h2 class="lineup">Feats</h2>
+                    <!-- <paper-button class="paperbutton" on-tap="_onGenerateStats" hidden$="[[!character.Race]]">Generate</paper-button> -->
+                </div>
+
+                <div class="card">
+                    <div class="circle lineup">[[_cardNumber()]]</div>
+                    <h2 class="lineup">Traits</h2>
+                    <!-- <paper-button class="paperbutton" on-tap="_onGenerateStats" hidden$="[[!character.Race]]">Generate</paper-button> -->
+                </div>
+
+                <div class="card">
+                    <div class="circle lineup">[[_cardNumber()]]</div>
+                    <h2 class="lineup">Class Features</h2>
+                    <!-- <paper-button class="paperbutton" on-tap="_onGenerateStats" hidden$="[[!character.Race]]">Generate</paper-button> -->
+                </div>
+
+                <div class="card">
+                    <div class="circle lineup">[[_cardNumber()]]</div>
+                    <h2 class="lineup">Alignment</h2>
+                    <!-- <paper-button class="paperbutton" on-tap="_onGenerateStats" hidden$="[[!character.Race]]">Generate</paper-button> -->
+                </div>
+
+                <div class="card">
+                    <div class="circle lineup">[[_cardNumber()]]</div>
+                    <h2 class="lineup">Religion</h2>
+                    <!-- <paper-button class="paperbutton" on-tap="_onGenerateStats" hidden$="[[!character.Race]]">Generate</paper-button> -->
+                </div>
+
+                <div class="card">
+                    <div class="circle lineup">[[_cardNumber()]]</div>
+                    <h2 class="lineup">Gold</h2>
+                    <!-- <paper-button class="paperbutton" on-tap="_onGenerateStats" hidden$="[[!character.Race]]">Generate</paper-button> -->
+                </div>
+
+                <div class="card">
+                    <div class="circle lineup">[[_cardNumber()]]</div>
+                    <h2 class="lineup">Equiptment</h2>
+                    <!-- <paper-button class="paperbutton" on-tap="_onGenerateStats" hidden$="[[!character.Race]]">Generate</paper-button> -->
+                </div>
+
+                <div class="card">
+                    <div class="circle lineup">[[_cardNumber()]]</div>
+                    <h2 class="lineup">Appearance</h2>
+                    <!-- <paper-button class="paperbutton" on-tap="_onGenerateStats" hidden$="[[!character.Race]]">Generate</paper-button> -->
+                </div>
+
+                <div class="card">
+                    <div class="circle lineup">[[_cardNumber()]]</div>
+                    <h2 class="lineup">History</h2>
+                    <!-- <paper-button class="paperbutton" on-tap="_onGenerateStats" hidden$="[[!character.Race]]">Generate</paper-button> -->
+                </div>
+
+                <paper-fab class="addbutton" on-tap="_onSubmit" label=">>>"></paper-fab>
             </form>
         </iron-form>
     </template>
@@ -253,6 +422,8 @@
                             Intelligence: 0,
                             Strength: 0,
                             Wisdom: 0,
+                            Race: "",
+                            Age: 0
                         }
                     },
                     scoreMode: {
@@ -268,7 +439,19 @@
                         type: Boolean,
                         value: false
                     },
-                    scores: Array
+                    scores: Array,
+                    raceStatsGenerated: {
+                        type: Boolean,
+                        value: false
+                    },
+                    raceStats: {
+                        type: Object,
+                        value: {
+                            age: { total: 0, results: "" },
+                            height: { total: 0, results: "" },
+                            weight: { total: 0, results: "" }
+                        }
+                    }
                 };
             }
 
@@ -276,6 +459,7 @@
                 this.set("character.Name", "");
                 this.resetScores();
                 this.set("scoreMode", "Standard");
+                this.resetRace();
             }
 
             resetScores() {
@@ -293,12 +477,43 @@
                 this.$.Wisdom.select();
             }
 
+            resetRace() {
+                this.set("character.Race", "");
+                this.set("character.Age", 0);
+            }
+
             _spacing(text) {
                 return text.replace(/,/g, ", ");
             }
 
             _arrayText(text) {
                 return text.split(",");
+            }
+
+            _selectedRaceClass(race) {
+                console.log(this.character.Race == race ? "selected" : "");
+                return this.character.Race == race ? "selected" : "";
+            }
+
+            _selectedRace(race) {
+                return this.character.Race == race;
+            }
+
+            _selectedRaceText(race) {
+                return this.character.Race == race ? "Selected" : "Select";
+            }
+
+            _get_eightBase(gender, eight) {
+                if (this.Race) {
+                    return this.Race.Gender[gender][eight].Base;
+                }
+            }
+
+            _cardNumber() {
+                if (!this.num) {
+                    this.num = 0;
+                }
+                return ++this.num;
             }
 
             _activeChanged(active) {
@@ -476,6 +691,77 @@
                 } catch (e) {
                     this.set("character." + event.srcElement.id, 0);
                 }
+            }
+
+            _onSelectRace(event) {
+                if (event.srcElement.id) {
+                    this.set("character.Race", event.srcElement.id);
+                }
+            }
+
+            _onGenderChanged(event) {
+                if (event.detail.value) {
+                    this.set("character.Gender", event.detail.value);
+                    this._onSelectedHeightChanged();
+                    this._onSelectedWeightChanged();
+                }
+            }
+
+            _onSelectedAgeChanged(event) {
+                var dice = this.Race.Age[event.detail.value].Dice;
+                var noDice = this.Race.Age[event.detail.value].NoDice;
+                var rolls = this.global.rolls(noDice, dice);
+
+                var results = JSON.stringify(rolls) + " x " + this.Race.Age[event.detail.value].Modifier + " + " + this.Race.Age.Adult;
+                var total = 0;
+
+                while (rolls.length > 0) {
+                    total += rolls.pop();
+                }
+                total *= this.Race.Age[event.detail.value].Modifier;
+                total += this.Race.Age.Adult;
+
+                this.set("raceStats.age.total", total);
+                this.set("raceStats.age.results", results);
+                this.set("character.Age", total);
+            }
+
+            _onSelectedHeightChanged() {
+                var dice = this.Race.Gender[this.character.Gender].Height.Dice;
+                var noDice = this.Race.Gender[this.character.Gender].Height.NoDice;
+                var rolls = this.global.rolls(noDice, dice);
+
+                var results = JSON.stringify(rolls) + " x " + this.Race.Gender[this.character.Gender].Height.Modifier + " + " + this.Race.Gender[this.character.Gender].Height.Base;
+                var total = 0;
+
+                while (rolls.length > 0) {
+                    total += rolls.pop();
+                }
+                total *= this.Race.Gender[this.character.Gender].Height.Modifier;
+                total += this.Race.Gender[this.character.Gender].Height.Base;
+
+                this.set("raceStats.height.total", total);
+                this.set("raceStats.height.results", results);
+                this.set("character.Height", total);
+            }
+
+            _onSelectedWeightChanged() {
+                var dice = this.Race.Gender[this.character.Gender].Weight.Dice;
+                var noDice = this.Race.Gender[this.character.Gender].Weight.NoDice;
+                var rolls = this.global.rolls(noDice, dice);
+
+                var results = JSON.stringify(rolls) + " x " + this.Race.Gender[this.character.Gender].Weight.Modifier + " + " + this.Race.Gender[this.character.Gender].Weight.Base;
+                var total = 0;
+
+                while (rolls.length > 0) {
+                    total += rolls.pop();
+                }
+                total *= this.Race.Gender[this.character.Gender].Weight.Modifier;
+                total += this.Race.Gender[this.character.Gender].Weight.Base;
+
+                this.set("raceStats.weight.total", total);
+                this.set("raceStats.weight.results", results);
+                this.set("character.Weight", total);
             }
 
             _onSubmit() {
