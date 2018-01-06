@@ -10,6 +10,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="shared-styles.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 
 <dom-module id="my-settings">
   <template>
@@ -71,6 +72,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script>
     class MySettings extends Polymer.Element {
       static get is() { return 'my-settings'; }
+
+            static get properties() {
+                return {
+                    global: Object
+                };
+            }
 
       // _onSelectedChanged(e) {
       //   console.log('route', e.detail.value);

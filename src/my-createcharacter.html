@@ -1,10 +1,19 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="shared-styles.html">
+<link rel="import" href="../bower_components/iron-input/iron-input.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
 
 <dom-module id="my-createcharacter">
     <template>
         <style include="shared-styles">
-             :host {
+            :host {
                 display: block;
                 padding: 10px;
             }
@@ -18,6 +27,7 @@
                 background: var(--paper-grey-300);
                 padding: 8px;
                 border-radius: 8px;
+                box-shadow: 0 3px 5px -1px rgba(0, 0, 0, .2), 0 6px 10px 0 rgba(0, 0, 0, .14), 0 1px 18px 0 rgba(0, 0, 0, .12);
             }
 
             .roll span {
@@ -56,6 +66,10 @@
                 border-right: 0;
             }
 
+            .raceCard {
+                /* display: inline-block; */
+            }
+
             .raceCard p {
                 margin: 0;
                 margin-bottom: 0.25em;
@@ -63,6 +77,18 @@
 
             .raceCard ul {
                 margin: 0;
+            }
+
+            .racelist {
+                display: flex;
+            }
+
+            .horizontalcards_inner {
+                display: flex;
+            }
+
+            .horizontalcards_outer {
+                overflow-x: scroll;
             }
 
             .paperbutton.select {
@@ -74,6 +100,43 @@
                 cursor: not-allowed;
                 pointer-events: none;
             }
+
+            .nextbutton {
+                /* position: fixed; */
+                /* right: 1em; */
+                float: right;
+                /* bottom: 1em; */
+                background: var(--paper-amber-700);
+            }
+
+            .nextbutton:hover {
+                background: var(--paper-amber-600);
+            }
+
+            .previousbutton {
+                /* position: sticky; */
+                /* left: 1em; */
+                float: left;
+                /* bottom: 1em; */
+                background: var(--paper-amber-700);
+            }
+
+            .previousbutton:hover {
+                background: var(--paper-amber-600);
+            }
+
+            .resetButton {
+                /* float: right; */
+                margin: 8px;
+            }
+
+            .stagetabs {
+                text-align: center;
+            }
+
+            .stagetabs div {
+                /* width: 0.3vw; */
+            }
         </style>
 
         <iron-form id="form">
@@ -81,26 +144,47 @@
                 <div class="card">
                     <div class="circle">2</div>
                     <h1>Create Character</h1>
-                    <p>Name:
-                        <iron-input bind-value="{{character.Name}}"><input pattern="[ a-zA-Z',]+"></iron-input>
-                    </p>
-                    <paper-button class="paperbutton" on-tap="reset" hidden$="[[scoresGenerated]]">Reset</paper-button>
+                    <br>
+                    <div class="columnNoBreak">Name:
+                        <iron-input bind-value="{{character.Name}}">
+                            <input pattern="[ a-zA-Z',]+">
+                        </iron-input>
+                    </div>
+                    <br>
+                    <div class="stagetabs">
+                        <iron-selector id="stages" attr-for-selected="name" selected="{{stage}}">
+                            <template is="dom-repeat" items="{{stages}}" as="_stage">
+                                <div name="{{_stage}}">{{_stage}}</div>
+                            </template>
+                        </iron-selector>
+                    </div>
+                    <br>
+
+                    <paper-fab class="previousbutton" on-tap="_onPreviousButton" label="<"></paper-fab>
+                    <paper-fab class="nextbutton" on-tap="_onNextButton" label=">"></paper-fab>
+                    <div class="stagetabs">
+                        <paper-button class="paperbutton resetButton" on-tap="reset">Reset</paper-button>
+                        <paper-button class="paperbutton resetButton" on-tap="" disabled>Done</paper-button>
+                    </div>
                 </div>
-                <div class="card">
+                <div class="card" hidden$="[[!_equals(stage,'Scores')]]">
                     <div class="circle lineup">[[_cardNumber()]]</div>
                     <h2 class="lineup">Ability Scores</h2>
-                    <br><label id="scoreMode">Generation Method:</label>
+                    <br>
+                    <label id="scoreMode">Generation Method:</label>
                     <paper-radio-group selected="{{scoreMode}}" aria-labelledby="scoreMode">
                         <paper-radio-button name="Standard">Standard</paper-radio-button>
                         <paper-radio-button name="Classic">Classic</paper-radio-button>
                         <paper-radio-button name="Heroic">Heroic</paper-radio-button>
                         <paper-radio-button name="Dice Pool" disabled>Dice Pool</paper-radio-button>
                         <paper-radio-button name="Purchase" disabled>Purchase</paper-radio-button>
-                    </paper-radio-group><br>
+                    </paper-radio-group>
+                    <br>
                     <div class="scoresTable" hidden$="[[!scoresTable]]">
                         <h3>Rolls:</h3>
                         <template is="dom-repeat" items="{{scores}}" as="score">
-                            <p class="roll"><span>{{score.total}}</span> {{score.rolls}}</p>
+                            <p class="roll">
+                                <span>{{score.total}}</span> {{score.rolls}}</p>
                         </template>
                     </div>
                     <paper-button class="paperbutton" on-tap="_onGenerateScores" hidden$="[[scoresGenerated]]">Generate</paper-button>
@@ -184,64 +268,69 @@
 
                 <firebase-query id="doc" path="/Races" data="{{Races}}" on-data-changed="_onDataChanged">
                 </firebase-query>
-                <div class="card">
+                <div class="card" hidden$="[[!_equals(stage,'Race')]]">
                     <div class="circle lineup">[[_cardNumber()]]</div>
-                    <h2 class="lineup">Races</h2>
-                    <template is="dom-repeat" items="{{Races}}" as="race">
-                        <div class="card raceCard">
-                            <paper-button id="{{race.Name}}" name="{{race.Name}}" class$="paperbutton select [[_selectedRaceClass(race.Name,character.Race)]]"
-                                on-tap="_onSelectRace">[[_selectedRaceText(race.Name,character.Race)]]</paper-button>
-                            <h3 class="cardtitle">{{race.Name}}</h3>
-                            <p class="cardsubtitle">[[race.Type]] - [[race.Subtype]]</p>
-                            <hr>
-                            <div class="column3">
-                                <p class="columnNoBreak">Race Points: [[race.Race_Point_Costs]]</p>
-                                <p class="columnNoBreak">Size: [[race.Size]]</p>
-                                <div class="columnNoBreak">Ability Scores:
-                                    <ul>
-                                        <li hidden$="[[!race.Scores.Strength]]">Strength [[race.Scores.Strength]]</li>
-                                        <li hidden$="[[!race.Scores.Dexterity]]">Dexterity [[race.Scores.Dexterity]]</li>
-                                        <li hidden$="[[!race.Scores.Constitution]]">Constitution [[race.Scores.Constitution]]</li>
-                                        <li hidden$="[[!race.Scores.Intelligence]]">Intelligence [[race.Scores.Intelligence]]</li>
-                                        <li hidden$="[[!race.Scores.Wisdom]]">Wisdom [[race.Scores.Wisdom]]</li>
-                                        <li hidden$="[[!race.Scores.Charisma]]">Charisma [[race.Scores.Charisma]]</li>
-                                    </ul>
+                    <h2 class="lineup">Choose Race</h2>
+                    <!-- <span class="racelist horizontalcards_outer"> -->
+                    <!-- <span class="horizontalcards_inner"> -->
+                    <div class="racelist">
+                        <template is="dom-repeat" items="{{Races}}" as="race">
+                            <div class="card raceCard">
+                                <paper-button id="{{race.Name}}" class$="paperbutton select [[_selectedRaceClass(race.Name,character.Race)]]" on-tap="_onSelectRace">[[_selectedRaceText(race.Name,character.Race)]]</paper-button>
+                                <h3 class="cardtitle">{{race.Name}}</h3>
+                                <p class="cardsubtitle">[[race.Type]] - [[race.Subtype]]</p>
+                                <hr>
+                                <div class="column3">
+                                    <p class="columnNoBreak">Race Points: [[race.Race_Point_Costs]]</p>
+                                    <p class="columnNoBreak">Size: [[race.Size]]</p>
+                                    <div class="columnNoBreak">Ability Scores:
+                                        <ul>
+                                            <li hidden$="[[!race.Scores.Strength]]">Strength [[race.Scores.Strength]]</li>
+                                            <li hidden$="[[!race.Scores.Dexterity]]">Dexterity [[race.Scores.Dexterity]]</li>
+                                            <li hidden$="[[!race.Scores.Constitution]]">Constitution [[race.Scores.Constitution]]</li>
+                                            <li hidden$="[[!race.Scores.Intelligence]]">Intelligence [[race.Scores.Intelligence]]</li>
+                                            <li hidden$="[[!race.Scores.Wisdom]]">Wisdom [[race.Scores.Wisdom]]</li>
+                                            <li hidden$="[[!race.Scores.Charisma]]">Charisma [[race.Scores.Charisma]]</li>
+                                        </ul>
+                                    </div>
+                                    <div class="columnNoBreak">Speed:
+                                        <ul>
+                                            <li hidden$="[[!race.Speeds.Land]]">Land [[race.Speeds.Land]]</li>
+                                            <li hidden$="[[!race.Speeds.Swim]]">Swim [[race.Speeds.Swim]]</li>
+                                            <li hidden$="[[!race.Speeds.Fly]]">Fly [[race.Speeds.Fly]]</li>
+                                        </ul>
+                                    </div>
+                                    <div class="columnNoBreak">Known Languages:
+                                        <ul>
+                                            <template is="dom-repeat" items="[[_arrayText(race.Languages.Known)]]" as="lang">
+                                                <li>[[lang]]</li>
+                                            </template>
+                                        </ul>
+                                    </div>
+                                    <div class="columnNoBreak">Available Languages:
+                                        <ul>
+                                            <template is="dom-repeat" items="[[_arrayText(race.Languages.Learn)]]" as="lang">
+                                                <li>[[lang]]</li>
+                                            </template>
+                                        </ul>
+                                    </div>
+                                    <h4>Traits</h4>
+                                    <div>[[_spacing(race.Traits.Default)]]</div>
                                 </div>
-                                <div class="columnNoBreak">Speed:
-                                    <ul>
-                                        <li hidden$="[[!race.Speeds.Land]]">Land [[race.Speeds.Land]]</li>
-                                        <li hidden$="[[!race.Speeds.Swim]]">Swim [[race.Speeds.Swim]]</li>
-                                        <li hidden$="[[!race.Speeds.Fly]]">Fly [[race.Speeds.Fly]]</li>
-                                    </ul>
-                                </div>
-                                <div class="columnNoBreak">Known Languages:
-                                    <ul>
-                                        <template is="dom-repeat" items="[[_arrayText(race.Languages.Known)]]" as="lang">
-                                            <li>[[lang]]</li>
-                                        </template>
-                                    </ul>
-                                </div>
-                                <div class="columnNoBreak">Available Languages:
-                                    <ul>
-                                        <template is="dom-repeat" items="[[_arrayText(race.Languages.Learn)]]" as="lang">
-                                            <li>[[lang]]</li>
-                                        </template>
-                                    </ul>
-                                </div>
-                                <h4>Traits</h4>
-                                <div>[[_spacing(race.Traits.Default)]]</div>
                             </div>
-                        </div>
-                    </template>
+                        </template>
+                    </div>
+                    <!-- </span> -->
+                    <!-- </span> -->
                 </div>
 
                 <firebase-document id="doc" path="/Races/[[character.Race]]" data="{{Race}}" on-data-changed="_onDataChanged">
                 </firebase-document>
                 <firebase-query id="doc" path="/RaceTraits" data="{{RaceTraits}}" on-data-changed="_onDataChanged">
                 </firebase-query>
-                <div class="card">
+                <div class="card" hidden$="[[!_equals(stage,'Customise Race')]]">
                     <div class="circle lineup">[[_cardNumber()]]</div>
-                    <h2 class="lineup">Race Customisation</h2>
+                    <h2 class="lineup">Customise Race</h2>
                     <!-- hidden$="[[!raceStatsGenerated]]" -->
                     <table class="raceStats" hidden$="[[!character.Race]]">
                         <th></th>
@@ -265,7 +354,8 @@
                                 </iron-selector>
                             </td>
                             <td class="textCentred">
-                                <p class="roll"><span>{{raceStats.age.total}}</span> {{raceStats.age.results}}</p>
+                                <p class="roll">
+                                    <span>{{raceStats.age.total}}</span> {{raceStats.age.results}}</p>
                             </td>
                         </tr>
                         <!-- Height -->
@@ -281,7 +371,8 @@
                                 </iron-selector>
                             </td>
                             <td class="textCentred">
-                                <p class="roll"><span>{{raceStats.height.total}}</span> {{raceStats.height.results}}</p>
+                                <p class="roll">
+                                    <span>{{raceStats.height.total}}</span> {{raceStats.height.results}}</p>
                             </td>
                         </tr>
                         <!-- Weight -->
@@ -297,7 +388,8 @@
                                 </iron-selector>
                             </td>
                             <td class="textCentred">
-                                <p class="roll"><span>{{raceStats.weight.total}}</span> {{raceStats.weight.results}}</p>
+                                <p class="roll">
+                                    <span>{{raceStats.weight.total}}</span> {{raceStats.weight.results}}</p>
                             </td>
                         </tr>
 
@@ -307,91 +399,89 @@
 
                 </div>
 
-                <div class="card">
+                <div class="card" hidden$="[[!_equals(stage,'Class')]]">
                     <div class="circle lineup">[[_cardNumber()]]</div>
-                    <h2 class="lineup">Languages</h2>
+                    <h2 class="lineup">Choose Class</h2>
                     <!-- <paper-button class="paperbutton" on-tap="_onGenerateStats" hidden$="[[!character.Race]]">Generate</paper-button> -->
                 </div>
 
-                <div class="card">
+                <div class="card" hidden$="[[!_equals(stage,'Customise Class')]]">
                     <div class="circle lineup">[[_cardNumber()]]</div>
-                    <h2 class="lineup">Class</h2>
+                    <h2 class="lineup">Customise Class</h2>
                     <!-- <paper-button class="paperbutton" on-tap="_onGenerateStats" hidden$="[[!character.Race]]">Generate</paper-button> -->
                 </div>
 
-                <div class="card">
-                    <div class="circle lineup">[[_cardNumber()]]</div>
-                    <h2 class="lineup">Class Customisation</h2>
-                    <!-- <paper-button class="paperbutton" on-tap="_onGenerateStats" hidden$="[[!character.Race]]">Generate</paper-button> -->
-                </div>
-
-                <div class="card">
+                <div class="card" hidden$="[[!_equals(stage,'HP')]]">
                     <div class="circle lineup">[[_cardNumber()]]</div>
                     <h2 class="lineup">Hit Points</h2>
                     <!-- <paper-button class="paperbutton" on-tap="_onGenerateStats" hidden$="[[!character.Race]]">Generate</paper-button> -->
                 </div>
 
-                <div class="card">
+                <div class="card" hidden$="[[!_equals(stage,'Skills')]]">
                     <div class="circle lineup">[[_cardNumber()]]</div>
-                    <h2 class="lineup">Skills</h2>
+                    <h2 class="lineup">Select Skills</h2>
                     <!-- <paper-button class="paperbutton" on-tap="_onGenerateStats" hidden$="[[!character.Race]]">Generate</paper-button> -->
                 </div>
 
-                <div class="card">
+                <div class="card" hidden$="[[!_equals(stage,'Languages')]]">
+                    <div class="circle lineup">[[_cardNumber()]]</div>
+                    <h2 class="lineup">Customise Languages</h2>
+                    <!-- <paper-button class="paperbutton" on-tap="_onGenerateStats" hidden$="[[!character.Race]]">Generate</paper-button> -->
+                </div>
+
+                <div class="card" hidden$="[[!_equals(stage,'Feats')]]">
                     <div class="circle lineup">[[_cardNumber()]]</div>
                     <h2 class="lineup">Feats</h2>
                     <!-- <paper-button class="paperbutton" on-tap="_onGenerateStats" hidden$="[[!character.Race]]">Generate</paper-button> -->
                 </div>
 
-                <div class="card">
+                <div class="card" hidden$="[[!_equals(stage,'Traits')]]">
                     <div class="circle lineup">[[_cardNumber()]]</div>
                     <h2 class="lineup">Traits</h2>
                     <!-- <paper-button class="paperbutton" on-tap="_onGenerateStats" hidden$="[[!character.Race]]">Generate</paper-button> -->
                 </div>
 
-                <div class="card">
+                <div class="card" hidden$="[[!_equals(stage,'Class Features')]]">
                     <div class="circle lineup">[[_cardNumber()]]</div>
                     <h2 class="lineup">Class Features</h2>
                     <!-- <paper-button class="paperbutton" on-tap="_onGenerateStats" hidden$="[[!character.Race]]">Generate</paper-button> -->
                 </div>
 
-                <div class="card">
+                <div class="card" hidden$="[[!_equals(stage,'Alignment')]]">
                     <div class="circle lineup">[[_cardNumber()]]</div>
                     <h2 class="lineup">Alignment</h2>
                     <!-- <paper-button class="paperbutton" on-tap="_onGenerateStats" hidden$="[[!character.Race]]">Generate</paper-button> -->
                 </div>
 
-                <div class="card">
+                <div class="card" hidden$="[[!_equals(stage,'Religion')]]">
                     <div class="circle lineup">[[_cardNumber()]]</div>
                     <h2 class="lineup">Religion</h2>
                     <!-- <paper-button class="paperbutton" on-tap="_onGenerateStats" hidden$="[[!character.Race]]">Generate</paper-button> -->
                 </div>
 
-                <div class="card">
+                <div class="card" hidden$="[[!_equals(stage,'Gold')]]">
                     <div class="circle lineup">[[_cardNumber()]]</div>
                     <h2 class="lineup">Gold</h2>
                     <!-- <paper-button class="paperbutton" on-tap="_onGenerateStats" hidden$="[[!character.Race]]">Generate</paper-button> -->
                 </div>
 
-                <div class="card">
+                <div class="card" hidden$="[[!_equals(stage,'Equiptment')]]">
                     <div class="circle lineup">[[_cardNumber()]]</div>
                     <h2 class="lineup">Equiptment</h2>
                     <!-- <paper-button class="paperbutton" on-tap="_onGenerateStats" hidden$="[[!character.Race]]">Generate</paper-button> -->
                 </div>
 
-                <div class="card">
+                <div class="card" hidden$="[[!_equals(stage,'Appearance')]]">
                     <div class="circle lineup">[[_cardNumber()]]</div>
                     <h2 class="lineup">Appearance</h2>
                     <!-- <paper-button class="paperbutton" on-tap="_onGenerateStats" hidden$="[[!character.Race]]">Generate</paper-button> -->
                 </div>
 
-                <div class="card">
+                <div class="card" hidden$="[[!_equals(stage,'History')]]">
                     <div class="circle lineup">[[_cardNumber()]]</div>
                     <h2 class="lineup">History</h2>
                     <!-- <paper-button class="paperbutton" on-tap="_onGenerateStats" hidden$="[[!character.Race]]">Generate</paper-button> -->
                 </div>
-
-                <paper-fab class="addbutton" on-tap="_onSubmit" label=">>>"></paper-fab>
             </form>
         </iron-form>
     </template>
@@ -426,6 +516,8 @@
                             Age: 0
                         }
                     },
+                    global: Object,
+                    RaceTraits: Object,
                     scoreMode: {
                         type: String,
                         value: "Standard",
@@ -440,6 +532,10 @@
                         value: false
                     },
                     scores: Array,
+                    stage: {
+                        type: String,
+                        value: "Scores"
+                    },
                     raceStatsGenerated: {
                         type: Boolean,
                         value: false
@@ -451,8 +547,47 @@
                             height: { total: 0, results: "" },
                             weight: { total: 0, results: "" }
                         }
+                    },
+                    stages: {
+                        type: Array,
+                        readOnly: true,
+                        value: [
+                            "Scores",
+                            "Race",
+                            "Customise Race",
+                            "Class",
+                            "Customise Class",
+                            "HP",
+                            "Skills",
+                            "Languages",
+                            "Feats",
+                            "Traits",
+                            "Class Features",
+                            "Alignment",
+                            "Religion",
+                            "Gold",
+                            "Equiptment",
+                            "Appearance",
+                            "History"
+                        ]
                     }
                 };
+            }
+
+            _equals(a, b) {
+                return a == b;
+            }
+
+            getRelativeStage(target) {
+                return this.stages[(this.stages.indexOf(this.stage) + target + this.stages.length) % this.stages.length];
+            }
+
+            _onPreviousButton() {
+                this.stage = this.getRelativeStage(-1);
+            }
+
+            _onNextButton() {
+                this.stage = this.getRelativeStage(1);
             }
 
             reset() {
@@ -491,7 +626,6 @@
             }
 
             _selectedRaceClass(race) {
-                console.log(this.character.Race == race ? "selected" : "");
                 return this.character.Race == race ? "selected" : "";
             }
 
@@ -521,6 +655,7 @@
                     // this.reset();
                 }
             }
+
             _characterChanged(character) {
                 console.log(character);
             }
