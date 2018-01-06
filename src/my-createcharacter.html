@@ -137,6 +137,10 @@
             .stagetabs div {
                 /* width: 0.3vw; */
             }
+
+            .raceStats input{
+                max-width: 8ch;
+            }
         </style>
 
         <iron-form id="form">
@@ -158,15 +162,16 @@
                             </template>
                         </iron-selector>
                     </div>
-                    <br>
+                    <!-- <br> -->
 
-                    <paper-fab class="previousbutton" on-tap="_onPreviousButton" label="<"></paper-fab>
+                    <!-- <paper-fab class="previousbutton" on-tap="_onPreviousButton" label="<"></paper-fab>
                     <paper-fab class="nextbutton" on-tap="_onNextButton" label=">"></paper-fab>
                     <div class="stagetabs">
                         <paper-button class="paperbutton resetButton" on-tap="reset">Reset</paper-button>
                         <paper-button class="paperbutton resetButton" on-tap="" disabled>Done</paper-button>
-                    </div>
+                    </div> -->
                 </div>
+
                 <div class="card" hidden$="[[!_equals(stage,'Scores')]]">
                     <div class="circle lineup">[[_cardNumber()]]</div>
                     <h2 class="lineup">Ability Scores</h2>
@@ -343,7 +348,11 @@
                         <tr>
                             <td>Age</td>
                             <td class="textCentred">[[character.Age]]</td>
-                            <td>input</td>
+                            <td>
+                                    <iron-input bind-value="{{character.Age}}">
+                                        <input type="number" pattern="[0-9.]+">
+                                    </iron-input>
+                                </td>
                             <td>Adult: [[Race.Age.Adult]]</td>
                             <td class="textCentred">
                                 <p>Training Level: </p>
@@ -362,7 +371,11 @@
                         <tr>
                             <td>Height</td>
                             <td class="textCentred">[[character.Height]]</td>
-                            <td>input</td>
+                            <td>
+                                <iron-input bind-value="{{character.Height}}">
+                                    <input type="number" pattern="[0-9.]+">
+                                </iron-input>
+                            </td>
                             <td>[[_get_eightBase(character.Gender,"Height")]]</td>
                             <td class="textCentred">
                                 <iron-selector id="gender" attr-for-selected="name" selected="{{character.Gender}}" on-selected-changed="_onGenderChanged">
@@ -379,7 +392,11 @@
                         <tr>
                             <td>Weight</td>
                             <td class="textCentred">[[character.Weight]]</td>
-                            <td>input</td>
+                            <td>
+                                    <iron-input bind-value="{{character.Weight}}">
+                                        <input type="number" pattern="[0-9.]+">
+                                    </iron-input>
+                                </td>
                             <td>[[_get_eightBase(character.Gender,"Weight")]]</td>
                             <td class="textCentred">
                                 <iron-selector id="gender" attr-for-selected="name" selected="{{character.Gender}}" on-selected-changed="_onGenderChanged">
@@ -481,6 +498,14 @@
                     <div class="circle lineup">[[_cardNumber()]]</div>
                     <h2 class="lineup">History</h2>
                     <!-- <paper-button class="paperbutton" on-tap="_onGenerateStats" hidden$="[[!character.Race]]">Generate</paper-button> -->
+                </div>
+                <div class="card">
+                    <paper-fab class="previousbutton" on-tap="_onPreviousButton" label="<"></paper-fab>
+                    <paper-fab class="nextbutton" on-tap="_onNextButton" label=">"></paper-fab>
+                    <div class="stagetabs">
+                        <paper-button class="paperbutton resetButton" on-tap="reset">Reset</paper-button>
+                        <paper-button class="paperbutton resetButton" on-tap="" disabled>Done</paper-button>
+                    </div>
                 </div>
             </form>
         </iron-form>
