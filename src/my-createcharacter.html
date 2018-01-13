@@ -13,7 +13,7 @@
 <dom-module id="my-createcharacter">
     <template>
         <style include="shared-styles">
-            :host {
+             :host {
                 display: block;
                 padding: 10px;
             }
@@ -138,7 +138,7 @@
                 /* width: 0.3vw; */
             }
 
-            .raceStats input{
+            .raceStats input {
                 max-width: 8ch;
             }
         </style>
@@ -331,8 +331,8 @@
 
                 <firebase-document id="doc" path="/Races/[[character.Race]]" data="{{Race}}" on-data-changed="_onDataChanged">
                 </firebase-document>
-                <firebase-query id="doc" path="/RaceTraits" data="{{RaceTraits}}" on-data-changed="_onDataChanged">
-                </firebase-query>
+                <firebase-document id="doc" path="/RaceTraits" data="{{RaceTraits}}" on-data-changed="_onDataChanged">
+                </firebase-document>
                 <div class="card" hidden$="[[!_equals(stage,'Customise Race')]]">
                     <div class="circle lineup">[[_cardNumber()]]</div>
                     <h2 class="lineup">Customise Race</h2>
@@ -349,10 +349,10 @@
                             <td>Age</td>
                             <td class="textCentred">[[character.Age]]</td>
                             <td>
-                                    <iron-input bind-value="{{character.Age}}">
-                                        <input type="number" pattern="[0-9.]+">
-                                    </iron-input>
-                                </td>
+                                <iron-input bind-value="{{character.Age}}">
+                                    <input type="number" pattern="[0-9.]+">
+                                </iron-input>
+                            </td>
                             <td>Adult: [[Race.Age.Adult]]</td>
                             <td class="textCentred">
                                 <p>Training Level: </p>
@@ -393,10 +393,10 @@
                             <td>Weight</td>
                             <td class="textCentred">[[character.Weight]]</td>
                             <td>
-                                    <iron-input bind-value="{{character.Weight}}">
-                                        <input type="number" pattern="[0-9.]+">
-                                    </iron-input>
-                                </td>
+                                <iron-input bind-value="{{character.Weight}}">
+                                    <input type="number" pattern="[0-9.]+">
+                                </iron-input>
+                            </td>
                             <td>[[_get_eightBase(character.Gender,"Weight")]]</td>
                             <td class="textCentred">
                                 <iron-selector id="gender" attr-for-selected="name" selected="{{character.Gender}}" on-selected-changed="_onGenderChanged">
@@ -411,9 +411,16 @@
                         </tr>
 
                     </table>
-                    <br>
-                    <!-- <paper-button class="paperbutton" on-tap="_onGenerateStats" hidden$="[[!character.Race]]">Generate</paper-button> -->
-
+                    <hr>
+                    <template is="dom-repeat" items="[[_getRaceTraits(Race,RaceTraits)]]" as="trait">
+                        <div class="card">
+                            <h3>[[trait.name]]</h3>
+                            <p>[[trait.description]]</p>
+                            <template is="dom-if" if="[[trait.replaces]]">
+                                <p>Replaces: [[trait.replaces]]</p>
+                            </template>
+                        </div>
+                    </template>
                 </div>
 
                 <div class="card" hidden$="[[!_equals(stage,'Class')]]">
@@ -537,7 +544,7 @@
                             Intelligence: 0,
                             Strength: 0,
                             Wisdom: 0,
-                            Race: "",
+                            Race: "Ratfolk",
                             Age: 0
                         }
                     },
@@ -559,7 +566,7 @@
                     scores: Array,
                     stage: {
                         type: String,
-                        value: "Scores"
+                        value: "Customise Race"
                     },
                     raceStatsGenerated: {
                         type: Boolean,
@@ -601,6 +608,10 @@
 
             _equals(a, b) {
                 return a == b;
+            }
+
+            _string(item) {
+                return item ? item.toString() : "";
             }
 
             getRelativeStage(target) {
@@ -666,6 +677,39 @@
                 if (this.Race) {
                     return this.Race.Gender[gender][eight].Base;
                 }
+            }
+
+            _getDescription(item){
+                if(item.Description){
+                    return item.Description
+                }
+                return "";
+            }
+
+            _getRaceTraits(race) {
+                var traitlist = [];
+                if (race && race.Traits && this.RaceTraits) {
+                    var defaultTraits = race.Traits.Default.split(",");
+                    for (var i = 0; i < defaultTraits.length; i++) {
+                        traitlist.push({
+                            self: this.RaceTraits[defaultTraits[i]],
+                            name: defaultTraits[i],
+                            description: this._getDescription(this.RaceTraits[defaultTraits[i]])
+                        });
+                    }
+
+                    for (var altTrait in race.Traits.Alternate) {
+                        if (altTrait) {
+                            traitlist.push({
+                                self: this.RaceTraits[altTrait],
+                                replaces: race.Traits.Alternate[altTrait],
+                                name: altTrait,
+                                description: this._getDescription(this.RaceTraits[altTrait])
+                            });
+                        }
+                    }
+                }
+                return traitlist;
             }
 
             _cardNumber() {

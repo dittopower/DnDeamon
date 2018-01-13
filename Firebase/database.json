@@ -242,7 +242,8 @@
                     "Use Magic Device": 2,
                     "Type": "racial"
                 }
-            ]
+            ],
+            "Description": "Ratfolk gain a +2 racial bonus on Craft (alchemy), Perception, and Use Magic Device checks."
         },
         "Rodent Empathy": {
             "Effects": [
